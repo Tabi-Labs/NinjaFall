@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="MainMenu" style="flex-grow: 1; background-color: rgb(36, 36, 36); border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-top-width: 9px; border-right-width: 9px; border-bottom-width: 9px; border-left-width: 9px;">
+        <ui:Label tabindex="-1" text="Main Menu" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MainMenuLabel" style="top: auto; align-items: auto; justify-content: flex-start; align-self: center; -unity-font-style: bold; font-size: 14px;" />
+        <ui:Button text="Run" parse-escape-sequences="true" display-tooltip-when-elided="true" name="b_MainMenu" style="width: 25%; align-items: stretch; justify-content: flex-start; align-self: center;" />
+        <uie:PropertyField binding-path="MainMenuScene" />
+        <ui:Foldout text="Transitions" name="Transitions">
+            <ui:VisualElement style="flex-grow: 1; background-color: rgb(51, 51, 51);">
+                <ui:Label tabindex="-1" text="Play Action" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PlayTransition" style="-unity-font-style: bold;" />
+                <ui:VisualElement name="PlayPanel" style="flex-grow: 1; flex-direction: row;">
+                    <uie:ObjectField label="Scene" type="UnityEditor.SceneAsset, UnityEditor.CoreModule" />
+                    <uie:ObjectField label="Button" type="UnityEngine.UI.Button, UnityEngine.UI" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:Foldout>
+    </ui:VisualElement>
+    <ui:VisualElement name="Pane2" style="flex-grow: 1;" />
+    <ui:VisualElement name="Pane3" style="flex-grow: 1;" />
+</ui:UXML>

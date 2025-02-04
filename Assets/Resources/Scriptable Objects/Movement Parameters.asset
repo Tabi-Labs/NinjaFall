@@ -13,27 +13,25 @@ MonoBehaviour:
   m_Name: Movement Parameters
   m_EditorClassIdentifier: 
   MoveThreshold: 0.095
-  MaxWalkSpeed: 11.4
-  MaxRunSpeed: 20
-  GroundAcceleration: 50
-  GroundDeceleration: 26
+  MaxWalkSpeed: 8
+  MaxRunSpeed: 9
+  GroundAcceleration: 23
+  GroundDeceleration: 44.3
   AirMultiplier: 0.731
   AirAcceleration: 50
   AirDeceleration: 50
-  JumpHeight: 3.05
+  JumpHeight: 3
   JumpHeightCompensationFactor: 1.1
   NumberOfJumpsAllowed: 1
   TimeTillJumpApex: 0.32
   TimeForUpwardsCancel: 0.1044
-  GravityOnReleaseMultiplier: 2
+  GravityOnReleaseMultiplier: 1
   MaxFallSpeed: 26
   ResetJumpsOnWallSlide: 1
   ApexThreshold: 0.863
   ApexHangTime: 0.075
   JumpBufferTime: 0.125
   JumpCoyoteTime: 0.1
-  WallJumpMoveAcceleration: 5
-  WallJumpMoveDeceleratoin: 5
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -45,11 +43,12 @@ MonoBehaviour:
     m_Bits: 8
   WallDetectionRayLength: 0.125
   WallDetectionRayHeightMultiplier: 0.01
-  WallSlideSpped: 3.04
+  WallSlideSpeed: 5
   WallSlideDecelerationSpeed: 10
   WallJumpDirection: {x: 15, y: 2.1}
+  WallJumpMoveAcceleration: 5
+  WallJumpMoveDeceleration: 5
   WallJumpPostBufferTime: 0.125
-  TurnToWallJumpDirection: 1
   WallJumpGravityOnReleaseMultiplier: 1
   DashTime: 0.11
   DashSpeed: 40
@@ -60,10 +59,12 @@ MonoBehaviour:
   DashGravityOnReleaseMultiplier: 1
   DashTimeForUpwardsCancel: 0.027
   DebugShowIsGroundedBox: 1
-  DebugShowHeadBump: 1
+  DebugShowHeadBumpBox: 0
   DebugShowWallHitBox: 1
+  DebugShowHeightLogOnLand: 0
+  TimeScale: 1
   ShowWalkJumpArc: 0
-  SHowRunJumpArc: 0
+  ShowRunJumpArc: 1
   StopOnCollision: 1
   DrawRight: 1
   ArcResolution: 20
