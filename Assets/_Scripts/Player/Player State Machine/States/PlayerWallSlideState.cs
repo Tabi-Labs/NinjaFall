@@ -14,6 +14,7 @@ public class PlayerWallSlideState : PlayerState
     {
         base.StateEnter();
 
+        _player.Anim.Play("p_WallSlide");
         if (_player.WallSlideParticles.isPlaying)
         {
             _player.WallSlideParticles.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);

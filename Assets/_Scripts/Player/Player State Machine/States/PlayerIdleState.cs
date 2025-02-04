@@ -12,8 +12,9 @@ public class PlayerIdleState : PlayerState
     {
         base.StateEnter();
 
-        _player.Anim.SetBool(Player.IS_WALKING, false);
-        _player.Anim.SetBool(Player.IS_RUNNING, false);
+        _player.Anim.Play("p_Idle");
+        //_player.Anim.SetBool(Player.IS_WALKING, false);
+        //_player.Anim.SetBool(Player.IS_RUNNING, false);
         _player.TrailRenderer.emitting = false;
     }
 

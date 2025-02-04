@@ -12,6 +12,7 @@ public class PlayerWalkState : PlayerState
     {
         base.StateEnter();
 
+        _player.Anim.Play("p_Walk");
         _player.Anim.SetBool(Player.IS_WALKING, true);
     }
 

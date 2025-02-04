@@ -95,7 +95,259 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_0
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c5403a4942278c4ba268dd6fd237067
+      internalID: -91537274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_1
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07c762ec9c12561448b10d20227eaa7d
+      internalID: 30432271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_2
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 843ab4b233ee9b64cad00b2889941130
+      internalID: 1703268431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_3
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68fcf555c0342904aaf8c425d8e37c3c
+      internalID: -438614723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_4
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f06edee54f437344a56466d6c292a7b
+      internalID: 1826413292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_5
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79931ad3fa6714b469c45257ca60dbb2
+      internalID: -555611370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_6
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de93644dc4fa62a4fa70b5b3f8a85ac5
+      internalID: 1976555737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_7
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a52bc84499c68834ba98647c20bfe0d3
+      internalID: 1310444118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_8
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8be82a602ed3d8f439d73fd62ac61e2d
+      internalID: 1150502735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_9
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc9034ed172f74f47aa8c5e35b6d7e3b
+      internalID: -1516155357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_10
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e6471a011ea0674eb77922a84b0f5a7
+      internalID: 853634773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_fall_strip12_11
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 7
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee615b507f2e3824ca75e843ac6fa937
+      internalID: -1481238521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +358,19 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_fall_strip12_0: -91537274
+      lilmaskedninja_fall_strip12_1: 30432271
+      lilmaskedninja_fall_strip12_10: 853634773
+      lilmaskedninja_fall_strip12_11: -1481238521
+      lilmaskedninja_fall_strip12_2: 1703268431
+      lilmaskedninja_fall_strip12_3: -438614723
+      lilmaskedninja_fall_strip12_4: 1826413292
+      lilmaskedninja_fall_strip12_5: -555611370
+      lilmaskedninja_fall_strip12_6: 1976555737
+      lilmaskedninja_fall_strip12_7: 1310444118
+      lilmaskedninja_fall_strip12_8: 1150502735
+      lilmaskedninja_fall_strip12_9: -1516155357
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

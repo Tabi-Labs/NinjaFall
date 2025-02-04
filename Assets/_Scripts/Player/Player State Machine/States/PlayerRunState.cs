@@ -11,7 +11,7 @@ public class PlayerRunState : PlayerState
     public override void StateEnter()
     {
         base.StateEnter();
-
+        _player.Anim.Play("p_Walk");
         _player.Anim.SetBool(Player.IS_WALKING, true);
         _player.Anim.SetBool(Player.IS_RUNNING, true);
     }

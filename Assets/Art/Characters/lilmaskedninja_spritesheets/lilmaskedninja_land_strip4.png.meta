@@ -95,7 +95,91 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_land_strip4_0
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 7
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ecc4a23efe0b2f24280685a6b009e86b
+      internalID: -488632176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_land_strip4_1
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 7
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3422c65528f00bd438a697f7aa30ec0a
+      internalID: -688197872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_land_strip4_2
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 7
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebfcf1c59df09f645a7e76ce7db99798
+      internalID: -1448227447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_land_strip4_3
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 7
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f71fa31478e814d4bb936250000e2e7a
+      internalID: 1604417107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +190,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_land_strip4_0: -488632176
+      lilmaskedninja_land_strip4_1: -688197872
+      lilmaskedninja_land_strip4_2: -1448227447
+      lilmaskedninja_land_strip4_3: 1604417107
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

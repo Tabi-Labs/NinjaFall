@@ -95,7 +95,175 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_0
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 7
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 141b25cd126430c41b28b57a4e13f3a7
+      internalID: 1784178829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_1
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 7
+        width: 22
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a08ebb18f45776a42b9b5d5c4437ddd2
+      internalID: 1630629979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_2
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 7
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3371b2e579ff8ef489cba177916a3700
+      internalID: 46662177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_3
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 8
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4d3e19e5cc012644194c82b7aa631f52
+      internalID: 1903024015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_4
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 7
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41904533f812e1c45a7ad1dbbaa67d1a
+      internalID: 558812809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_5
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 7
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44ad6a43cbcd8f446a58125f789319f9
+      internalID: -1025492559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_6
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 8
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96a48f432a82bad41ae2d2b0b450d510
+      internalID: 1933751913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_run_strip8_7
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 8
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 127d12bf7d82a6843923027d45a8f256
+      internalID: -630751111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +274,15 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_run_strip8_0: 1784178829
+      lilmaskedninja_run_strip8_1: 1630629979
+      lilmaskedninja_run_strip8_2: 46662177
+      lilmaskedninja_run_strip8_3: 1903024015
+      lilmaskedninja_run_strip8_4: 558812809
+      lilmaskedninja_run_strip8_5: -1025492559
+      lilmaskedninja_run_strip8_6: 1933751913
+      lilmaskedninja_run_strip8_7: -630751111
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

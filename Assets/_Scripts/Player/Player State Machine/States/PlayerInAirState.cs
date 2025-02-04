@@ -54,11 +54,11 @@ public class PlayerInAirState : PlayerState
             _player.StateMachine.ChangeState(_player.JumpState);
         }
 
+        
         //LAND
         if (_player.HasLanded())
         {
             _player.SpawnJumpParticles(_player.LandParticles);
-
             _player.StateMachine.ChangeState(_player.IdleState);
         }
 

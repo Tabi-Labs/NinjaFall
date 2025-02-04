@@ -95,7 +95,259 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_0
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 7
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ea5c4fafe77a6e146bca512600002582
+      internalID: -1709076186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_1
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 7
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c9a107ab76e1a84da62a6b21da9d535
+      internalID: 1975938872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_2
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 7
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d34a8f9de70e1f48a45fb3f092c2987
+      internalID: 1803943157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_3
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 800d5029924f081468e808efb17940f8
+      internalID: 299481428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_4
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0bb87847a48e45044bfcad9ad275b403
+      internalID: -382136285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_5
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8dbe0de6d6003504a9acfbe4a0889a83
+      internalID: 1518899589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_6
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d79fbd14d9ab91d4b9f41e591cde312f
+      internalID: -2125928094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_7
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70b80b0952d1bd741889410bfe75cd7c
+      internalID: 764073812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_8
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51ac85127a08b9548b0b7560a2048bf8
+      internalID: -292248988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_9
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1e94117ac8c7a148b1168375890c120
+      internalID: 2030635024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_10
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 85348a0122f6cad4bb0400df10e989e4
+      internalID: 795840660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_jump_strip12_11
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 9
+        width: 14
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79ce9afd500d6e84e9dfa90065e3ee28
+      internalID: 2034954366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +358,19 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_jump_strip12_0: -1709076186
+      lilmaskedninja_jump_strip12_1: 1975938872
+      lilmaskedninja_jump_strip12_10: 795840660
+      lilmaskedninja_jump_strip12_11: 2034954366
+      lilmaskedninja_jump_strip12_2: 1803943157
+      lilmaskedninja_jump_strip12_3: 299481428
+      lilmaskedninja_jump_strip12_4: -382136285
+      lilmaskedninja_jump_strip12_5: 1518899589
+      lilmaskedninja_jump_strip12_6: -2125928094
+      lilmaskedninja_jump_strip12_7: 764073812
+      lilmaskedninja_jump_strip12_8: -292248988
+      lilmaskedninja_jump_strip12_9: 2030635024
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

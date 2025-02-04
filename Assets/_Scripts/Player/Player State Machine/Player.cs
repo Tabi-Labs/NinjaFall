@@ -277,7 +277,8 @@ public class Player : MonoBehaviour
 
             ResetDashValues();
 
-            Anim.SetTrigger(LAND);
+            Anim.Play("p_Land");
+            //Anim.SetTrigger(LAND);
 
             //height tracker
             if (MoveStats.DebugShowHeightLogOnLand)
@@ -425,6 +426,7 @@ public class Player : MonoBehaviour
                 IsFalling = true;
                 Anim.ResetTrigger(LAND);
                 Anim.SetTrigger(FALL);
+                Anim.Play("p_Fall");
             }
 
             StateMachine.ChangeState(InAirState);

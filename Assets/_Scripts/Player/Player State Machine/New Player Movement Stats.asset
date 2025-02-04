@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: New Player Movement Stats
   m_EditorClassIdentifier: 
   MoveThreshold: 0.25
-  MaxWalkSpeed: 5.6
+  MaxWalkSpeed: 7.7
   GroundAcceleration: 27
   GroundDeceleration: 20
   AirAcceleration: 5
   AirDeceleration: 5
   WallJumpMoveAcceleration: 5
   WallJumpMoveDeceleration: 5
-  MaxRunSpeed: 20
+  MaxRunSpeed: 11.8
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
