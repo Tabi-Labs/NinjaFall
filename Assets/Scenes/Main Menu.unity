@@ -162,7 +162,7 @@ MonoBehaviour:
   ConnectionData:
     Address: 127.0.0.1
     Port: 7777
-    ServerListenAddress: 127.0.0.1
+    ServerListenAddress: 0.0.0.0
   DebugSimulator:
     PacketDelayMS: 0
     PacketJitterMS: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 131446589}
-    PlayerPrefab: {fileID: 0}
+    PlayerPrefab: {fileID: 4422278395826503445, guid: c270330253bbbcb4c8f568a8db829a4b, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 8714ece53a9166c49b39688144686b0e, type: 2}
@@ -369,7 +369,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 619805119}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1472295332}
+        m_TargetAssemblyTypeName: RelayServer, Assembly-CSharp
+        m_MethodName: CreateRelay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &619805119
 MonoBehaviour:
   m_ObjectHideFlags: 0
