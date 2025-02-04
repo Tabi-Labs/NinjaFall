@@ -22,17 +22,17 @@ public class PlayerIdleState : PlayerState
     {
         base.StateUpdate();
 
-        if (Mathf.Abs(InputManager.Movement.x) > _moveStats.MoveThreshold && !InputManager.RunIsHeld)
+        if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld)
         {
             _player.StateMachine.ChangeState(_player.WalkState);
         }
 
-        else if (Mathf.Abs(InputManager.Movement.x) > _moveStats.MoveThreshold && InputManager.RunIsHeld)
+        else if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld)
         {
             _player.StateMachine.ChangeState(_player.RunState);
         }
 
-        else if (InputManager.JumpWasPressed)
+        else if (_player.InputManager.JumpWasPressed)
         {
             if (_player.CanJump())
             {
@@ -49,7 +49,7 @@ public class PlayerIdleState : PlayerState
             _player.StateMachine.ChangeState(_player.JumpState);
         }
 
-        if (InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
+        if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }
@@ -60,6 +60,6 @@ public class PlayerIdleState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for deceleration
-        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, InputManager.Movement);
+        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, _player.InputManager.Movement);
     }
 }

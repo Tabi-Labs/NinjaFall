@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
+    public InputManager InputManager {get; private set;}
 
     [Header("FX")]
     public GameObject JumpParticles;
@@ -142,6 +143,7 @@ public class Player : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         GhostTrail = GetComponent<GhostTrail>();
+        InputManager = GetComponent<InputManager>();
 
         WallSlideParticles.gameObject.SetActive(false);
 

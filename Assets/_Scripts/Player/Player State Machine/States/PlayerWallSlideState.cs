@@ -69,13 +69,13 @@ public class PlayerWallSlideState : PlayerState
         }
 
         //WALLJUMP
-        else if (InputManager.JumpWasPressed && _player.CanWallJumpDueToPostBufferTimer())
+        else if (_player.InputManager.JumpWasPressed && _player.CanWallJumpDueToPostBufferTimer())
         {
             _player.UseWallJumpMoveStats = true;
             _player.StateMachine.ChangeState(_player.WallJumpState);
         }
 
-        if (InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
+        if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }
@@ -89,7 +89,7 @@ public class PlayerWallSlideState : PlayerState
 
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, InputManager.Movement);
+            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, _player.InputManager.Movement);
         }
 
         //movement
@@ -103,18 +103,18 @@ public class PlayerWallSlideState : PlayerState
         {
             _hitPosition = _player.WallHit.collider.ClosestPoint(_player.transform.position);
 
-            if (InputManager.Movement.x > 0 && _hitPosition.x > _player.transform.position.x)
+            if (_player.InputManager.Movement.x > 0 && _hitPosition.x > _player.transform.position.x)
             {
                 _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, Vector2.zero);
             }
 
-            else if (InputManager.Movement.x < 0 && _hitPosition.x < _player.transform.position.x)
+            else if (_player.InputManager.Movement.x < 0 && _hitPosition.x < _player.transform.position.x)
             {
                 _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, Vector2.zero);
             }
             else
             {
-                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, InputManager.Movement);
+                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);
             }
         }
     }

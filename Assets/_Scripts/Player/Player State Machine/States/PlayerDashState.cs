@@ -40,7 +40,7 @@ public class PlayerDashState : PlayerState
             _player.StateMachine.ChangeState(_player.IdleState);
         }
 
-        else if (InputManager.JumpWasPressed)
+        else if (_player.InputManager.JumpWasPressed)
         {
             if (_player.CanJump())
             {

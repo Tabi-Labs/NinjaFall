@@ -29,14 +29,14 @@ public class PlayerJumpState : PlayerState
 
         //even though we exit this state immediately, we need to account for movement in case a physics update is called before the transition is made for the sake of smooth movement
 
-        _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, InputManager.Movement);
+        _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);
     }
 
     public override void StateUpdate()
     {
         base.StateUpdate();
 
-        if (InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
+        if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }

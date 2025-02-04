@@ -29,7 +29,7 @@ public class PlayerWallJumpState : PlayerState
 
         //movement
 
-        _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, InputManager.Movement);
+        _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, _player.InputManager.Movement);
         
     }
 
@@ -37,7 +37,7 @@ public class PlayerWallJumpState : PlayerState
     {
         base.StateUpdate();
 
-        if (InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
+        if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }

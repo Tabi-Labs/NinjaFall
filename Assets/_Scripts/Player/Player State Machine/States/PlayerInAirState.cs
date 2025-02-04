@@ -25,7 +25,7 @@ public class PlayerInAirState : PlayerState
         //other state transitions
 
         //JUMP/WallJump
-        if (InputManager.JumpWasPressed)
+        if (_player.InputManager.JumpWasPressed)
         {
             if (_player.CanJump())
             {
@@ -69,7 +69,7 @@ public class PlayerInAirState : PlayerState
         }
 
         //DASH
-        if (InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
+        if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }
@@ -88,12 +88,12 @@ public class PlayerInAirState : PlayerState
         //movement
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, InputManager.Movement);
+            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, _player.InputManager.Movement);
         }
 
         else
         {
-            _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, InputManager.Movement);     
+            _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);     
         }
     }
 }
