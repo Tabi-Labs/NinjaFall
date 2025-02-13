@@ -77,7 +77,13 @@ public class LobbyManager : NetworkBehaviour
         //tarjetita.userNetworkConfig = userNetwork;
 
     }
-
+    public void StartGame()
+    {
+        if (IsServer)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        }
+    }
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
