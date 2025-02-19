@@ -26,6 +26,9 @@ public class Player : MonoBehaviour
     public ParticleSystem SpeedParticles;
     public GameObject DashParticles;
     public ParticleSystem WallSlideParticles;
+    public GameObject Shuriken;
+    public Transform FirePoint;
+    public GameObject Sword;
 
     [Header("Height Tracker")]
     public Transform HeightTracker;
@@ -42,6 +45,7 @@ public class Player : MonoBehaviour
     public const string JUMP = "jump";
     public const string LAND = "land";
     public const string FALL = "fall";
+    public const string IS_ATTACKING = "isAttacking";
 
     //state vars
     public PlayerStateMachine StateMachine { get; private set; }
@@ -53,6 +57,10 @@ public class Player : MonoBehaviour
     public PlayerWallSlideState WallSlideState { get; private set; }
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerDashState DashState { get; private set; }
+
+    public PlayerMeleeAttackState MeleeAttackState { get; private set; }
+
+    public PlayerRangeAttackState RangeAttackState { get; private set; }
 
     //collision vars
     public bool IsGrounded { get; private set; }
@@ -66,6 +74,9 @@ public class Player : MonoBehaviour
     //movement vars
     public bool IsFacingRight { get; private set; }
     public float HorizontalVelocity { get; private set; }
+
+    // attack vars
+    public bool IsAttacking { get; private set; }
 
     //jump vars
     public float VerticalVelocity { get; set; }
@@ -133,6 +144,8 @@ public class Player : MonoBehaviour
         WallSlideState = new PlayerWallSlideState(this, StateMachine);
         WallJumpState = new PlayerWallJumpState(this, StateMachine);
         DashState = new PlayerDashState(this, StateMachine);
+        MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
+        RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
 
         //initialize the direction
         IsFacingRight = true;
@@ -252,6 +265,15 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Range Attack
+
+    public void RangeAttackWasPressed()
+    {
+        // Se lanza shuriken
+        Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
+
+    }
+    #endregion
     #region Landed
     public bool HasLanded()
     {
@@ -292,6 +314,29 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    #endregion
+
+    #region Melee Attack
+
+    public void MeleeAttackInputChecks()
+    {
+        if (InputManager.MeleeAttackWasPressed)
+        {
+            Debug.Log("Ataque");
+            return;
+        }
+    }
+
+    public void EnableSwordCollider()
+    {
+        Sword.GetComponent<Collider2D>().enabled = true;
+    }
+
+    public void DisableSwordCollider()
+    {
+        Sword.GetComponent<Collider2D>().enabled = false;
     }
 
     #endregion

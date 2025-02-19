@@ -95,7 +95,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_throw_strip5_0
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 7
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 002853972ad568f4b8d83b054ec28d39
+      internalID: 292347289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_throw_strip5_1
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 7
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e8275867151f564c9f816d11400ee02
+      internalID: 370323138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_throw_strip5_2
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 7
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5fdf705292ca3c449812cd80af7d1bda
+      internalID: 1499536839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_throw_strip5_3
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 7
+        width: 17
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f9b470b6934df744889b7129a7b7d01
+      internalID: -412185444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_throw_strip5_4
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 7
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28c6c54ae37a6234bab6a2d8d5b67dc9
+      internalID: -888051410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +211,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_throw_strip5_0: 292347289
+      lilmaskedninja_throw_strip5_1: 370323138
+      lilmaskedninja_throw_strip5_2: 1499536839
+      lilmaskedninja_throw_strip5_3: -412185444
+      lilmaskedninja_throw_strip5_4: -888051410
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
