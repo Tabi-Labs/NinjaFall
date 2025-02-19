@@ -120,9 +120,10 @@ public class PlayerNet : NetworkBehaviour
 
     #endregion
 
-
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+        if(!IsOwner) return;
         StateMachine = new PlayerStateMachineNet();
 
         //initialize the individual states here
@@ -137,10 +138,7 @@ public class PlayerNet : NetworkBehaviour
 
         //initialize the direction
         IsFacingRight = true;
-    }
 
-    private void Start()
-    {
         RB = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         GhostTrail = GetComponent<GhostTrail>();
@@ -150,14 +148,25 @@ public class PlayerNet : NetworkBehaviour
 
         StateMachine.InitializeDefaultState(IdleState);
     }
+    private void Awake()
+    {
+        
+    }
+
+    private void Start()
+    {
+        
+    }
 
     private void Update()
     {
+        if (!IsOwner) return;
         StateMachine.CurrentState.StateUpdate();
     }
 
     private void FixedUpdate()
     {
+        if (!IsOwner) return;
         StateMachine.CurrentState.StateFixedUpdate();
     }
 
