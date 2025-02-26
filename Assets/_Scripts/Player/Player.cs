@@ -62,7 +62,10 @@ public class Player : MonoBehaviour
 
     public PlayerRangeAttackState RangeAttackState { get; private set; }
 
+    public PlayerDeathState DeathState { get; private set; }
+
     //collision vars
+    public bool IsDead { get; private set; }
     public bool IsGrounded { get; private set; }
     public bool BumpedHead { get; private set; }
     public bool IsTouchingWall { get; private set; }
@@ -146,6 +149,7 @@ public class Player : MonoBehaviour
         DashState = new PlayerDashState(this, StateMachine);
         MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
         RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
+        DeathState = new PlayerDeathState(this, StateMachine);
 
         //initialize the direction
         IsFacingRight = true;
@@ -265,6 +269,24 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Death
+
+    public bool CheckIsDead()
+    {
+        return IsDead;
+    }
+
+    public void WasHitted()
+    {
+        IsDead = true;
+    }
+
+    public void DeletePlayer()
+    {
+        Destroy(gameObject);
+    }
+    #endregion
+
     #region Range Attack
 
     public void RangeAttackWasPressed()
@@ -320,13 +342,9 @@ public class Player : MonoBehaviour
 
     #region Melee Attack
 
-    public void MeleeAttackInputChecks()
+    public void SetIsAttacking(bool isAttacking)
     {
-        if (InputManager.MeleeAttackWasPressed)
-        {
-            Debug.Log("Ataque");
-            return;
-        }
+        IsAttacking = isAttacking;
     }
 
     public void EnableSwordCollider()

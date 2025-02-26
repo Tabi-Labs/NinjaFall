@@ -23,6 +23,11 @@ public class PlayerInAirState : PlayerState
         base.StateUpdate();
 
         //other state transitions
+        if (_player.CheckIsDead())
+        {
+            _player.StateMachine.ChangeState(_player.DeathState);
+            return;
+        }
 
         //JUMP/WallJump
         if (_player.InputManager.JumpWasPressed)
@@ -98,6 +103,7 @@ public class PlayerInAirState : PlayerState
     public override void StateFixedUpdate()
     {
         base.StateFixedUpdate();
+
 
         _player.JumpPhysics();
         _player.WallJumpPhysics();

@@ -21,15 +21,20 @@ public class Shuriken : MonoBehaviour
 
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        // Destruye el proyectil al colisionar
-        Destroy(gameObject);
-    }
-
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.CompareTag("Player"))
+        {
+            // TODO Destruir
+            Player player = other.transform.root.GetComponent<Player>();
+            if (player != null)
+            {
+                Debug.Log("Player eliminado por shuriken");
+                player.WasHitted(); // Llamar a la función de destrucción
+            }
+        }
+
         Destroy(gameObject);
     }
 }

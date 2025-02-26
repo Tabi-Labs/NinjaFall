@@ -95,7 +95,196 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_0
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 7
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f50460d957a50df4dac337abd59cf9ea
+      internalID: -286156870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_1
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 7
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 973e199f212c48046aaf72159b720f5f
+      internalID: -2124762704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_2
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 7
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e57e763509ddfe419c381984f69bca0
+      internalID: 2000858860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_3
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 9
+        width: 31
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 281041f7af2643145b72e07c1d746d4e
+      internalID: 1431818496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 7
+        width: 29
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae979aecc11b45443b7aa3490060b971
+      internalID: 1588882897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_5
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 7
+        width: 29
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c91ef3b009f18a42bf47628e6b9c1e5
+      internalID: 490538845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_6
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 7
+        width: 29
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e69af6a35f604b94ca63b225221b9e14
+      internalID: -672179315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_7
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 7
+        width: 29
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c2e3253299a80641bfc6b72a586cd43
+      internalID: -980677115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_die_strip9_8
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 7
+        width: 29
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 643442955884f4f489f9f643e5f9bbb7
+      internalID: 1626051189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +295,16 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_die_strip9_0: -286156870
+      lilmaskedninja_die_strip9_1: -2124762704
+      lilmaskedninja_die_strip9_2: 2000858860
+      lilmaskedninja_die_strip9_3: 1431818496
+      lilmaskedninja_die_strip9_4: 1588882897
+      lilmaskedninja_die_strip9_5: 490538845
+      lilmaskedninja_die_strip9_6: -672179315
+      lilmaskedninja_die_strip9_7: -980677115
+      lilmaskedninja_die_strip9_8: 1626051189
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

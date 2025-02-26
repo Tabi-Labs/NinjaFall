@@ -52,9 +52,11 @@ public class PlayerState
         _player.DashTimers();
         _player.JumpInputChecks();
         _player.WallJumpChecks();
-        _player.MeleeAttackInputChecks();
         //handle falling (might happen with a low enough deceleration after movement stops)
+
         _player.CheckForFalling();
+        
+        
     }
 
     /// <summary>

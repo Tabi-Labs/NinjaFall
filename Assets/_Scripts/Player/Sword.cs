@@ -28,12 +28,12 @@ public class Sword : MonoBehaviour
         {
             Debug.Log("Golpe a otro jugador");
 
-            // Retroceso del jugador golpeado
-            Rigidbody2D playerRigidbody = other.transform.root.GetComponentInParent<Rigidbody2D>();
-            if (playerRigidbody != null)
+            // TODO Destruir
+            Player player = other.transform.root.GetComponent<Player>();
+            if (player != null)
             {
-                Vector2 knockbackDirection = (other.transform.position - transform.position).normalized;
-                playerRigidbody.AddForce(knockbackDirection * knockbackForce * 10, ForceMode2D.Impulse);
+                Debug.Log("Player eliminado");
+                player.WasHitted(); // Llamar a la función de destrucción
             }
         }
 
