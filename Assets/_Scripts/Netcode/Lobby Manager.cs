@@ -19,7 +19,8 @@ public class LobbyManager : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         ShowJoinCode();
-        if (IsServer)
+        Debug.Log(layout.GetComponent<NetworkObject>());
+        if (IsServer || IsHost)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
@@ -32,21 +33,21 @@ public class LobbyManager : NetworkBehaviour
     {
         foreach (ulong id in NetworkManager.Singleton.ConnectedClientsIds)
         {
-            if (id == OwnerClientId) continue;
-            ShowUserInfo(id);
+            if (id == OwnerClientId);
+                ShowUserInfo(id);
         }
     }
 
     private void OnClientDisconnected(ulong id)
     {
-        //TarjetitaScript[] tarjetitaArray = GameObject.FindObjectsOfType<TarjetitaScript>();
-        //foreach (TarjetitaScript tarjetita in tarjetitaArray)
-        //{
-        //    if (tarjetita.GetComponent<NetworkObject>().OwnerClientId == id)
-        //    {
-        //        tarjetita.GetComponent<NetworkObject>().Despawn();
-        //    }
-        //}
+        UserCard[] tarjetitaArray = GameObject.FindObjectsOfType<UserCard>();
+        foreach (UserCard tarjetita in tarjetitaArray)
+        {
+            if (tarjetita.GetComponent<NetworkObject>().OwnerClientId == id)
+            {
+                tarjetita.GetComponent<NetworkObject>().Despawn();
+            }
+        }
     }
 
     private void OnClientConnected(ulong clientId)
@@ -60,21 +61,22 @@ public class LobbyManager : NetworkBehaviour
     }
     private void ShowUserInfo(ulong id)
     {
-        //GameObject instance = Instantiate(tarjetitaPrefab);
-        //NetworkObject instanceNetworkObject = instance.GetComponent<NetworkObject>();
-        //instanceNetworkObject.SpawnWithOwnership(id);
-        //instance.transform.SetParent(layout.transform, false);
-        //TarjetitaScript tarjetita = instance.GetComponent<TarjetitaScript>();
-        //UserNetworkConfig userNetwork = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.gameObject.GetComponent<UserNetworkConfig>();
-        ////Cambiamos el nombre de la tarjetita por el introducido en el login
-        //tarjetita.tarjetitaNameNetworkVariable.Value = userNetwork.usernameNetworkVariable.Value;
+        GameObject instance = Instantiate(tarjetitaPrefab,layout.transform);
+        NetworkObject instanceNetworkObject = instance.GetComponent<NetworkObject>();
+        instanceNetworkObject.SpawnWithOwnership(id);
+        //instanceNetworkObject.transform.SetParent(layout.transform,true);
+        //instance.transform.parent = layout.transform;
+        UserCard tarjetita = instance.GetComponent<UserCard>();
+        UserNetworkConfig userNetwork = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.gameObject.GetComponent<UserNetworkConfig>();
+        //Cambiamos el nombre de la tarjetita por el introducido en el login
+        tarjetita.tarjetitaNameNetworkVariable.Value = userNetwork.usernameNetworkVariable.Value;
         //tarjetita.profilePicIDNetworkVariable.Value = userNetwork.profilePicIDNetworkVariable.Value;
-        ////Para asegurarse de que el paso de nombre al user sucede antes que la tarjetita. 
-        ////Esto se hace sobre todo por la concurrencia y cuestiones de tiempo.
-        //userNetwork.usernameNetworkVariable.OnValueChanged += tarjetita.CambiarTarjetitaName;
-        //userNetwork.profilePicIDNetworkVariable.OnValueChanged += tarjetita.CambiarProfilePic;
-        ////Asignamos la referencia del userNetwork en la tarjetita para desuscribir
-        //tarjetita.userNetworkConfig = userNetwork;
+        //Para asegurarse de que el paso de nombre al user sucede antes que la tarjetita. 
+        //Esto se hace sobre todo por la concurrencia y cuestiones de tiempo.
+        userNetwork.usernameNetworkVariable.OnValueChanged += tarjetita.CambiarTarjetitaName;
+        userNetwork.profilePicIDNetworkVariable.OnValueChanged += tarjetita.CambiarProfilePic;
+        //Asignamos la referencia del userNetwork en la tarjetita para desuscribir
+        tarjetita.userNetworkConfig = userNetwork;
 
     }
     public void StartGame()
