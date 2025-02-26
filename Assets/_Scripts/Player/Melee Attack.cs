@@ -39,8 +39,8 @@ public class MeleeAttack : MonoBehaviour
     void Melee(InputAction.CallbackContext context)
     {
         
-        var boxCenter = transform.position + transform.right * _stats.AttackRange / 2f;
-        var boxSize = new Vector2(_stats.AttackRange, _stats.AttackHeight);
+        var boxCenter = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
+        var boxSize = new Vector2(_stats.MeleeAttackRange, _stats.AttackHeight);
         Collider2D[] colliders = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f);
 
         if(colliders.Length == 0) 
@@ -58,7 +58,7 @@ public class MeleeAttack : MonoBehaviour
             }
             if(collider.TryGetComponent(out IDamageable damageable))
             {
-                damageable.TakeDamage(_stats);
+                damageable.TakeDamage(_stats.AttackDamage);
                 _debugColor = Color.green;
             }
             
@@ -76,9 +76,9 @@ public class MeleeAttack : MonoBehaviour
     void DebugAttack(Color debugColor)
     {
         var boxUpperLeftCorner = transform.position + transform.up * _stats.AttackHeight/2f ;
-        var boxUpperRightCorner = transform.position + transform.up * _stats.AttackHeight/2f + transform.right * _stats.AttackRange;
+        var boxUpperRightCorner = transform.position + transform.up * _stats.AttackHeight/2f + transform.right * _stats.MeleeAttackRange;
         var boxLowerLeftCorner = transform.position - transform.up * _stats.AttackHeight/2f;
-        var boxLowerRightCorner = transform.position + transform.right * _stats.AttackRange - transform.up * _stats.AttackHeight/2f;
+        var boxLowerRightCorner = transform.position + transform.right * _stats.MeleeAttackRange - transform.up * _stats.AttackHeight/2f;
         Debug.DrawLine(boxUpperLeftCorner, boxUpperRightCorner, debugColor);
         Debug.DrawLine(boxLowerLeftCorner, boxLowerRightCorner, debugColor);
         Debug.DrawLine(boxLowerLeftCorner, boxUpperLeftCorner, debugColor);

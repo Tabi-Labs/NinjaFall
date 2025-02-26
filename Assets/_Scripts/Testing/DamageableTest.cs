@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DamageableTest : MonoBehaviour, IDamageable
 {
-    public void TakeDamage(AttackStats attackStats)
+    public void TakeDamage(float damage)
     {
-        Debug.Log($"{gameObject.name} took {attackStats.AttackDamage} damage");
+        Debug.Log($"{gameObject.name} took {damage} damage");
     }
 }

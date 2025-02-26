@@ -6,7 +6,8 @@ using UnityEngine;
 public class AttackStats : ScriptableObject
 {
     public float AttackDamage;
-    public float AttackRange;
+    public float MeleeAttackRange;
+    public float RangedAttackRange;
     public float AttackHeight;
     public float AttackRate;
     public float KnockbackForce;

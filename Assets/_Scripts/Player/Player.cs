@@ -270,7 +270,7 @@ public class Player : MonoBehaviour
     public void RangeAttackWasPressed()
     {
         // Se lanza shuriken
-        Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
+        //Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
 
     }
     #endregion
