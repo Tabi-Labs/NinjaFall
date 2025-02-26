@@ -342,10 +342,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
-      insertIndex: 4
-      addedObject: {fileID: 1583473168}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
 --- !u!1 &263994485
 GameObject:
@@ -6235,11 +6232,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!4 &582772239 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1775966953388830712, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
-  m_PrefabInstance: {fileID: 209760089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &617482664
 GameObject:
   m_ObjectHideFlags: 0
@@ -13604,27 +13596,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &1583473158 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
-  m_PrefabInstance: {fileID: 209760089}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1583473168
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1583473158}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _rangedAttackAction: {fileID: 7612691404234612923, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
-  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
-  _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
-  _projectileSpawnPoint: {fileID: 582772239}
 --- !u!1 &1674755086
 GameObject:
   m_ObjectHideFlags: 0
