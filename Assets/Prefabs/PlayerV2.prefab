@@ -5124,6 +5124,7 @@ GameObject:
   - component: {fileID: 5227078153217827377}
   - component: {fileID: 3356373829068391031}
   - component: {fileID: 8362286837060557456}
+  - component: {fileID: 961465876201758951}
   - component: {fileID: 7882907021759217884}
   - component: {fileID: 3647615302069406548}
   - component: {fileID: 6175670069529148351}
@@ -5203,7 +5204,6 @@ MonoBehaviour:
   WallSlideParticles: {fileID: 2940781082615036196}
   Shuriken: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   FirePoint: {fileID: 1775966953388830712}
-  Sword: {fileID: 0}
   HeightTracker: {fileID: 1280714515081318487}
   ShowEnteredStateDebugLog: 1
 --- !u!114 &8362286837060557456
@@ -5220,6 +5220,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _meleeAttackAction: {fileID: 4076065564550100350, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+--- !u!114 &961465876201758951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rangedAttackAction: {fileID: 7612691404234612923, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
+  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
+  _projectileSpawnPoint: {fileID: 1775966953388830712}
 --- !u!212 &7882907021759217884
 SpriteRenderer:
   m_ObjectHideFlags: 0
