@@ -95,7 +95,112 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: lilmaskedninja_attack01_strip5_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 7
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a2457457fd82224ab9ac957d24c4b82
+      internalID: -862659603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_attack01_strip5_1
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 7
+        width: 37
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: defeeb3eb7cc5dd4ca0d376b99bd0f4c
+      internalID: -1887586761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_attack01_strip5_2
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 7
+        width: 16
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: faecc55cb76298544bab38983d5f00bb
+      internalID: -787692849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_attack01_strip5_3
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 7
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70055aa8b8d1eb344a207389f47d6c68
+      internalID: 1814249323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: lilmaskedninja_attack01_strip5_4
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 7
+        width: 14
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f08d8f21b990c6f45b8f23b8efad9bfd
+      internalID: 1987269015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +211,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      lilmaskedninja_attack01_strip5_0: -862659603
+      lilmaskedninja_attack01_strip5_1: -1887586761
+      lilmaskedninja_attack01_strip5_2: -787692849
+      lilmaskedninja_attack01_strip5_3: 1814249323
+      lilmaskedninja_attack01_strip5_4: 1987269015
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

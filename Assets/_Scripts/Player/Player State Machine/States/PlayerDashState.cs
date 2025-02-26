@@ -12,6 +12,8 @@ public class PlayerDashState : PlayerState
     {
         base.StateEnter();
 
+        //_player.DisableSwordCollider();
+
         _player.InitiateDash();        
     }
 

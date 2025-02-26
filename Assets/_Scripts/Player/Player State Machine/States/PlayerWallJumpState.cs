@@ -12,6 +12,8 @@ public class PlayerWallJumpState : PlayerState
     {
         base.StateEnter();
 
+        //_player.DisableSwordCollider();
+
         _player.InitiateWallJump();
         _player.StateMachine.ChangeState(_player.InAirState);
     }
@@ -40,6 +42,16 @@ public class PlayerWallJumpState : PlayerState
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
+        }
+
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+        }
+
+        if (_player.InputManager.RangeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.RangeAttackState);
         }
 
 
