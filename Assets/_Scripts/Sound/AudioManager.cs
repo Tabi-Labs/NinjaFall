@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 [DefaultExecutionOrder(-1)]
 public class AudioManager : MonoBehaviour
@@ -42,6 +43,7 @@ public class AudioManager : MonoBehaviour
     }
     #endregion
 
+    #region Play
     private void PlayAudio(int source, AudioClip clip, Vector3 position = new Vector3())
     {
         switch (source)
@@ -56,7 +58,8 @@ public class AudioManager : MonoBehaviour
 					music_source[playing ? 1 : 0].DOFade(0.3f, fade_duration).SetEase(Ease.OutCubic).OnStart(() =>
 					{
 						music_source[playing ? 1 : 0].Play();
-					});
+                        music_source[!playing ? 1 : 0].clip = null;
+                    });
                 });
                 break;
             case 1:
@@ -75,11 +78,11 @@ public class AudioManager : MonoBehaviour
         AudioClip clip = _instance.music_list.GetAudioClip(clip_id);
         if (_instance == null || clip == null)
             return;
-		_instance.fade_duration = 0.5f;
+        _instance.fade_duration = 0.5f;
         _instance.PlayAudio(0, clip);
     }
-	
-	public static void PlayMusic(string clip_id, float duration)
+
+    public static void PlayMusic(string clip_id, float duration)
     {
         AudioClip clip = _instance.music_list.GetAudioClip(clip_id);
         if (_instance == null || clip == null)
@@ -104,11 +107,130 @@ public class AudioManager : MonoBehaviour
         _instance.PlayAudio(2, clip);
     }
 
-    public static void PlaySound(string clip_id, Transform transform)
+    public static void PlaySound(string clip_id, Transform transform = null)
     {
         AudioClip clip = _instance.sound_list.GetAudioClip(clip_id);
         if (_instance == null || clip == null)
             return;
         _instance.PlayAudio(2, clip, transform.position);
     }
+    #endregion
+
+    #region Pause
+    private void PauseAudio(int source)
+    {
+        switch (source)
+        {
+            case 0:
+                bool playing = music_source[0].isPlaying;
+
+                music_source[!playing ? 1 : 0].Pause();
+                break;
+            case 1:
+                speech_source.Pause();
+                break;
+            case 2:
+                var sounds = GameObject.FindObjectsOfType<AudioSource>();
+                foreach (var sound in sounds)
+                {
+                    if (sound.name == "One shot audio") { sound.GetComponent<AudioSource>().Pause(); }
+                }
+                break;
+            default:
+                var audios = GameObject.FindObjectsOfType<AudioSource>();
+                foreach (var audio in audios)
+                {
+                    audio.GetComponent<AudioSource>().Pause();
+                }
+                break;
+        }
+    }
+
+    public static void PauseMusic()
+    {
+        if (_instance == null)
+            return;
+        _instance.PauseAudio(0);
+    }
+
+    public static void PauseSpeech()
+    {
+        if (_instance == null)
+            return;
+        _instance.PauseAudio(1);
+    }
+
+    public static void PauseSound()
+    {
+        if (_instance == null)
+            return;
+        _instance.PauseAudio(2);
+    }
+
+    public static void PauseAll()
+    {
+        if (_instance == null)
+            return;
+        _instance.PauseAudio(3);
+    }
+    #endregion
+
+    #region Pause
+    private void ResumeAudio(int source)
+    {
+        switch (source)
+        {
+            case 0:
+                bool playing = music_source[0].clip != null;
+
+                music_source[!playing ? 1 : 0].UnPause();
+                break;
+            case 1:
+                speech_source.UnPause();
+                break;
+            case 2:
+                var sounds = GameObject.FindObjectsOfType<AudioSource>();
+                foreach (var sound in sounds)
+                {
+                    if (sound.name == "One shot audio") { sound.GetComponent<AudioSource>().UnPause(); }
+                }
+                break;
+            default:
+                var audios = GameObject.FindObjectsOfType<AudioSource>();
+                foreach (var audio in audios)
+                {
+                    audio.GetComponent<AudioSource>().UnPause();
+                }
+                break;
+        }
+    }
+
+    public static void ResumeMusic()
+    {
+        if (_instance == null)
+            return;
+        _instance.ResumeAudio(0);
+    }
+
+    public static void ResumeSpeech()
+    {
+        if (_instance == null)
+            return;
+        _instance.ResumeAudio(1);
+    }
+
+    public static void ResumeSound()
+    {
+        if (_instance == null)
+            return;
+        _instance.ResumeAudio(2);
+    }
+
+    public static void ResumeAll()
+    {
+        if (_instance == null)
+            return;
+        _instance.ResumeAudio(3);
+    }
+    #endregion
 }

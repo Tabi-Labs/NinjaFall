@@ -5,8 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - music_list: {fileID: 11400000, guid: bc87f8631b615124d98f6164b131327f, type: 2}
-  - speech_list: {instanceID: 0}
-  - sound_list: {instanceID: 0}
+  - speech_list: {fileID: 11400000, guid: 052c99c458c47c54aa1a8a731cd33034, type: 2}
+  - sound_list: {fileID: 11400000, guid: 67a8c67132562b643b840c56aa3d2a5b, type: 2}
   - speech_source: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
