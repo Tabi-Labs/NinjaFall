@@ -11,7 +11,7 @@ public class PlayerMeleeAttackState : PlayerState
     public override void StateEnter()
     {
         base.StateEnter();
-        _player.EnableSwordCollider();
+       // _player.EnableSwordCollider();
         
         _player.Anim.Play("p_MeleeAttack_1");
     }
@@ -34,25 +34,25 @@ public class PlayerMeleeAttackState : PlayerState
         // Si se presiona Dash durante el ataque, cambiar inmediatamente al estado Dash
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
-            _player.DisableSwordCollider();
+            //_player.DisableSwordCollider();
             _player.StateMachine.ChangeState(_player.DashState);
             return; 
         }
 
-        // Transición a Idle si la animación de ataque ha terminado
+        // Transiciï¿½n a Idle si la animaciï¿½n de ataque ha terminado
         if (_player.Anim.GetCurrentAnimatorStateInfo(0).IsName("p_MeleeAttack_1") &&
             _player.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
         {
-            _player.DisableSwordCollider();
+            //_player.DisableSwordCollider();
 
-            // Transición a Walk si el jugador comienza a moverse
+            // Transiciï¿½n a Walk si el jugador comienza a moverse
             if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld)
             {
                 _player.StateMachine.ChangeState(_player.WalkState);
                 return;
             }
 
-            // Transición a Run si el jugador comienza a correr
+            // Transiciï¿½n a Run si el jugador comienza a correr
             if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld)
             {
                 _player.StateMachine.ChangeState(_player.RunState);
@@ -71,10 +71,10 @@ public class PlayerMeleeAttackState : PlayerState
             return;
         }
 
-        // Transición a Jump si el jugador presiona salto
+        // Transiciï¿½n a Jump si el jugador presiona salto
         if (_player.InputManager.JumpWasPressed && _player.CanJump())
         {
-            _player.DisableSwordCollider();
+            //_player.DisableSwordCollider();
             _player.StateMachine.ChangeState(_player.JumpState);
             return;
         }

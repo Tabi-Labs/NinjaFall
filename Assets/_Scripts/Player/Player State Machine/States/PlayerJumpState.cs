@@ -13,7 +13,7 @@ public class PlayerJumpState : PlayerState
         base.StateEnter();
 
         _player.Anim.Play("p_Jump");
-        _player.DisableSwordCollider();
+        //_player.DisableSwordCollider();
         _player.InitiateJump();
 
         _player.StateMachine.ChangeState(_player.InAirState);

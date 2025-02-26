@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     public ParticleSystem WallSlideParticles;
     public GameObject Shuriken;
     public Transform FirePoint;
-    public GameObject Sword;
+    //public GameObject Sword;
 
     [Header("Height Tracker")]
     public Transform HeightTracker;
@@ -318,7 +318,7 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    #region Melee Attack
+    /* #region Melee Attack
 
     public void MeleeAttackInputChecks()
     {
@@ -339,7 +339,7 @@ public class Player : MonoBehaviour
         Sword.GetComponent<Collider2D>().enabled = false;
     }
 
-    #endregion
+    #endregion */
 
     #region Jump
 
