@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e587b580e8c9e064f93a232cbb1f808d, type: 3}
+  m_Name: SOAudioReferenceList
+  m_EditorClassIdentifier: 
+  audio_references:
+  - id: FX_Hover
+    clip: {fileID: 8300000, guid: 55c947d3022b7cf4ea0ec9bf448c722c, type: 3}
+  - id: FX_Pause
+    clip: {fileID: 8300000, guid: 9ed7876474b92e74d993d9ed983518b2, type: 3}
+  - id: FX_Resume
+    clip: {fileID: 8300000, guid: 91e19af25b65ba44db41d2ff672cad0e, type: 3}
