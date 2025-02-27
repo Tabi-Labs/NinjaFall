@@ -63,7 +63,9 @@ public class PlayerState
     public virtual void StateFixedUpdate()
     {
         _player.CollisionChecks();
-
+        _player.JumpPhysics();
+        _player.WallJumpPhysics();
+        _player.DashPhysics();
         _player.ApplyVelocity();
     }
 

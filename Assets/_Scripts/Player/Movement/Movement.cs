@@ -70,7 +70,6 @@ public class Movement : MonoBehaviour
             float targetVelocity = moveInput.x * targetSpeed;
             HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
         //}
-        Debug.Log($"{targetVelocity}, target velocity");
 
     }
 

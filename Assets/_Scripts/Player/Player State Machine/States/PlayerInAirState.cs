@@ -99,9 +99,9 @@ public class PlayerInAirState : PlayerState
     {
         base.StateFixedUpdate();
 
-        _player.JumpPhysics();
+       /*  _player.JumpPhysics();
         _player.WallJumpPhysics();
-        _player.DashPhysics();
+        _player.DashPhysics(); */
 
 
         //movement
