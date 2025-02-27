@@ -29,8 +29,8 @@ public class PlayerState
     {
         _isExitingState = false;
 
-        if (_player.ShowEnteredStateDebugLog)
-        Debug.Log("Entered State: " + _playerStateMachine.CurrentState);
+        //if (_player.ShowEnteredStateDebugLog)
+        //Debug.Log("Entered State: " + _playerStateMachine.CurrentState);
     }
 
     /// <summary>

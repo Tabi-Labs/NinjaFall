@@ -10,11 +10,18 @@ public class MeleeAttack : MonoBehaviour
     [SerializeField] InputActionReference _meleeAttackAction;
     [Header("STATS")]
     [SerializeField] AttackStats _stats;
-
+    [Header("CHECKS")]
+    [Tooltip("If set to True it will search for its IDamageable Component to exclude it from self-harming"), SerializeField] 
+    bool _isDamageable;
+    private IDamageable _selfDamageable;
     private Color _debugColor = Color.red;
 
     #region ----- UNITY CALLBACKS -------
 
+    void Awake()
+    {
+        if(_isDamageable) _selfDamageable = GetComponentInParent<IDamageable>();   
+    }
     void OnEnable()
     {
         _meleeAttackAction.action.Enable();
@@ -51,17 +58,17 @@ public class MeleeAttack : MonoBehaviour
 
         foreach(Collider2D collider in colliders)
         { 
-            if(collider.transform.root == transform.root) 
+            var damageableComponent = collider.GetComponentInParent<IDamageable>();
+            if(damageableComponent != null)
             {
-                _debugColor = Color.yellow;
-                continue;
-            }
-            if(collider.TryGetComponent(out IDamageable damageable))
-            {
-                damageable.TakeDamage(_stats.AttackDamage);
+                if(_isDamageable && damageableComponent == _selfDamageable)
+                {
+                    _debugColor = Color.yellow;
+                    continue;
+                }
+                damageableComponent.TakeDamage(_stats.AttackDamage);
                 _debugColor = Color.green;
             }
-            
         }
     }
 

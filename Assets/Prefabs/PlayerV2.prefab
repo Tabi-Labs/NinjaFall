@@ -4903,7 +4903,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5768919808336617083}
   - component: {fileID: 6047278243176776771}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Feet
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -5011,7 +5011,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8476100885149489203}
   - component: {fileID: 8164072107759422263}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Head
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -5125,6 +5125,7 @@ GameObject:
   - component: {fileID: 3356373829068391031}
   - component: {fileID: 8362286837060557456}
   - component: {fileID: 961465876201758951}
+  - component: {fileID: 1213357156145074867}
   - component: {fileID: 7882907021759217884}
   - component: {fileID: 3647615302069406548}
   - component: {fileID: 6175670069529148351}
@@ -5202,8 +5203,6 @@ MonoBehaviour:
   SpeedParticles: {fileID: 3301344130104663084}
   DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
   WallSlideParticles: {fileID: 2940781082615036196}
-  Shuriken: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
-  FirePoint: {fileID: 1775966953388830712}
   HeightTracker: {fileID: 1280714515081318487}
   ShowEnteredStateDebugLog: 1
 --- !u!114 &8362286837060557456
@@ -5220,6 +5219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _meleeAttackAction: {fileID: 4076065564550100350, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _isDamageable: 1
 --- !u!114 &961465876201758951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5236,6 +5236,20 @@ MonoBehaviour:
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   _projectileSpawnPoint: {fileID: 1775966953388830712}
+--- !u!114 &1213357156145074867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93758912b55708749b29577a3b91ba37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
+  _hitEffectDuration: 0.1
 --- !u!212 &7882907021759217884
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5569,7 +5583,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7958636296872414868}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10583,7 +10597,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2960837985314767123}
   - component: {fileID: 1008354027835368250}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Player
   m_Icon: {fileID: 0}

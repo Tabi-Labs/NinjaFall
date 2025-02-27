@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Attack Stats
   m_EditorClassIdentifier: 
   AttackDamage: 10
-  MeleeAttackRange: 0.47
+  MeleeAttackRange: 0.77
   RangedAttackRange: 0
   AttackHeight: 0.54
   AttackRate: 0
