@@ -33,11 +33,6 @@ public class PlayerRangeAttackState : PlayerState
     {
         base.StateUpdate();
 
-        if (_player.CheckIsDead())
-        {
-            _player.StateMachine.ChangeState(_player.DeathState);
-            return;
-        }
 
         // Si se presiona Dash durante el ataque, cambiar inmediatamente al estado Dash
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
