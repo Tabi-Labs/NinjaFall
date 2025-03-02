@@ -14,45 +14,58 @@ public class LobbyManager : NetworkBehaviour
     private GameObject tarjetitaPrefab;
     [SerializeField]
     private GameObject layout;
+    [SerializeField]
+    private TextMeshProUGUI users;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         ShowJoinCode();
-        Debug.Log(layout.GetComponent<NetworkObject>());
+        
         if (IsServer || IsHost)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
-            ShowUsersInfo();
+            ShowUsersInfoRPC();
         }
 
     }
-
-    private void ShowUsersInfo()
+    [Rpc(SendTo.Everyone)]
+    private void ShowUsersInfoClientRPC(int userCount)
     {
-        foreach (ulong id in NetworkManager.Singleton.ConnectedClientsIds)
-        {
-            if (id == OwnerClientId);
-                ShowUserInfo(id);
-        }
+        Debug.Log("Updating user count for all clients");
+        users.text = "Users: " + userCount+"/4";
+    }
+    [Rpc(SendTo.Server)]
+    public void ShowUsersInfoRPC()
+    {
+        ShowUsersInfoClientRPC(NetworkManager.Singleton.ConnectedClients.Count);
+        //foreach (ulong id in NetworkManager.Singleton.ConnectedClientsIds)
+        //{
+        //    if (id == OwnerClientId);
+        //        ShowUserInfo(id);
+        //}
     }
 
     private void OnClientDisconnected(ulong id)
     {
-        UserCard[] tarjetitaArray = GameObject.FindObjectsOfType<UserCard>();
-        foreach (UserCard tarjetita in tarjetitaArray)
-        {
-            if (tarjetita.GetComponent<NetworkObject>().OwnerClientId == id)
-            {
-                tarjetita.GetComponent<NetworkObject>().Despawn();
-            }
-        }
+        Debug.Log("Client disconnected " + id);
+        ShowUsersInfoRPC(); 
+        //UserCard[] tarjetitaArray = GameObject.FindObjectsOfType<UserCard>();
+        //foreach (UserCard tarjetita in tarjetitaArray)
+        //{
+        //    if (tarjetita.GetComponent<NetworkObject>().OwnerClientId == id)
+        //    {
+        //        tarjetita.GetComponent<NetworkObject>().Despawn();
+        //    }
+        //}
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        ShowUserInfo(clientId);
+        ShowUsersInfoRPC();
+        Debug.Log("Client connected "+clientId);
+        
     }
 
     private void ShowJoinCode()
@@ -65,7 +78,7 @@ public class LobbyManager : NetworkBehaviour
         NetworkObject instanceNetworkObject = instance.GetComponent<NetworkObject>();
         instanceNetworkObject.SpawnWithOwnership(id);
         //instanceNetworkObject.transform.SetParent(layout.transform,true);
-        //instance.transform.parent = layout.transform;
+        instance.transform.parent = layout.transform;
         UserCard tarjetita = instance.GetComponent<UserCard>();
         UserNetworkConfig userNetwork = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.gameObject.GetComponent<UserNetworkConfig>();
         //Cambiamos el nombre de la tarjetita por el introducido en el login
@@ -89,7 +102,7 @@ public class LobbyManager : NetworkBehaviour
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
-        if (!IsServer) return;
+        if (!IsServer || !IsHost) return;
         NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnected;
 
