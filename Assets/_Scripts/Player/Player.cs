@@ -276,7 +276,7 @@ public class Player : MonoBehaviour
         return IsDead;
     }
 
-    public void WasHitted()
+    public void OnHit()
     {
         IsDead = true;
     }

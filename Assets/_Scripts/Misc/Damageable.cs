@@ -25,7 +25,13 @@ public class Damageable : MonoBehaviour, IDamageable
     }
     public void TakeDamage(float damage)
     {
+        OnDamageTaken();
         HitAnimation();
+    }
+
+    protected virtual void OnDamageTaken()
+    {
+        //override this function to add more functionality
     }
 
     private void HitAnimation()
