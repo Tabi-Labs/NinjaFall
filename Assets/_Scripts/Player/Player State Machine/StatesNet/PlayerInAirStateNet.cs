@@ -73,6 +73,31 @@ public class PlayerInAirStateNet : PlayerStateNet
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+        }
+
+        if (_player.InputManager.RangeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.RangeAttackState);
+        }
+        //ATTACK
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.ResetJumpValues();
+            _player.ResetWallJumpValues();
+            _player.StopWallSliding();
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+        }
+
+        if (_player.InputManager.RangeAttackWasPressed)
+        {
+            _player.ResetJumpValues();
+            _player.ResetWallJumpValues();
+            _player.StopWallSliding();
+            _player.StateMachine.ChangeState(_player.RangeAttackState);
+        }
     }
     
 

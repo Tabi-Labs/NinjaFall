@@ -68,6 +68,7 @@ public class PlayerRunStateNet : PlayerStateNet
             _player.StateMachine.ChangeState(_player.DashState);
         }
 
+
         //FX
         HandleSpeedParticles();
     }
