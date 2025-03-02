@@ -153,6 +153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ProtocolType: 0
+  m_UseWebSockets: 0
+  m_UseEncryption: 0
   m_MaxPacketQueueSize: 128
   m_MaxPayloadSize: 6144
   m_HeartbeatTimeoutMS: 500
@@ -182,11 +184,11 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 131446589}
-    PlayerPrefab: {fileID: 4422278395826503445, guid: c270330253bbbcb4c8f568a8db829a4b, type: 3}
+    PlayerPrefab: {fileID: 6383364044758184573, guid: bc99ab9d32c8a3547a82a7d7fff9ac95, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 8714ece53a9166c49b39688144686b0e, type: 2}
-    TickRate: 30
+    TickRate: 60
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
     ConnectionData: 
@@ -1439,7 +1441,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1653640277}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1472295332}
+        m_TargetAssemblyTypeName: RelayServer, Assembly-CSharp
+        m_MethodName: JoinRelay
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1653640277
 MonoBehaviour:
   m_ObjectHideFlags: 0
