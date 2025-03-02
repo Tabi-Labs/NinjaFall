@@ -73,4 +73,14 @@ public class Damageable : MonoBehaviour, IDamageable
     {
         _lerpAmount = newValue;
     }
+
+    public void Death()
+    {
+        Player player = GetComponent<Player>();
+
+        if (player != null)
+        {
+            player.Death();
+        }
+    }
 }

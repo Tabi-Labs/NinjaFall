@@ -46,6 +46,7 @@ public class Player : MonoBehaviour
     public const string LAND = "land";
     public const string FALL = "fall";
     public const string IS_ATTACKING = "isAttacking";
+    public const string IS_DEATH = "isDeath";
 
     //state vars
     public PlayerStateMachine StateMachine { get; private set; }
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
     public PlayerMeleeAttackState MeleeAttackState { get; private set; }
 
     public PlayerRangeAttackState RangeAttackState { get; private set; }
+    public PlayerDeathState DeathState { get; private set; }
 
     public PlayerDeathState DeathState { get; private set; }
 
@@ -77,6 +79,9 @@ public class Player : MonoBehaviour
     //movement vars
     public bool IsFacingRight { get; private set; }
     public float HorizontalVelocity { get; private set; }
+
+    // death vars
+    public bool IsDeath { get; private set; }
 
     // attack vars
     public bool IsAttacking { get; private set; }
@@ -271,6 +276,7 @@ public class Player : MonoBehaviour
 
     #region Death
 
+<<<<<<< Updated upstream
     public bool CheckIsDead()
     {
         return IsDead;
@@ -279,6 +285,11 @@ public class Player : MonoBehaviour
     public void OnHit()
     {
         IsDead = true;
+=======
+    public void Death()
+    {
+        StateMachine.ChangeState(DeathState);
+>>>>>>> Stashed changes
     }
 
     public void DeletePlayer()

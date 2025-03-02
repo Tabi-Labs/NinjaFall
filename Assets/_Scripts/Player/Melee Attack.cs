@@ -67,6 +67,7 @@ public class MeleeAttack : MonoBehaviour
                     continue;
                 }
                 damageableComponent.TakeDamage(_stats.AttackDamage);
+                damageableComponent.Death();
                 _debugColor = Color.green;
             }
         }
