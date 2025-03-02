@@ -53,6 +53,15 @@ public class PlayerIdleStateNet : PlayerStateNet
         {
             _player.StateMachine.ChangeState(_player.DashState);
         }
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+        }
+
+        if (_player.InputManager.RangeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.RangeAttackState);
+        }
     }
 
     public override void StateFixedUpdate()

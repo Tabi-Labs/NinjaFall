@@ -55,6 +55,10 @@ public class PlayerNet : NetworkBehaviour
     public PlayerWallJumpStateNet WallJumpState { get; private set; }
     public PlayerDashStateNet DashState { get; private set; }
 
+    public PlayerMeleeAttackStateNet MeleeAttackState { get; private set; }
+
+    public PlayerRangeAttackStateNet RangeAttackState { get; private set; }
+
     //collision vars
     public bool IsGrounded { get; private set; }
     public bool BumpedHead { get; private set; }
@@ -135,6 +139,8 @@ public class PlayerNet : NetworkBehaviour
         WallSlideState = new PlayerWallSlideStateNet(this, StateMachine);
         WallJumpState = new PlayerWallJumpStateNet(this, StateMachine);
         DashState = new PlayerDashStateNet(this, StateMachine);
+        MeleeAttackState = new PlayerMeleeAttackStateNet(this, StateMachine);
+        RangeAttackState = new PlayerRangeAttackStateNet(this, StateMachine);
 
         //initialize the direction
         IsFacingRight = true;
@@ -196,6 +202,39 @@ public class PlayerNet : NetworkBehaviour
         VerticalVelocity += incrementAmount;
         //Debug.Log(VerticalVelocity);
     }
+
+    #region Range Attack
+
+    public void RangeAttackWasPressed()
+    {
+        // Se lanza shuriken
+        //Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
+
+    }
+    #endregion
+
+    /* #region Melee Attack
+
+    public void MeleeAttackInputChecks()
+    {
+        if (InputManager.MeleeAttackWasPressed)
+        {
+            Debug.Log("Ataque");
+            return;
+        }
+    }
+
+    public void EnableSwordCollider()
+    {
+        Sword.GetComponent<Collider2D>().enabled = true;
+    }
+
+    public void DisableSwordCollider()
+    {
+        Sword.GetComponent<Collider2D>().enabled = false;
+    }
+
+    #endregion */
 
     #region Movement
 

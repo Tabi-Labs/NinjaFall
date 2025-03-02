@@ -31,6 +31,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4064600170868967483}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &86415299846075114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6327716195395706545}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6327716195395706545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 86415299846075114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.3927, y: 0.0258, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4064600170868967483}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &586320887100410569
 GameObject:
   m_ObjectHideFlags: 0
@@ -5131,6 +5162,9 @@ GameObject:
   - component: {fileID: 6734762693939129732}
   - component: {fileID: 856423512765855512}
   - component: {fileID: 6190521015177711607}
+  - component: {fileID: 6035518904504044993}
+  - component: {fileID: 5066315469004961249}
+  - component: {fileID: 6141867565996446751}
   m_Layer: 0
   m_Name: PlayerNet
   m_TagString: Untagged
@@ -5295,6 +5329,8 @@ MonoBehaviour:
   RunIsHeld: 0
   DashWasPressed: 0
   TestWasPressed: 0
+  MeleeAttackWasPressed: 0
+  RangeAttackWasPressed: 0
 --- !u!114 &7804810165732104520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5417,6 +5453,51 @@ MonoBehaviour:
   WallSlideParticles: {fileID: 2940781082615036196}
   HeightTracker: {fileID: 8685723286736101766}
   ShowEnteredStateDebugLog: 0
+--- !u!114 &6035518904504044993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rangedAttackAction: {fileID: 7612691404234612923, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
+  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
+  _projectileSpawnPoint: {fileID: 6327716195395706545}
+--- !u!114 &5066315469004961249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d17ec049d2623b144a03fcccabbe0228, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _meleeAttackAction: {fileID: 4076065564550100350, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
+  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _isDamageable: 1
+--- !u!114 &6141867565996446751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93758912b55708749b29577a3b91ba37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
+  _hitEffectDuration: 0.1
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0
@@ -10673,5 +10754,6 @@ Transform:
   m_Children:
   - {fileID: 8247011537788828137}
   - {fileID: 8685723286736101766}
+  - {fileID: 6327716195395706545}
   m_Father: {fileID: 8602396005169628399}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

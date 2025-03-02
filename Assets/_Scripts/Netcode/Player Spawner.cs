@@ -14,6 +14,8 @@ public class PlayerSpawner : NetworkBehaviour
 
     //[SerializeField]
     //private Transform playerBucketTransform;
+
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
