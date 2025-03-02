@@ -64,7 +64,6 @@ public class Player : MonoBehaviour
     public PlayerRangeAttackState RangeAttackState { get; private set; }
     public PlayerDeathState DeathState { get; private set; }
 
-    public PlayerDeathState DeathState { get; private set; }
 
     //collision vars
     public bool IsDead { get; private set; }
@@ -276,7 +275,6 @@ public class Player : MonoBehaviour
 
     #region Death
 
-<<<<<<< Updated upstream
     public bool CheckIsDead()
     {
         return IsDead;
@@ -285,11 +283,11 @@ public class Player : MonoBehaviour
     public void OnHit()
     {
         IsDead = true;
-=======
+    }
+
     public void Death()
     {
         StateMachine.ChangeState(DeathState);
->>>>>>> Stashed changes
     }
 
     public void DeletePlayer()
