@@ -25,6 +25,12 @@ public class PlayerIdleState : PlayerState
     {
         base.StateUpdate();
 
+        if (_player.CheckIsDead())
+        {
+            _player.StateMachine.ChangeState(_player.DeathState);
+            return;
+        }
+
         if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld)
         {
             _player.StateMachine.ChangeState(_player.WalkState);

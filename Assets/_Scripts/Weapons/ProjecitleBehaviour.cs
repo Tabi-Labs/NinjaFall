@@ -25,8 +25,11 @@ public class ProjectileBehaviour : MonoBehaviour
         if(damageableComponent != null)
         {
             damageableComponent.TakeDamage(_stats.Damage);
-            Destroy(gameObject);
+        
+      
         }
+
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

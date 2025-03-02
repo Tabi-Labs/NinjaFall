@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     #region Variables
-
+    private InputManager _input;
     //component vars
     [Header("References")]
     public PlayerMovementStats MoveStats;
@@ -46,6 +48,7 @@ public class Player : MonoBehaviour
     public const string LAND = "land";
     public const string FALL = "fall";
     public const string IS_ATTACKING = "isAttacking";
+    public const string IS_DEATH = "isDeath";
 
     //state vars
     public PlayerStateMachine StateMachine { get; private set; }
@@ -61,8 +64,11 @@ public class Player : MonoBehaviour
     public PlayerMeleeAttackState MeleeAttackState { get; private set; }
 
     public PlayerRangeAttackState RangeAttackState { get; private set; }
+    public PlayerDeathState DeathState { get; private set; }
+
 
     //collision vars
+    public bool IsDead { get; private set; }
     public bool IsGrounded { get; private set; }
     public bool BumpedHead { get; private set; }
     public bool IsTouchingWall { get; private set; }
@@ -74,6 +80,9 @@ public class Player : MonoBehaviour
     //movement vars
     public bool IsFacingRight { get; private set; }
     public float HorizontalVelocity { get; private set; }
+
+    // death vars
+    public bool IsDeath { get; private set; }
 
     // attack vars
     public bool IsAttacking { get; private set; }
@@ -130,9 +139,22 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region ---- INITIALIZERS ----
+    private void InitInput() => _input = GetComponent<InputManager>();
+    #endregion
 
+    #region ---- GETTERS / SETTERS ----
+    public InputManager Input() 
+    {
+        if(_input == null)
+            _input = transform.AddComponent<InputManager>();
+        return _input;
+    }
+    #endregion
+    #region ---- UNITY CALLBACKS ----
     private void Awake()
     {
+        InitInput();
         StateMachine = new PlayerStateMachine();
 
         //initialize the individual states here
@@ -146,6 +168,7 @@ public class Player : MonoBehaviour
         DashState = new PlayerDashState(this, StateMachine);
         MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
         RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
+        DeathState = new PlayerDeathState(this, StateMachine);
 
         //initialize the direction
         IsFacingRight = true;
@@ -163,6 +186,10 @@ public class Player : MonoBehaviour
         StateMachine.InitializeDefaultState(IdleState);
     }
 
+    private void OnDisable()
+    {
+        
+    }
     private void Update()
     {
         StateMachine.CurrentState.StateUpdate();
@@ -173,6 +200,7 @@ public class Player : MonoBehaviour
         StateMachine.CurrentState.StateFixedUpdate();
     }
 
+    #endregion
     public void ApplyVelocity()
     {
         //clamp speed
@@ -265,6 +293,29 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region Death
+
+    public bool CheckIsDead()
+    {
+        return IsDead;
+    }
+
+    public void OnHit()
+    {
+        IsDead = true;
+    }
+
+    public void Death()
+    {
+        StateMachine.ChangeState(DeathState);
+    }
+
+    public void DeletePlayer()
+    {
+        Destroy(gameObject);
+    }
+    #endregion
+
     #region Range Attack
 
     public void RangeAttackWasPressed()
@@ -320,13 +371,9 @@ public class Player : MonoBehaviour
 
     /* #region Melee Attack
 
-    public void MeleeAttackInputChecks()
+    public void SetIsAttacking(bool isAttacking)
     {
-        if (InputManager.MeleeAttackWasPressed)
-        {
-            Debug.Log("Ataque");
-            return;
-        }
+        IsAttacking = isAttacking;
     }
 
     public void EnableSwordCollider()

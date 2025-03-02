@@ -30,6 +30,12 @@ public class PlayerRunState : PlayerState
     {
         base.StateUpdate();
 
+        if (_player.CheckIsDead())
+        {
+            _player.StateMachine.ChangeState(_player.DeathState);
+            return;
+        }
+
         //transitions
         if (Mathf.Abs(_player.InputManager.Movement.x) < _moveStats.MoveThreshold)
         {

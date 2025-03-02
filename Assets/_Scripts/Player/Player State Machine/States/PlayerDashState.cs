@@ -26,6 +26,12 @@ public class PlayerDashState : PlayerState
     {
         base.StateUpdate();
 
+        if (_player.CheckIsDead())
+        {
+            _player.StateMachine.ChangeState(_player.DeathState);
+            return;
+        }
+
         //WALL SLIDE
         if (_player.ShouldWallSlide())
         {

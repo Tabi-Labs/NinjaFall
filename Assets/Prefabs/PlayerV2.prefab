@@ -5125,7 +5125,7 @@ GameObject:
   - component: {fileID: 3356373829068391031}
   - component: {fileID: 8362286837060557456}
   - component: {fileID: 961465876201758951}
-  - component: {fileID: 1213357156145074867}
+  - component: {fileID: 8915735389700008266}
   - component: {fileID: 7882907021759217884}
   - component: {fileID: 3647615302069406548}
   - component: {fileID: 6175670069529148351}
@@ -5236,7 +5236,7 @@ MonoBehaviour:
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   _projectileSpawnPoint: {fileID: 1775966953388830712}
---- !u!114 &1213357156145074867
+--- !u!114 &8915735389700008266
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5245,7 +5245,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3325903424131496227}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93758912b55708749b29577a3b91ba37, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b9297d8eee6a624b9c607a4922f38c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}

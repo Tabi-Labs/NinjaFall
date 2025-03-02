@@ -55,6 +55,12 @@ public class PlayerWallSlideState : PlayerState
     {
         base.StateUpdate();
 
+        if (_player.CheckIsDead())
+        {
+            _player.StateMachine.ChangeState(_player.DeathState);
+            return;
+        }
+
         //EXITS wall slide due to moving away from wall
         if (_player.ShouldStopWallSliding())
         {
