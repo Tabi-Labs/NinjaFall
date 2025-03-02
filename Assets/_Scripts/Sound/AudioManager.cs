@@ -14,8 +14,9 @@ public class AudioManager : MonoBehaviour
     [Header("Sources")]
     [SerializeField] private AudioSource[] music_source;
     [SerializeField] private AudioSource speech_source;
+    [SerializeField] private AudioSource sound_source;
 
-	private float fade_duration = 0.5f;
+    private float fade_duration = 0.5f;
 
     #region Singleton
     private static AudioManager _instance = null;
@@ -44,6 +45,18 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region Play
+
+    private IEnumerator MonitorAudioProgress(AudioSource audio_source)
+    {
+        while (audio_source.time < audio_source.clip.length)
+        { 
+            yield return null;
+        }
+
+        Destroy(audio_source.gameObject);
+        yield return null;
+    }
+
     private void PlayAudio(int source, AudioClip clip, Vector3 position = new Vector3())
     {
         switch (source)
@@ -68,7 +81,12 @@ public class AudioManager : MonoBehaviour
                 speech_source.PlayOneShot(clip);
                 break;
             case 2:
-                AudioSource.PlayClipAtPoint(clip, position);
+                //AudioSource.PlayClipAtPoint(clip, position);
+                AudioSource audio_source = Instantiate(sound_source, position, Quaternion.identity);
+                audio_source.clip = clip;
+                audio_source.Play();
+
+                StartCoroutine(MonitorAudioProgress(audio_source));
                 break;
         }
     }
@@ -133,7 +151,7 @@ public class AudioManager : MonoBehaviour
                 var sounds = GameObject.FindObjectsOfType<AudioSource>();
                 foreach (var sound in sounds)
                 {
-                    if (sound.name == "One shot audio") { sound.GetComponent<AudioSource>().Pause(); }
+                    if (sound.name == "SoundSource(Clone)") { sound.GetComponent<AudioSource>().Pause(); }
                 }
                 break;
             default:
@@ -192,7 +210,7 @@ public class AudioManager : MonoBehaviour
                 var sounds = GameObject.FindObjectsOfType<AudioSource>();
                 foreach (var sound in sounds)
                 {
-                    if (sound.name == "One shot audio") { sound.GetComponent<AudioSource>().UnPause(); }
+                    if (sound.name == "SoundSource(Clone)") { sound.GetComponent<AudioSource>().UnPause(); }
                 }
                 break;
             default:
