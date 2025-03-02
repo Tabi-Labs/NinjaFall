@@ -7,13 +7,16 @@ public class PlayerDamageable : Damageable
 {
     private Player _player;
 
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _player = GetComponent<Player>();
     }
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
-        _player.OnHit();
+        
+        if(_player != null) _player.Death();
     }
+  
 }

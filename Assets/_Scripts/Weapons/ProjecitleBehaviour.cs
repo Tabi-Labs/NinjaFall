@@ -25,7 +25,7 @@ public class ProjectileBehaviour : MonoBehaviour
         if(damageableComponent != null)
         {
             damageableComponent.TakeDamage(_stats.Damage);
-            damageableComponent.Death();
+        
       
         }
 
