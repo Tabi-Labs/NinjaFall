@@ -4,10 +4,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Player))]
 public class MeleeAttack : MonoBehaviour
 {
-    [Header("REFERENCES")]
-    [SerializeField] InputActionReference _meleeAttackAction;
+    private Player _player;
     [Header("STATS")]
     [SerializeField] AttackStats _stats;
     [Header("CHECKS")]
@@ -21,15 +21,17 @@ public class MeleeAttack : MonoBehaviour
     void Awake()
     {
         if(_isDamageable) _selfDamageable = GetComponentInParent<IDamageable>();   
+        _player = GetComponent<Player>();
     }
-    void OnEnable()
+    void Start()
     {
-        _meleeAttackAction.action.Enable();
-        _meleeAttackAction.action.performed += Melee;
+        _player.Input().MeleeAttackEvent += Melee;
+        //_meleeAttackAction.action.performed += Melee;
     }
 
     void OnDisable()
     {
+        _player.Input().MeleeAttackEvent -= Melee;
         //_meleeAttackAction.action.performed -= Melee;
         //_meleeAttackAction.action.Disable();
     }
@@ -43,9 +45,8 @@ public class MeleeAttack : MonoBehaviour
 
     #region  ---- ATTACKS ------
 
-    void Melee(InputAction.CallbackContext context)
+    void Melee()
     {
-        Debug.Log($"MELEE PERFORMED BY {gameObject.name}");
         var boxCenter = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
         var boxSize = new Vector2(_stats.MeleeAttackRange, _stats.AttackHeight);
         Collider2D[] colliders = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f);

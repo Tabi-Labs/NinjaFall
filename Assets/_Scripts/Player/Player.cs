@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     #region Variables
-
+    private InputManager _input;
     //component vars
     [Header("References")]
     public PlayerMovementStats MoveStats;
@@ -137,9 +139,22 @@ public class Player : MonoBehaviour
 
     #endregion
 
+    #region ---- INITIALIZERS ----
+    private void InitInput() => _input = GetComponent<InputManager>();
+    #endregion
 
+    #region ---- GETTERS / SETTERS ----
+    public InputManager Input() 
+    {
+        if(_input == null)
+            _input = transform.AddComponent<InputManager>();
+        return _input;
+    }
+    #endregion
+    #region ---- UNITY CALLBACKS ----
     private void Awake()
     {
+        InitInput();
         StateMachine = new PlayerStateMachine();
 
         //initialize the individual states here
@@ -171,6 +186,10 @@ public class Player : MonoBehaviour
         StateMachine.InitializeDefaultState(IdleState);
     }
 
+    private void OnDisable()
+    {
+        
+    }
     private void Update()
     {
         StateMachine.CurrentState.StateUpdate();
@@ -181,6 +200,7 @@ public class Player : MonoBehaviour
         StateMachine.CurrentState.StateFixedUpdate();
     }
 
+    #endregion
     public void ApplyVelocity()
     {
         //clamp speed

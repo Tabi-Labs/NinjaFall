@@ -14,7 +14,7 @@ public class PlayerBehavior : MonoBehaviour
     #endregion
 
     #region ----- INITIALIZERS -----
-    void InitInput() => _input.Enable();
+    //void InitInput() => _input.Enable();
     void InitMoveComponent()
     {
         _movement = GetComponent<Movement>();
@@ -31,7 +31,7 @@ public class PlayerBehavior : MonoBehaviour
     }
     void OnEnable()
     {
-        InitInput();
+        //InitInput();
         
     }
 
