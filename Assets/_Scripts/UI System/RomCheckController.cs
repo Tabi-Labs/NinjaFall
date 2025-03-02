@@ -9,7 +9,7 @@ public class RomCheckController : MonoBehaviour
 
     [SerializeField] float _lerpDelay = 0.5f;
     [SerializeField] float _lerpDuration = 0.5f;
-    [SerializeField] AudioSource _musicSource;
+    [SerializeField] string _musicID = "MX_MainMenu";
 
     private TextMeshProUGUI _text;
     private Image _background;
@@ -34,7 +34,7 @@ public class RomCheckController : MonoBehaviour
             _text.alpha = Mathf.Lerp(start, end, t);
             yield return null;
         }
-        _musicSource.Play();
+        AudioManager.PlayMusic(_musicID);
         StartCoroutine(LerpBackground());
     }
 

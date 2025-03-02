@@ -26,8 +26,8 @@ public class MenuEventSystemHandler : MonoBehaviour
     [SerializeField] protected buttonSubmitBehavior _buttonSubmitBehavior = buttonSubmitBehavior.None;
 
     [Header("Sounds")]
-    [SerializeField] protected string _selectedSoundID = "01_Hover";
-    [SerializeField] protected string _submitSoundID = "02_Confirm";
+    [SerializeField] protected string _selectedSoundID = "FX_Hover";
+    [SerializeField] protected string _submitSoundID = "FX_Confirm";
 
     protected Dictionary<Selectable, Vector3> _scales = new Dictionary<Selectable, Vector3>();
 
@@ -111,7 +111,7 @@ public class MenuEventSystemHandler : MonoBehaviour
     {
         if (_selectedSoundID != null)
         {
-            AudioManager.Instance?.PlaySound(_selectedSoundID);
+            AudioManager.PlaySound(_selectedSoundID);
         }
         _lastSelected = eventData.selectedObject.GetComponent<Selectable>();
 
@@ -137,7 +137,7 @@ public class MenuEventSystemHandler : MonoBehaviour
 
         // Sound Behavior
         if(_buttonSubmitBehavior.HasFlag(buttonSubmitBehavior.Sound)){
-            AudioManager.Instance?.PlaySound(_submitSoundID);
+            AudioManager.PlaySound(_submitSoundID);
         }
 
         // Blink Behavior
@@ -160,15 +160,5 @@ public class MenuEventSystemHandler : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(_lastSelected.gameObject);
         }
-    }
-}
-
-internal class AudioManager
-{
-    public static AudioManager Instance { get; internal set; }
-
-    internal void PlaySound(string _selectedSoundID)
-    {
-        throw new System.NotImplementedException();
     }
 }
