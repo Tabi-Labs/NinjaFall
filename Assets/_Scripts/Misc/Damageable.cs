@@ -13,7 +13,7 @@ public class Damageable : MonoBehaviour, IDamageable
     private SpriteRenderer[] _spriteRenderers;
     private Material[] _materials;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _spriteRenderers  = GetComponentsInChildren<SpriteRenderer>();
 
@@ -25,8 +25,9 @@ public class Damageable : MonoBehaviour, IDamageable
     }
     public void TakeDamage(float damage)
     {
-        OnDamageTaken();
         HitAnimation();
+        OnDamageTaken();
+        
     }
 
     protected virtual void OnDamageTaken()
@@ -74,13 +75,5 @@ public class Damageable : MonoBehaviour, IDamageable
         _lerpAmount = newValue;
     }
 
-    public void Death()
-    {
-        Player player = GetComponent<Player>();
-
-        if (player != null)
-        {
-            player.Death();
-        }
-    }
+    
 }

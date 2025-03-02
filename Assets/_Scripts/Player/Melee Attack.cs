@@ -30,8 +30,8 @@ public class MeleeAttack : MonoBehaviour
 
     void OnDisable()
     {
-        _meleeAttackAction.action.performed -= Melee;
-        _meleeAttackAction.action.Disable();
+        //_meleeAttackAction.action.performed -= Melee;
+        //_meleeAttackAction.action.Disable();
     }
 
     void Update()
@@ -45,7 +45,7 @@ public class MeleeAttack : MonoBehaviour
 
     void Melee(InputAction.CallbackContext context)
     {
-        
+        Debug.Log($"MELEE PERFORMED BY {gameObject.name}");
         var boxCenter = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
         var boxSize = new Vector2(_stats.MeleeAttackRange, _stats.AttackHeight);
         Collider2D[] colliders = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f);
@@ -67,7 +67,6 @@ public class MeleeAttack : MonoBehaviour
                     continue;
                 }
                 damageableComponent.TakeDamage(_stats.AttackDamage);
-                damageableComponent.Death();
                 _debugColor = Color.green;
             }
         }
