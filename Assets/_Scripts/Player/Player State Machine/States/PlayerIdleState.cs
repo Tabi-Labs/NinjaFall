@@ -14,7 +14,7 @@ public class PlayerIdleState : PlayerState
 
         _player.Anim.Play("p_Idle");
 
-        _player.DisableSwordCollider();
+        //_player.DisableSwordCollider();
 
         //_player.Anim.SetBool(Player.IS_WALKING, false);
         //_player.Anim.SetBool(Player.IS_RUNNING, false);

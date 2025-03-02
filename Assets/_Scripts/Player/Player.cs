@@ -26,9 +26,9 @@ public class Player : MonoBehaviour
     public ParticleSystem SpeedParticles;
     public GameObject DashParticles;
     public ParticleSystem WallSlideParticles;
-    public GameObject Shuriken;
-    public Transform FirePoint;
-    public GameObject Sword;
+    //public GameObject Shuriken;
+    //public Transform FirePoint;
+    //public GameObject Sword;
 
     [Header("Height Tracker")]
     public Transform HeightTracker;
@@ -292,7 +292,7 @@ public class Player : MonoBehaviour
     public void RangeAttackWasPressed()
     {
         // Se lanza shuriken
-        Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
+        //Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
 
     }
     #endregion
@@ -340,7 +340,7 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    #region Melee Attack
+    /* #region Melee Attack
 
     public void SetIsAttacking(bool isAttacking)
     {
@@ -357,7 +357,7 @@ public class Player : MonoBehaviour
         Sword.GetComponent<Collider2D>().enabled = false;
     }
 
-    #endregion
+    #endregion */
 
     #region Jump
 

@@ -12,7 +12,7 @@ public class PlayerWallJumpState : PlayerState
     {
         base.StateEnter();
 
-        _player.DisableSwordCollider();
+        //_player.DisableSwordCollider();
 
         _player.InitiateWallJump();
         _player.StateMachine.ChangeState(_player.InAirState);

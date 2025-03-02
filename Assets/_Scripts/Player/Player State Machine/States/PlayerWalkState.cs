@@ -11,7 +11,7 @@ public class PlayerWalkState : PlayerState
     public override void StateEnter()
     {
         base.StateEnter();
-        _player.DisableSwordCollider();
+        //_player.DisableSwordCollider();
 
         _player.Anim.Play("p_Walk");
         _player.Anim.SetBool(Player.IS_WALKING, true);
