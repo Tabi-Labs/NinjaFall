@@ -11,6 +11,7 @@ public class PlayerWalkState : PlayerState
     public override void StateEnter()
     {
         base.StateEnter();
+        //_player.DisableSwordCollider();
 
         _player.Anim.Play("p_Walk");
         _player.Anim.SetBool(Player.IS_WALKING, true);
@@ -57,6 +58,16 @@ public class PlayerWalkState : PlayerState
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
+        }
+
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+        }
+
+        if (_player.InputManager.RangeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.RangeAttackState);
         }
     }
 

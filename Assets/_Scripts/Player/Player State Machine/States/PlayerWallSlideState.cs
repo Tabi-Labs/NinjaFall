@@ -14,6 +14,8 @@ public class PlayerWallSlideState : PlayerState
     {
         base.StateEnter();
 
+        //_player.DisableSwordCollider();
+
         _player.Anim.Play("p_WallSlide");
         if (_player.WallSlideParticles.isPlaying)
         {

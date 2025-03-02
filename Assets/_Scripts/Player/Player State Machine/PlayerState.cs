@@ -29,8 +29,8 @@ public class PlayerState
     {
         _isExitingState = false;
 
-        if (_player.ShowEnteredStateDebugLog)
-        Debug.Log("Entered State: " + _playerStateMachine.CurrentState);
+        //if (_player.ShowEnteredStateDebugLog)
+        //Debug.Log("Entered State: " + _playerStateMachine.CurrentState);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public class PlayerState
         _player.DashTimers();
         _player.JumpInputChecks();
         _player.WallJumpChecks();
-
+        //_player.MeleeAttackInputChecks();
         //handle falling (might happen with a low enough deceleration after movement stops)
         _player.CheckForFalling();
     }
@@ -63,7 +63,9 @@ public class PlayerState
     public virtual void StateFixedUpdate()
     {
         _player.CollisionChecks();
-
+        _player.JumpPhysics();
+        _player.WallJumpPhysics();
+        _player.DashPhysics();
         _player.ApplyVelocity();
     }
 

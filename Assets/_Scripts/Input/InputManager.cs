@@ -14,12 +14,16 @@ public class InputManager : MonoBehaviour
     public  bool RunIsHeld;
     public  bool DashWasPressed;
     public  bool TestWasPressed;
+    public bool MeleeAttackWasPressed;
+    public bool RangeAttackWasPressed;
 
     private InputAction _moveAction;
     private InputAction _jumpAction;
     private InputAction _runAction;
     private InputAction _dashAction;
     private InputAction _testAction;
+    private InputAction _meleeAttackAction;
+    private InputAction _rangeAttackAction;
 
     private void Awake()
     {
@@ -29,7 +33,8 @@ public class InputManager : MonoBehaviour
         _jumpAction = PlayerInput.actions["Jump"];
         _runAction = PlayerInput.actions["Run"];
         _dashAction = PlayerInput.actions["Dash"];
-
+        _meleeAttackAction = PlayerInput.actions["MeleeAttack"];
+        _rangeAttackAction = PlayerInput.actions["RangeAttack"];
         _testAction = PlayerInput.actions["Test"];
     }
 
@@ -42,6 +47,10 @@ public class InputManager : MonoBehaviour
         JumpWasReleased = _jumpAction.WasReleasedThisFrame();
 
         RunIsHeld = _runAction.IsPressed();
+
+        MeleeAttackWasPressed = _meleeAttackAction.WasPressedThisFrame();
+
+        RangeAttackWasPressed = _rangeAttackAction.WasPressedThisFrame();
 
         DashWasPressed = _dashAction.WasPressedThisFrame();
 
