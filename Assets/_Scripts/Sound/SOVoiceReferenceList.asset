@@ -9,14 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 019e5d3cecd9a574797650252563df1c, type: 3}
-  m_Name: Attack Stats
+  m_Script: {fileID: 11500000, guid: e587b580e8c9e064f93a232cbb1f808d, type: 3}
+  m_Name: SOVoiceReferenceList
   m_EditorClassIdentifier: 
-  AttackDamage: 10
-  MeleeAttackRange: 0.77
-  RangedAttackRange: 0
-  AttackHeight: 0.54
-  AttackRate: 0
-  KnockbackForce: 5
-  AttackCooldown: 0
-  DebugAttackArea: 1
+  audio_references:
+  - id: VO_Placeholder
+    clip: {fileID: 8300000, guid: 3bec5a61a76161f4db57854239072ca4, type: 3}

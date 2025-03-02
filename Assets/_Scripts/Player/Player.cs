@@ -26,8 +26,8 @@ public class Player : MonoBehaviour
     public ParticleSystem SpeedParticles;
     public GameObject DashParticles;
     public ParticleSystem WallSlideParticles;
-    public GameObject Shuriken;
-    public Transform FirePoint;
+    //public GameObject Shuriken;
+    //public Transform FirePoint;
     //public GameObject Sword;
 
     [Header("Height Tracker")]
