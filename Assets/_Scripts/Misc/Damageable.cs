@@ -13,7 +13,7 @@ public class Damageable : MonoBehaviour, IDamageable
     private SpriteRenderer[] _spriteRenderers;
     private Material[] _materials;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _spriteRenderers  = GetComponentsInChildren<SpriteRenderer>();
 
@@ -26,6 +26,13 @@ public class Damageable : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         HitAnimation();
+        OnDamageTaken();
+        
+    }
+
+    protected virtual void OnDamageTaken()
+    {
+        //override this function to add more functionality
     }
 
     private void HitAnimation()
@@ -67,4 +74,6 @@ public class Damageable : MonoBehaviour, IDamageable
     {
         _lerpAmount = newValue;
     }
+
+    
 }

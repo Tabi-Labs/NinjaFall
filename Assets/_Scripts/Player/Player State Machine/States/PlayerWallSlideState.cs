@@ -55,6 +55,7 @@ public class PlayerWallSlideState : PlayerState
     {
         base.StateUpdate();
 
+
         //EXITS wall slide due to moving away from wall
         if (_player.ShouldStopWallSliding())
         {
@@ -62,12 +63,16 @@ public class PlayerWallSlideState : PlayerState
             _player.StopWallSliding();
 
             _player.StateMachine.ChangeState(_player.InAirState);
+
+            return;
         }
 
         //EXITS wall slide due to landing on ground
         else if (_player.HasLanded())
         {
             _player.StateMachine.ChangeState(_player.IdleState);
+
+            return;
         }
 
         //WALLJUMP
@@ -75,11 +80,15 @@ public class PlayerWallSlideState : PlayerState
         {
             _player.UseWallJumpMoveStats = true;
             _player.StateMachine.ChangeState(_player.WallJumpState);
+
+            return;
         }
 
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
+
+            return;
         }
     }
 

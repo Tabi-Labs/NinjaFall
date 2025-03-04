@@ -30,16 +30,19 @@ public class PlayerDashState : PlayerState
         if (_player.ShouldWallSlide())
         {
             _player.StateMachine.ChangeState(_player.WallSlideState);
+            return;
         }
 
         if (!_player.IsDashing && !_player.IsGrounded && !_isExitingState)
         {
             _player.StateMachine.ChangeState(_player.InAirState);
+            return;
         }
 
         else if (!_player.IsDashing && _player.IsGrounded && !_isExitingState)
         {
             _player.StateMachine.ChangeState(_player.IdleState);
+            return;
         }
 
         else if (_player.InputManager.JumpWasPressed)
@@ -49,6 +52,8 @@ public class PlayerDashState : PlayerState
                 _player.SpawnJumpParticles(_player.JumpParticles);
 
                 _player.StateMachine.ChangeState(_player.JumpState);
+
+                return;
             }
         }
     }

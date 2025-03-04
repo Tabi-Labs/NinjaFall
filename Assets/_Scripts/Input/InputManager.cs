@@ -1,12 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : MonoBehaviour
+public class InputManager : MonoBehaviour, Controls.IPlayerActions
 {
     public PlayerInput PlayerInput;
+    private Controls _inputActions;
 
+    #region --- INPUT EVENTS ----
+    public event Action MeleeAttackEvent;
+    public event Action RangedAttackEvent;
+    #endregion
     public Vector2 Movement;
     public bool JumpWasPressed;
     public  bool JumpIsHeld;
@@ -36,8 +42,26 @@ public class InputManager : MonoBehaviour
         _meleeAttackAction = PlayerInput.actions["MeleeAttack"];
         _rangeAttackAction = PlayerInput.actions["RangeAttack"];
         _testAction = PlayerInput.actions["Test"];
+
+        _rangeAttackAction.performed += OnRangeAttack;
+        _meleeAttackAction.performed += OnMeleeAttack;
     }
 
+    void OnDisable()
+    {
+         _rangeAttackAction.performed -= OnRangeAttack;
+        _meleeAttackAction.performed -= OnMeleeAttack;
+    }
+    private void OnEnable()
+    {
+       /*   if(_inputActions == null)
+        {
+            _inputActions = new Controls();
+            _inputActions.Player.AddCallbacks(this);
+        }
+        _inputActions.Player.SetCallbacks(this);
+        _inputActions.Player.Enable(); */
+    }
     private void Update()
     {
         Movement = _moveAction.ReadValue<Vector2>();
@@ -55,5 +79,40 @@ public class InputManager : MonoBehaviour
         DashWasPressed = _dashAction.WasPressedThisFrame();
 
         TestWasPressed = _testAction.WasPressedThisFrame();
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        Debug.Log("Move");
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void OnRun(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void OnTest(InputAction.CallbackContext context)
+    {
+        
+    }
+
+    public void OnMeleeAttack(InputAction.CallbackContext context)
+    {
+        MeleeAttackEvent?.Invoke();
+    }
+
+    public void OnRangeAttack(InputAction.CallbackContext context)
+    {
+        RangedAttackEvent?.Invoke();
     }
 }

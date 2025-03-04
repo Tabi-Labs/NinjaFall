@@ -5,8 +5,7 @@ using UnityEngine.InputSystem;
 
 public class RangedAttack : MonoBehaviour
 {
-    [Header("REFERENCES")]
-    [SerializeField] InputActionReference _rangedAttackAction;
+    private Player _player;
     [Header("STATS")]
     [SerializeField] AttackStats _stats;
     [Header("PROJECTILE")]
@@ -16,16 +15,20 @@ public class RangedAttack : MonoBehaviour
     private Color _debugColor = Color.red;
 
     #region ----- UNITY CALLBACKS -------
-    void OnEnable()
+
+    void Awake()
     {
-        _rangedAttackAction.action.Enable();
-        _rangedAttackAction.action.performed += Ranged;
+        _player = GetComponent<Player>();
+    }
+
+    void Start()
+    {
+        _player.Input().RangedAttackEvent += OnRangedAttack;
     }
 
     void OnDisable()
     {
-        _rangedAttackAction.action.performed -= Ranged;
-        _rangedAttackAction.action.Disable();
+        _player.Input().RangedAttackEvent -= OnRangedAttack;
     }
 
     void Update()
@@ -38,7 +41,7 @@ public class RangedAttack : MonoBehaviour
 
     #region  ---- ATTACKS ------
 
-    void Ranged(InputAction.CallbackContext context)
+    void OnRangedAttack()
     {
         var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
         projectile.GetComponent<ProjectileBehaviour>().Init(transform.right);

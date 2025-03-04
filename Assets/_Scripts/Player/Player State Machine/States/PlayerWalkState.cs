@@ -26,16 +26,26 @@ public class PlayerWalkState : PlayerState
     {
         base.StateUpdate();
 
+        if (_player.CheckIsDead())
+        {
+            _player.StateMachine.ChangeState(_player.DeathState);
+            return;
+        }
+
         if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld)
         {
             _player.StateMachine.ChangeState(_player.RunState);
+            return;
         }
+
 
         else if (Mathf.Abs(_player.InputManager.Movement.x) < _moveStats.MoveThreshold)
         {
             _player.Anim.SetBool(Player.IS_WALKING, false);
 
             _player.StateMachine.ChangeState(_player.IdleState);
+
+            return;
         }
 
         else if (_player.InputManager.JumpWasPressed)
@@ -45,6 +55,8 @@ public class PlayerWalkState : PlayerState
                 _player.SpawnJumpParticles(_player.JumpParticles);
 
                 _player.StateMachine.ChangeState(_player.JumpState);
+
+                return;
             }
         }
 
@@ -53,21 +65,26 @@ public class PlayerWalkState : PlayerState
             _player.SpawnJumpParticles(_player.JumpParticles);
 
             _player.StateMachine.ChangeState(_player.JumpState);
+
+            return;
         }
 
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
+            return;
         }
 
         if (_player.InputManager.MeleeAttackWasPressed)
         {
             _player.StateMachine.ChangeState(_player.MeleeAttackState);
+            return;
         }
 
         if (_player.InputManager.RangeAttackWasPressed)
         {
             _player.StateMachine.ChangeState(_player.RangeAttackState);
+            return;
         }
     }
 

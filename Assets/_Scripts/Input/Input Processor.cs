@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [CreateAssetMenu(menuName = "Input/Processor")]
-public class InputProcessor : ScriptableObject, Controls.IPlayerActions
+public class InputProcessor : Controls.IPlayerActions
 {
     private Controls _inputActions;
 
     public Vector2 MoveInput;
 
-    public void Enable()
+    public void OnEnable()
     {
         if(_inputActions == null)
         {
@@ -19,6 +19,11 @@ public class InputProcessor : ScriptableObject, Controls.IPlayerActions
         }
         _inputActions.Player.SetCallbacks(this);
         _inputActions.Player.Enable();
+    }
+
+    public void Disable()
+    {
+        _inputActions.Player.Disable();
     }
 
     public void OnDash(InputAction.CallbackContext context)

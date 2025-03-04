@@ -22,7 +22,6 @@ public class PlayerInAirState : PlayerState
     {
         base.StateUpdate();
 
-        //other state transitions
 
         //JUMP/WallJump
         if (_player.InputManager.JumpWasPressed)
@@ -32,6 +31,8 @@ public class PlayerInAirState : PlayerState
                 _player.SpawnJumpParticles(_player.JumpParticles);
 
                 _player.StateMachine.ChangeState(_player.JumpState);
+
+                return;
             }
 
             if (_player.CanAirJump())
@@ -39,12 +40,16 @@ public class PlayerInAirState : PlayerState
                 _player.SpawnJumpParticles(_player.SecondJumpParticles);
 
                 _player.StateMachine.ChangeState(_player.JumpState);
+
+                return;
             }
 
             if (_player.CanWallJumpDueToPostBufferTimer())
             {
                 _player.UseWallJumpMoveStats = true;
                 _player.StateMachine.ChangeState(_player.WallJumpState);
+
+                return;
             }
         }
 
@@ -52,6 +57,8 @@ public class PlayerInAirState : PlayerState
         {
             _player.SpawnJumpParticles(_player.JumpParticles);
             _player.StateMachine.ChangeState(_player.JumpState);
+
+            return;
         }
 
         
@@ -60,18 +67,24 @@ public class PlayerInAirState : PlayerState
         {
             _player.SpawnJumpParticles(_player.LandParticles);
             _player.StateMachine.ChangeState(_player.IdleState);
+
+            return;
         }
 
         //WALL SLIDE
         if (_player.ShouldWallSlide())
         {
             _player.StateMachine.ChangeState(_player.WallSlideState);
+
+            return;
         }
 
         //DASH
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
+
+            return;
         }
 
         //ATTACK
@@ -81,6 +94,8 @@ public class PlayerInAirState : PlayerState
             _player.ResetWallJumpValues();
             _player.StopWallSliding();
             _player.StateMachine.ChangeState(_player.MeleeAttackState);
+
+            return;
         }
 
         if (_player.InputManager.RangeAttackWasPressed)
@@ -89,6 +104,8 @@ public class PlayerInAirState : PlayerState
             _player.ResetWallJumpValues();
             _player.StopWallSliding();
             _player.StateMachine.ChangeState(_player.RangeAttackState);
+
+            return;
         }
 
 

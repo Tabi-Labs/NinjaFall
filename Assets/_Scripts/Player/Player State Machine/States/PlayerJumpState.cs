@@ -40,16 +40,19 @@ public class PlayerJumpState : PlayerState
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
             _player.StateMachine.ChangeState(_player.DashState);
+            return;
         }
 
         if (_player.InputManager.MeleeAttackWasPressed)
         {
             _player.StateMachine.ChangeState(_player.MeleeAttackState);
+            return;
         }
 
         if (_player.InputManager.RangeAttackWasPressed)
         {
             _player.StateMachine.ChangeState(_player.RangeAttackState);
+            return;
         }
     }
 }

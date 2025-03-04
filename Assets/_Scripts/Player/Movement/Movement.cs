@@ -83,6 +83,12 @@ public class Movement : MonoBehaviour
         HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, targetVelocity, deceleration * Time.fixedDeltaTime);
     }
 
+    public void Stop()
+    {
+        HorizontalVelocity = 0f;
+        VerticalVelocity = 0f;
+    }
+
     private void ApplyVelocities()
     {
         _rigidbody2D.velocity = new Vector2(HorizontalVelocity, VerticalVelocity);
