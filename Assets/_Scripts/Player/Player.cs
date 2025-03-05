@@ -241,7 +241,6 @@ public class Player : NetworkBehaviour
         {
             if (!IsOwner)
             {
-                Debug.Log("NO");
                 return;
             }
         }
@@ -254,7 +253,6 @@ public class Player : NetworkBehaviour
         {
             if (!IsOwner)
             {
-                Debug.Log("NO");
                 return;
             }
         }

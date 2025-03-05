@@ -50,15 +50,26 @@ public class RangedAttack : NetworkBehaviour
         {
             if (!IsOwner)
             {
-                Debug.Log("NO");
                 return;
             }
+            RequestSpawnProjectileRPC();
         }
-        var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        else
+        {
+            var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
+            projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        }
+
         //projectile.GetComponent<Projectile>().Init(_stats);
     }
-
+    [Rpc(SendTo.Server)]
+    void RequestSpawnProjectileRPC()
+    {
+        var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
+        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        NetworkObject networkObject = projectile.GetComponent<NetworkObject>();
+        networkObject.Spawn();
+    }
     void DebugAttack(Color color)
     {
         Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _stats.RangedAttackRange, color);
