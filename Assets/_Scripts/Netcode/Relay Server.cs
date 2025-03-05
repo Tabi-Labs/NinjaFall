@@ -17,20 +17,22 @@ public class RelayServer : MonoBehaviour
     private TextMeshProUGUI code;
     [SerializeField]
     private TextMeshProUGUI showCode;
+    [SerializeField]
+    private string targetScene;
     public static string staticCode;
     //private LateJoinsBehaviour lateJoinsBehaviour;
-    //Función asíncrona
+    //Funciï¿½n asï¿½ncrona
     private async void Start()
     {
         //Inicializar los servicios de Unity
-        //Es un a función asíncrona por lo tanto el método tiene que ser asinc
-        //Evita que se congele para los demás usuarios
+        //Es un a funciï¿½n asï¿½ncrona por lo tanto el mï¿½todo tiene que ser asinc
+        //Evita que se congele para los demï¿½s usuarios
         await UnityServices.InitializeAsync();
         AuthenticationService.Instance.SignedIn += () =>
         {
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
         };
-        //Se inicia la sesión de manera anónima
+        //Se inicia la sesiï¿½n de manera anï¿½nima
         if (!AuthenticationService.Instance.IsSignedIn)
         {
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -47,11 +49,11 @@ public class RelayServer : MonoBehaviour
     {
         try
         {
-            //El argumento es el número máximo de jugadores sin contar el host
-            //Creamos una "conexión" con un código
+            //El argumento es el nï¿½mero mï¿½ximo de jugadores sin contar el host
+            //Creamos una "conexiï¿½n" con un cï¿½digo
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(24);
 
-            //Código para iniciar la partida
+            //Cï¿½digo para iniciar la partida
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
             //RelayServerData relayServerData = new RelayServerData(allocation,"dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
@@ -63,7 +65,7 @@ public class RelayServer : MonoBehaviour
                 );
             NetworkManager.Singleton.StartHost();
             staticCode = joinCode;
-            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene(targetScene, LoadSceneMode.Single);
             //this.gameObject.SetActive(false);
             Debug.Log(joinCode);
         }
@@ -84,9 +86,9 @@ public class RelayServer : MonoBehaviour
             //Problema que surge con el textMeshPro
             joinCode = joinCode.Substring(0, 6);
             Debug.Log("Joining Relay with " + joinCode);
-            //Nos unimos mediante el código
+            //Nos unimos mediante el cï¿½digo
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
-            //Manejamos el Relay a través de nuestro Unity Transport
+            //Manejamos el Relay a travï¿½s de nuestro Unity Transport
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(
                 joinAllocation.RelayServer.IpV4,
                 (ushort)joinAllocation.RelayServer.Port,

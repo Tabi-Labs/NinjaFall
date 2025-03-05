@@ -19,5 +19,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 9ed7876474b92e74d993d9ed983518b2, type: 3}
   - id: FX_Resume
     clip: {fileID: 8300000, guid: 91e19af25b65ba44db41d2ff672cad0e, type: 3}
+  - id: FX_Confirm
+    clip: {fileID: 8300000, guid: de132096fb450ad468db8235a9e382e0, type: 3}
   - id: FX_Placeholder
     clip: {fileID: 8300000, guid: 329a67900d593914c8df9fb7f74a06c2, type: 3}

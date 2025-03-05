@@ -1704,6 +1704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3325903424131496227, guid: d461e1c94de82414683b8620617a23e5, type: 3}
+  sceneName: SampleScene
 --- !u!4 &679368289
 Transform:
   m_ObjectHideFlags: 0
