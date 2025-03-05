@@ -106,6 +106,7 @@ public class ProjectileBehaviour : MonoBehaviour
         } */
         if(collider.CompareTag("Player"))
         {
+            Debug.Log("Reco");
             Destroy(gameObject);
         }
     }

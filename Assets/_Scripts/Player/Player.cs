@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
     #region Variables
     private InputManager _input;
@@ -152,8 +153,10 @@ public class Player : MonoBehaviour
     }
     #endregion
     #region ---- UNITY CALLBACKS ----
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+        if (!IsOwner) return;
         InitInput();
         StateMachine = new PlayerStateMachine();
 
@@ -172,10 +175,52 @@ public class Player : MonoBehaviour
 
         //initialize the direction
         IsFacingRight = true;
+
+        RB = GetComponent<Rigidbody2D>();
+        Anim = GetComponent<Animator>();
+        GhostTrail = GetComponent<GhostTrail>();
+        InputManager = GetComponent<InputManager>();
+
+        WallSlideParticles.gameObject.SetActive(false);
+
+        StateMachine.InitializeDefaultState(IdleState);
+    }
+    private void Awake()
+    {
+        if(NetworkManager)
+        {
+            Debug.Log("SOY NET");
+            OnNetworkSpawn();
+            
+        }
+        else
+        {
+            Debug.Log("No soy Net");
+            InitInput();
+            StateMachine = new PlayerStateMachine();
+
+            //initialize the individual states here
+            IdleState = new PlayerIdleState(this, StateMachine);
+            WalkState = new PlayerWalkState(this, StateMachine);
+            RunState = new PlayerRunState(this, StateMachine);
+            JumpState = new PlayerJumpState(this, StateMachine);
+            InAirState = new PlayerInAirState(this, StateMachine);
+            WallSlideState = new PlayerWallSlideState(this, StateMachine);
+            WallJumpState = new PlayerWallJumpState(this, StateMachine);
+            DashState = new PlayerDashState(this, StateMachine);
+            MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
+            RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
+            DeathState = new PlayerDeathState(this, StateMachine);
+
+            //initialize the direction
+            IsFacingRight = true;
+        }
+        
     }
 
     private void Start()
     {
+        if (NetworkManager) return;
         RB = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         GhostTrail = GetComponent<GhostTrail>();
@@ -192,11 +237,25 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
+        if(NetworkManager)
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+        }
         StateMachine.CurrentState.StateUpdate();
     }
 
     private void FixedUpdate()
     {
+        if (NetworkManager)
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+        }
         StateMachine.CurrentState.StateFixedUpdate();
     }
 
