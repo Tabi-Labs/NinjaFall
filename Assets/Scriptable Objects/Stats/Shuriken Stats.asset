@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32cbef9a122965d49aa06f4128cde17f, type: 3}
   m_Name: Shuriken Stats
   m_EditorClassIdentifier: 
-  MoveSpeed: 5
+  MoveSpeed: 10
   AirAcceleration: 10
-  Gravity: 0
-  LifeTime: 0
+  RedirectionAcceleration: 30
+  MaxFallSpeed: -10
+  Gravity: 9.8
+  GravityIgnoreTime: 0.4
   Damage: 10
-  KnockbackForce: 0
+  OwnerInvulnerabilityTime: 0.5

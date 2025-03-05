@@ -5,12 +5,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ProjectileStats", menuName = "Weapons/ProjectileStats")]
 public class ProjectileStats : ScriptableObject
 {
+    [Header("MOVEMENT PARAMETERS")]
     public float MoveSpeed;
     public float AirAcceleration;
+    public float RedirectionAcceleration = 10f;
+    public float MaxFallSpeed = -10f;
     public float Gravity;
-    public float LifeTime;
+    public float GravityIgnoreTime = 0.4f;
+    [Header("DAMAGE PARAMETERS")]
     public float Damage;
-    public float KnockbackForce;
     [Header("INTERACTIONS")]
     public float OwnerInvulnerabilityTime = 0.5f;
 }
