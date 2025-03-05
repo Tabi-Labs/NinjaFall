@@ -22,6 +22,7 @@ public class ProjectileBehaviour : MonoBehaviour
     {
         _movement = GetComponent<Movement>();
         _animator = GetComponent<Animator>();
+        _invulnerabilityTimer = _stats.OwnerInvulnerabilityTime;
     }
 
     private void Update()
@@ -59,7 +60,7 @@ public class ProjectileBehaviour : MonoBehaviour
         _direction = direction;
         _owner = owner;
         _canDamageOwner = canDamageOwner;
-        _invulnerabilityTimer = _stats.OwnerInvulnerabilityTime;
+        
     }
 
     private void OnObstacleHit(Vector3 hitPoint)
