@@ -35,7 +35,7 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        DontDestroyOnLoad(gameObject);
+        // DontDestroyOnLoad(gameObject);
         _instance = this;
 
         music_list.InitializeList();
