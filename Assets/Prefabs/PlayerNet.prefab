@@ -5161,13 +5161,13 @@ GameObject:
   - component: {fileID: -7824572691026587776}
   - component: {fileID: 6734762693939129732}
   - component: {fileID: 856423512765855512}
-  - component: {fileID: 6190521015177711607}
   - component: {fileID: 6035518904504044993}
   - component: {fileID: 5066315469004961249}
   - component: {fileID: 6141867565996446751}
+  - component: {fileID: 1664917432691962106}
   m_Layer: 0
   m_Name: PlayerNet
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5427,32 +5427,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: 5227078153217827377}
---- !u!114 &6190521015177711607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3325903424131496227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f2cba6791d839c4da64046fedfc5872, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MoveStats: {fileID: 11400000, guid: bf363a2298578c34390ef3717ccb4c06, type: 2}
-  FeetColl: {fileID: 6047278243176776771}
-  HeadColl: {fileID: 8164072107759422263}
-  BodyColl: {fileID: 1008354027835368250}
-  JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
-  SecondJumpParticles: {fileID: 7613757481095289963, guid: cd4faf7013b831b498a109c771a95e87, type: 3}
-  LandParticles: {fileID: 5835083849461746053, guid: 427c1d73877fed8479897748b827ba28, type: 3}
-  ParticleSpawnTransform: {fileID: 8247011537788828137}
-  TrailRenderer: {fileID: 265306988447210922}
-  SpeedParticles: {fileID: 3301344130104663084}
-  DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
-  WallSlideParticles: {fileID: 2940781082615036196}
-  HeightTracker: {fileID: 8685723286736101766}
-  ShowEnteredStateDebugLog: 0
 --- !u!114 &6035518904504044993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5465,7 +5439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rangedAttackAction: {fileID: 7612691404234612923, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   _projectileSpawnPoint: {fileID: 6327716195395706545}
@@ -5481,7 +5454,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d17ec049d2623b144a03fcccabbe0228, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _meleeAttackAction: {fileID: 4076065564550100350, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _isDamageable: 1
 --- !u!114 &6141867565996446751
@@ -5498,6 +5470,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
+--- !u!114 &1664917432691962106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 393cac69c8d1fb845910549004e428a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveStats: {fileID: 11400000, guid: bf363a2298578c34390ef3717ccb4c06, type: 2}
+  FeetColl: {fileID: 6047278243176776771}
+  HeadColl: {fileID: 8164072107759422263}
+  BodyColl: {fileID: 1008354027835368250}
+  JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
+  SecondJumpParticles: {fileID: 7613757481095289963, guid: cd4faf7013b831b498a109c771a95e87, type: 3}
+  LandParticles: {fileID: 5835083849461746053, guid: 427c1d73877fed8479897748b827ba28, type: 3}
+  ParticleSpawnTransform: {fileID: 8247011537788828137}
+  TrailRenderer: {fileID: 265306988447210922}
+  SpeedParticles: {fileID: 3301344130104663084}
+  DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
+  WallSlideParticles: {fileID: 2940781082615036196}
+  HeightTracker: {fileID: 8685723286736101766}
+  ShowEnteredStateDebugLog: 0
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0
