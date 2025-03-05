@@ -5163,8 +5163,8 @@ GameObject:
   - component: {fileID: 856423512765855512}
   - component: {fileID: 6035518904504044993}
   - component: {fileID: 5066315469004961249}
-  - component: {fileID: 6141867565996446751}
   - component: {fileID: 1664917432691962106}
+  - component: {fileID: 6608254418358042183}
   m_Layer: 0
   m_Name: PlayerNet
   m_TagString: Player
@@ -5456,20 +5456,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _isDamageable: 1
---- !u!114 &6141867565996446751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3325903424131496227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93758912b55708749b29577a3b91ba37, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
-  _hitEffectDuration: 0.1
 --- !u!114 &1664917432691962106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5496,6 +5482,20 @@ MonoBehaviour:
   WallSlideParticles: {fileID: 2940781082615036196}
   HeightTracker: {fileID: 8685723286736101766}
   ShowEnteredStateDebugLog: 0
+--- !u!114 &6608254418358042183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9297d8eee6a624b9c607a4922f38c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
+  _hitEffectDuration: 0.1
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0
