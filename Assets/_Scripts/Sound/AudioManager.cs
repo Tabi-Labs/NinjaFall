@@ -48,13 +48,12 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator MonitorAudioProgress(AudioSource audio_source)
     {
-        while (audio_source.time < audio_source.clip.length)
+        while (audio_source.time + 0.05f < audio_source.clip.length)
         { 
             yield return null;
         }
 
         Destroy(audio_source.gameObject);
-        yield return null;
     }
 
     private void PlayAudio(int source, AudioClip clip, Vector3 position = new Vector3())
