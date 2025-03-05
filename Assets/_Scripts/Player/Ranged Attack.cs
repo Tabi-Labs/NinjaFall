@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class RangedAttack : MonoBehaviour
 {
     private Player _player;
+    private IDamageable _selfDamageable;
     [Header("STATS")]
     [SerializeField] AttackStats _stats;
     [Header("PROJECTILE")]
@@ -19,6 +20,7 @@ public class RangedAttack : MonoBehaviour
     void Awake()
     {
         _player = GetComponent<Player>();
+        _selfDamageable = GetComponent<IDamageable>();
     }
 
     void Start()
@@ -44,7 +46,7 @@ public class RangedAttack : MonoBehaviour
     void OnRangedAttack()
     {
         var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right);
+        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
         //projectile.GetComponent<Projectile>().Init(_stats);
     }
 

@@ -11,4 +11,6 @@ public class ProjectileStats : ScriptableObject
     public float LifeTime;
     public float Damage;
     public float KnockbackForce;
+    [Header("INTERACTIONS")]
+    public float OwnerInvulnerabilityTime = 0.5f;
 }
