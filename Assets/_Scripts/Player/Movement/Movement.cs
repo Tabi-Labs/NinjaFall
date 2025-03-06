@@ -73,6 +73,11 @@ public class Movement : MonoBehaviour
 
     }
 
+    public void VerticalMove(float targetSpeed, float acceleration, Vector2 moveInput)
+    {
+        float targetVelocity = moveInput.y * targetSpeed;
+        VerticalVelocity = Mathf.Lerp(VerticalVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
+    }
     /// <summary>
     /// Swiftly decelerates the Horizontal velocity to zero movement.
     /// </summary>
@@ -83,6 +88,11 @@ public class Movement : MonoBehaviour
         HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, targetVelocity, deceleration * Time.fixedDeltaTime);
     }
 
+    public void ApplyGravity(float gravity, float maxFallSpeed)
+    {
+        VerticalVelocity -= gravity * Time.fixedDeltaTime;
+        VerticalVelocity = Mathf.Max(maxFallSpeed, VerticalVelocity);
+    }
     public void Stop()
     {
         HorizontalVelocity = 0f;
