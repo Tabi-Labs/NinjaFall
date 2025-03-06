@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProjectileBehaviour : MonoBehaviour
 {
     [SerializeField] private ProjectileStats _stats;
+    [SerializeField] private string _gravityTag = "Gravity Area";
     private Movement _movement;
     private Vector2 _direction;
     private Animator _animator;
@@ -15,6 +16,8 @@ public class ProjectileBehaviour : MonoBehaviour
     private bool _shouldDamageOwner;
     private bool _runInvulnerabilityTimer = true;
     private float _invulnerabilityTimer;
+    private float _gravityIgnoreTimer;
+    private bool _isAffectedByGravity = false;
    
 
     #region ---- UNITY CALLBACKS ----
@@ -22,17 +25,23 @@ public class ProjectileBehaviour : MonoBehaviour
     {
         _movement = GetComponent<Movement>();
         _animator = GetComponent<Animator>();
+
+        _gravityIgnoreTimer = _stats.GravityIgnoreTime;
         _invulnerabilityTimer = _stats.OwnerInvulnerabilityTime;
     }
 
     private void Update()
     {
         OwnerInvulnerabilityTimer();   
+        GravityIgnoreTimer();
     }
     private void FixedUpdate()
     {
         if(!_isMoving) return;
         _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
+        if(_isAffectedByGravity)
+        _movement.ApplyGravity(_stats.Gravity, _stats.MaxFallSpeed);
+        _movement.VerticalMove(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -40,9 +49,14 @@ public class ProjectileBehaviour : MonoBehaviour
         if(_isMoving)
         {
             var damageableComponent = collision.GetComponentInParent<IDamageable>();
-            CheckForDamageHit(damageableComponent);
-            if(damageableComponent != null && damageableComponent == _owner) return;
-            OnObstacleHit(collision.ClosestPoint(transform.position));
+            if(!collision.isTrigger)
+            {
+                CheckForDamageHit(damageableComponent);
+                if(damageableComponent != null && damageableComponent == _owner) return;
+                OnObstacleHit(collision.ClosestPoint(transform.position));
+            }
+            else if(damageableComponent != null)
+                AutoAim(collision.transform, damageableComponent);
         }
         else 
         {
@@ -92,8 +106,17 @@ public class ProjectileBehaviour : MonoBehaviour
         } */
         if(collider.CompareTag("Player"))
         {
+            Debug.Log("Reco");
             Destroy(gameObject);
         }
+    }
+
+    private void AutoAim(Transform target, IDamageable damageableComponent)
+    {
+        if(damageableComponent != null && damageableComponent == _owner) return;
+        var directionToTarget = (target.position - transform.position).normalized;
+        if(Vector2.Dot(_direction, directionToTarget) > 0)
+            _direction = Vector2.Lerp(_direction, directionToTarget, _stats.RedirectionAcceleration * Time.deltaTime);
     }
     #endregion
 
@@ -112,6 +135,15 @@ public class ProjectileBehaviour : MonoBehaviour
             _shouldDamageOwner = true;
         }
             
+    }
+
+    private void GravityIgnoreTimer()
+    {
+        _gravityIgnoreTimer -= Time.deltaTime;
+        if(_gravityIgnoreTimer <= 0)
+        {
+            _isAffectedByGravity = true;
+        }
     }
     #endregion
 }

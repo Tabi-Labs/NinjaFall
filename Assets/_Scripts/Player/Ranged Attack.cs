@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class RangedAttack : MonoBehaviour
+public class RangedAttack : NetworkBehaviour
 {
     private Player _player;
     private IDamageable _selfDamageable;
@@ -45,11 +46,30 @@ public class RangedAttack : MonoBehaviour
 
     void OnRangedAttack()
     {
-        var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        if (NetworkManager)
+        {
+            if (!IsOwner)
+            {
+                return;
+            }
+            RequestSpawnProjectileRPC();
+        }
+        else
+        {
+            var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
+            projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        }
+
         //projectile.GetComponent<Projectile>().Init(_stats);
     }
-
+    [Rpc(SendTo.Server)]
+    void RequestSpawnProjectileRPC()
+    {
+        var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
+        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        NetworkObject networkObject = projectile.GetComponent<NetworkObject>();
+        networkObject.Spawn();
+    }
     void DebugAttack(Color color)
     {
         Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _stats.RangedAttackRange, color);
