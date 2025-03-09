@@ -36,7 +36,7 @@ public class PlayerWallSlideState : PlayerState
         _player.IsWallSlideFalling = false;
         _player.IsWallSliding = true;
 
-        _player.Anim.SetBool(Player.IS_WALL_SLIDING, true);
+        //_player.Anim.SetBool(Player.IS_WALL_SLIDING, true);
 
         if (_player.MoveStats.ResetJumpsOnWallSlide)
         {
