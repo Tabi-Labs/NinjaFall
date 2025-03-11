@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/02_Multiplayer_Menu.unity
     guid: b30ab0157b42b654ea368a0218a92a17
+  - enabled: 1
+    path: Assets/Scenes/Testing Scenes/Net Test.unity
+    guid: c33b748605849be458a81f500a9a44cd
   m_configObjects: {}

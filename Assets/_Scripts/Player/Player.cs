@@ -371,7 +371,19 @@ public class Player : NetworkBehaviour
 
     public void DeletePlayer()
     {
-        Destroy(gameObject);
+        if(!NetworkManager)
+            Destroy(gameObject);
+        else
+        {
+            if (IsOwner)
+                DeletePlayerRPC();
+        }
+    }
+    [Rpc(SendTo.Server)]
+    void DeletePlayerRPC()
+    {
+        NetworkObject.Despawn(true); 
+        Destroy(gameObject); 
     }
     #endregion
 
@@ -1383,17 +1395,6 @@ public class Player : NetworkBehaviour
             previousPosition = drawPoint;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
     #endregion
 
 }
