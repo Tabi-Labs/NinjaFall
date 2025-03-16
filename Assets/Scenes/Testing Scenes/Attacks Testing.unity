@@ -11251,7 +11251,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1847413911}
   m_SourcePrefab: {fileID: 100100000, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
 --- !u!1 &737253697
 GameObject:
@@ -14335,6 +14338,32 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.24, y: 0.1}
   m_EdgeRadius: 0
+--- !u!1 &1847413900 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+  m_PrefabInstance: {fileID: 720377849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1847413911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847413900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2761784693
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!4 &1904708102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3608368450673614364, guid: edeab2f4d683b8a40bedc819b5298b0f, type: 3}

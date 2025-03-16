@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputManager : MonoBehaviour, Controls.IPlayerActions
+public class CustomInputManager : MonoBehaviour
 {
     public PlayerInput PlayerInput;
-    private Controls _inputActions;
 
     #region --- INPUT EVENTS ----
     public event Action MeleeAttackEvent;
@@ -79,31 +78,6 @@ public class InputManager : MonoBehaviour, Controls.IPlayerActions
         DashWasPressed = _dashAction.WasPressedThisFrame();
 
         TestWasPressed = _testAction.WasPressedThisFrame();
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        Debug.Log("Move");
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        
-    }
-
-    public void OnRun(InputAction.CallbackContext context)
-    {
-        
-    }
-
-    public void OnDash(InputAction.CallbackContext context)
-    {
-        
-    }
-
-    public void OnTest(InputAction.CallbackContext context)
-    {
-        
     }
 
     public void OnMeleeAttack(InputAction.CallbackContext context)
