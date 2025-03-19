@@ -23,6 +23,12 @@ public class ChracterSelectorEventSystemHandler : MonoBehaviour
 
     [SerializeField]
     private CharacterData[] characterDatas;
+
+    [Header("Tweening Variables")]
+    [SerializeField]
+    private float shakeAngle = 3.0f;
+    private float shakeDuration = 0.3f;
+    private float scaleFactor = 0.06f;
     
     // Start is called before the first frame update
     void Start()
@@ -78,25 +84,36 @@ public class ChracterSelectorEventSystemHandler : MonoBehaviour
     {
         if (eventSystem.currentSelectedGameObject == leftArrow.gameObject)
         {
-            Sequence rotationSequence = DOTween.Sequence();
-            rotationSequence.Append(panel.DORotate(new Vector3(0, 0, 1), 0.5f, RotateMode.LocalAxisAdd));
-            rotationSequence.Append(panel.DORotate(new Vector3(0, 0, -1), 0.5f, RotateMode.LocalAxisAdd));
-            currentIndex = (currentIndex - 1 + characterDatas.Length) % characterDatas.Length;
-            UpdateCharacterData(characterDatas[currentIndex]);
-            AudioManager.PlaySound("FX_ChangeCharacter");
+            HandleArrow(-1); // -1 for left arrow
         }
         else if (eventSystem.currentSelectedGameObject == rightArrow.gameObject)
         {
-            Sequence rotationSequence = DOTween.Sequence();
-            rotationSequence.Append(panel.DORotate(new Vector3(0, 0, -1), 1f, RotateMode.LocalAxisAdd));
-            rotationSequence.Append(panel.DORotate(new Vector3(0, 0, 1), 1f, RotateMode.LocalAxisAdd));
-            currentIndex = (currentIndex + 1) % characterDatas.Length;
-            UpdateCharacterData(characterDatas[currentIndex]);
-            AudioManager.PlaySound("FX_ChangeCharacter");
+            HandleArrow(1); // 1 for right arrow
         }
 
         // Delay the selection reset slightly
         Invoke(nameof(ResetSelection), 0.1f);
+    }
+
+    private void HandleArrow(int direction)
+    {
+        if (DOTween.IsTweening(panel))
+        {
+            DOTween.Kill(panel, true);
+            panel.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        // Determine the shake angle based on direction
+        float angle = direction > 0 ? -shakeAngle : shakeAngle;
+        panel.DOPunchRotation(new Vector3(0, 0, angle), shakeDuration, 5, 1);
+        panel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.5f, 10, 1);
+
+        // Update the current index based on direction
+        currentIndex = (currentIndex + direction + characterDatas.Length) % characterDatas.Length;
+        UpdateCharacterData(characterDatas[currentIndex]);
+
+        // Play sound effect
+        AudioManager.PlaySound("FX_ChangeCharacter");
     }
 
     public void OnSubmit(BaseEventData eventData){
