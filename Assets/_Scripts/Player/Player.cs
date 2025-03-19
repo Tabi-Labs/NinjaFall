@@ -433,24 +433,15 @@ public class Player : NetworkBehaviour
 
     #endregion
 
-    /* #region Melee Attack
+    #region Melee Attack
 
     public void SetIsAttacking(bool isAttacking)
     {
         IsAttacking = isAttacking;
     }
 
-    public void EnableSwordCollider()
-    {
-        Sword.GetComponent<Collider2D>().enabled = true;
-    }
 
-    public void DisableSwordCollider()
-    {
-        Sword.GetComponent<Collider2D>().enabled = false;
-    }
-
-    #endregion */
+    #endregion 
 
     #region Jump
 
@@ -581,10 +572,15 @@ public class Player : NetworkBehaviour
         {
             if (!IsFalling)
             {
+                Anim.ResetTrigger(LAND);
+                Anim.SetTrigger(FALL);
                 IsFalling = true;
-                //Anim.ResetTrigger(LAND);
-                //Anim.SetTrigger(FALL);
-                Anim.Play("p_Fall");
+
+                if (!IsAttacking)
+                {
+                    
+                    Anim.Play("p_Fall");
+                }        
             }
 
             StateMachine.ChangeState(InAirState);

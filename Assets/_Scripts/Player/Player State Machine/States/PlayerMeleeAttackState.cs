@@ -11,8 +11,8 @@ public class PlayerMeleeAttackState : PlayerState
     public override void StateEnter()
     {
         base.StateEnter();
-       // _player.EnableSwordCollider();
-        
+        _player.SetIsAttacking(true);
+
         _player.Anim.Play("p_MeleeAttack_1");
     }
 
@@ -34,8 +34,7 @@ public class PlayerMeleeAttackState : PlayerState
         // Si se presiona Dash durante el ataque, cambiar inmediatamente al estado Dash
         if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
         {
-            //_player.SetIsAttacking(false);
-            //_player.DisableSwordCollider();
+            _player.SetIsAttacking(false);
             _player.StateMachine.ChangeState(_player.DashState);
             return; 
         }
@@ -44,10 +43,8 @@ public class PlayerMeleeAttackState : PlayerState
         if (_player.Anim.GetCurrentAnimatorStateInfo(0).IsName("p_MeleeAttack_1") &&
             _player.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
         {
-            /* _player.CheckForFalling();
+            _player.CheckForFalling();
             _player.SetIsAttacking(false);
-            _player.DisableSwordCollider(); */
-            //_player.DisableSwordCollider();
 
             // Transici�n a Walk si el jugador comienza a moverse
             if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld)
@@ -78,9 +75,8 @@ public class PlayerMeleeAttackState : PlayerState
         // Transici�n a Jump si el jugador presiona salto
         if (_player.InputManager.JumpWasPressed && _player.CanJump())
         {
-            //_player.SetIsAttacking(false);
+            _player.SetIsAttacking(false);
          
-            //_player.DisableSwordCollider();
             _player.StateMachine.ChangeState(_player.JumpState);
             return;
         }
