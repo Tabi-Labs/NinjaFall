@@ -22,19 +22,20 @@ public class SwapTextTween : MonoBehaviour
     void Start()
     {
         tmp = GetComponent<TextMeshProUGUI>();
-        StartCoroutine(SwapText());
+        tmp.text = texts[0];
+        StartCoroutine(SwapText(0));
     }
 
-    public IEnumerator SwapText()
+    public IEnumerator SwapText(int currentIndex)
     {
-        int index = 0;
+        int index = currentIndex;
         while (true)
         {
             tmp.DOFade(0, duration / 2).OnComplete(() =>
             {
+                index = (index + 1) % texts.Length;
                 tmp.text = texts[index];
                 tmp.DOFade(1, duration / 2);
-                index = (index + 1) % texts.Length;
             });
 
             yield return new WaitForSeconds(duration);
