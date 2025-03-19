@@ -568,33 +568,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fba3e5e71f0c8d6419dcfd5493088409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color:
-    r: 1
-    g: 1
-    b: 1
-    a: 1
-  m_RaycastTarget: 1
-  m_RaycastTargetCache: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  <useLegacyMeshGeneration>k__BackingField: 1
-  m_Maskable: 1
-  m_IsMaskingGraphic: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_CallsDirty: 1
-  m_Texture: {fileID: 0}
-  _outlineWidth: 100
-  _cornerRadius: 50
-  _cornerSegments: 1
-  _mappingBias: 0.5
-  _fillCenter: 0
-  _corners:
-  - {x: -35, y: -33, z: 0}
-  - {x: -35, y: 33, z: 0}
-  - {x: 35, y: 33, z: 0}
-  - {x: 35, y: -33, z: 0}
 --- !u!222 &739183465
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1148,7 +1121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c280d1ddc7af1a04e8f71ea529d0c27f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: f4e9b517072c7b742824b8ea8a942f73, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}

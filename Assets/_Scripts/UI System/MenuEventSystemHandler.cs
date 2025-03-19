@@ -9,6 +9,10 @@ using UnityEngine.Events;
 using TMPro;
 using System.Threading.Tasks;
 
+//TODO - Add support for controller vibration
+//TODO - Add cancel functionality to go back to previous menu
+//TODO - Add support for bot addition?
+
 public class MenuEventSystemHandler : MonoBehaviour
 {
     [Header("References")]
@@ -35,6 +39,8 @@ public class MenuEventSystemHandler : MonoBehaviour
 
     protected Tween _scaleUpTween;
     protected Tween _scaleDownTween;
+
+    private bool firstSelection = true;
 
     public virtual void Awake()
     {
@@ -109,6 +115,11 @@ public class MenuEventSystemHandler : MonoBehaviour
 
     public void OnSelect(BaseEventData eventData)
     {
+        if(firstSelection){
+            firstSelection = false;
+            return;
+        }
+
         if (_selectedSoundID != null)
         {
             AudioManager.PlaySound(_selectedSoundID);
