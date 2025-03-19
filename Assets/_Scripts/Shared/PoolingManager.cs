@@ -22,7 +22,7 @@ public class PoolingManager : MonoBehaviour
         }
     }
 
-    public GameObject Get() { 
+    public GameObject GetObject() { 
         GameObject gO = pool[index];
         gO.SetActive(true);
         index = (index + 1) % size;

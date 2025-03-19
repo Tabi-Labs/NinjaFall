@@ -87,7 +87,7 @@ public class AudioManager : MonoBehaviour
                 speech_source.PlayOneShot(clip);
                 break;
             case 2:
-                GameObject audio_source = audio_pool.Get();
+                GameObject audio_source = audio_pool.GetObject();
                 AudioSource source_component = audio_source.GetComponent<AudioSource>();
                 if (source_component.isPlaying)
                 {
