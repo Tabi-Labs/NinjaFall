@@ -18,7 +18,7 @@ public class Player : NetworkBehaviour
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
-    public CustomInputManager InputManager {get; private set;}
+    public CustomInputManager InputManager => _input;
 
     [Header("FX")]
     public GameObject JumpParticles;
@@ -78,8 +78,7 @@ public class Player : NetworkBehaviour
     public RaycastHit2D WallHit { get; private set; }
     private RaycastHit2D _lastWallHit;
 
-    //movement vars
-    public bool IsFacingRight { get; private set; }
+    private bool _isFacingRight = true;
     public float HorizontalVelocity { get; private set; }
 
     // death vars
@@ -142,6 +141,28 @@ public class Player : NetworkBehaviour
 
     #region ---- INITIALIZERS ----
     private void InitInput() => _input = GetComponent<CustomInputManager>();
+    private void InitStateMachine()
+    {
+        StateMachine = new PlayerStateMachine();
+
+        IdleState = new PlayerIdleState(this, StateMachine);
+        WalkState = new PlayerWalkState(this, StateMachine);
+        RunState = new PlayerRunState(this, StateMachine);
+        JumpState = new PlayerJumpState(this, StateMachine);
+        InAirState = new PlayerInAirState(this, StateMachine);
+        WallSlideState = new PlayerWallSlideState(this, StateMachine);
+        WallJumpState = new PlayerWallJumpState(this, StateMachine);
+        DashState = new PlayerDashState(this, StateMachine);
+        MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
+        RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
+        DeathState = new PlayerDeathState(this, StateMachine);
+
+        
+    }
+
+    private void InitRigidbody() => RB = GetComponent<Rigidbody2D>();
+    private void InitAnimator() =>  Anim = GetComponent<Animator>();
+    private void InitGhostTrail() => GhostTrail = GetComponent<GhostTrail>();
     #endregion
 
     #region ---- GETTERS / SETTERS ----
@@ -157,80 +178,27 @@ public class Player : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
-        InitInput();
-        StateMachine = new PlayerStateMachine();
+        Initialize();
 
-        //initialize the individual states here
-        IdleState = new PlayerIdleState(this, StateMachine);
-        WalkState = new PlayerWalkState(this, StateMachine);
-        RunState = new PlayerRunState(this, StateMachine);
-        JumpState = new PlayerJumpState(this, StateMachine);
-        InAirState = new PlayerInAirState(this, StateMachine);
-        WallSlideState = new PlayerWallSlideState(this, StateMachine);
-        WallJumpState = new PlayerWallJumpState(this, StateMachine);
-        DashState = new PlayerDashState(this, StateMachine);
-        MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
-        RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
-        DeathState = new PlayerDeathState(this, StateMachine);
-
-        //initialize the direction
-        IsFacingRight = true;
-
-        RB = GetComponent<Rigidbody2D>();
-        Anim = GetComponent<Animator>();
-        GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<CustomInputManager>();
-
-        WallSlideParticles.gameObject.SetActive(false);
-
-        StateMachine.InitializeDefaultState(IdleState);
+       
     }
     private void Awake()
     {
-        if(NetworkManager)
-        {
-            //Debug.Log("SOY NET");
-            OnNetworkSpawn();
-            
-        }
-        else
-        {
-            //Debug.Log("No soy Net");
-            InitInput();
-            StateMachine = new PlayerStateMachine();
-
-            //initialize the individual states here
-            IdleState = new PlayerIdleState(this, StateMachine);
-            WalkState = new PlayerWalkState(this, StateMachine);
-            RunState = new PlayerRunState(this, StateMachine);
-            JumpState = new PlayerJumpState(this, StateMachine);
-            InAirState = new PlayerInAirState(this, StateMachine);
-            WallSlideState = new PlayerWallSlideState(this, StateMachine);
-            WallJumpState = new PlayerWallJumpState(this, StateMachine);
-            DashState = new PlayerDashState(this, StateMachine);
-            MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
-            RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
-            DeathState = new PlayerDeathState(this, StateMachine);
-
-            //initialize the direction
-            IsFacingRight = true;
-        }
-        
+        if(!NetworkManager)
+            Initialize();
     }
 
-    private void Start()
+    private void Initialize()
     {
-        if (NetworkManager) return;
-        RB = GetComponent<Rigidbody2D>();
-        Anim = GetComponent<Animator>();
-        GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<CustomInputManager>();
-
-        WallSlideParticles.gameObject.SetActive(false);
+        InitInput();
+        InitStateMachine();   
+        InitAnimator();
+        InitRigidbody();
+        InitGhostTrail(); 
 
         StateMachine.InitializeDefaultState(IdleState);
+        WallSlideParticles.gameObject.SetActive(false);
     }
-
     private void OnDisable()
     {
         
@@ -328,12 +296,12 @@ public class Player : NetworkBehaviour
     }
     private void TurnCheck(Vector2 moveInput)
     {
-        if (IsFacingRight && moveInput.x < 0)
+        if (_isFacingRight && moveInput.x < 0)
         {
             Turn(false);
         }
 
-        else if (!IsFacingRight && moveInput.x > 0)
+        else if (!_isFacingRight && moveInput.x > 0)
         {
             Turn(true);
         }
@@ -343,13 +311,13 @@ public class Player : NetworkBehaviour
     {
         if (turnRight)
         {
-            IsFacingRight = true;
+            _isFacingRight = true;
             transform.Rotate(0f, 180f, 0f);
         }
 
         else
         {
-            IsFacingRight = false;
+            _isFacingRight = false;
             transform.Rotate(0f, -180f, 0f);
         }
     }
@@ -1053,7 +1021,7 @@ public class Player : NetworkBehaviour
         //handle direction if we have no input
         if (closestDirection == Vector2.zero)
         {
-            if (IsFacingRight)
+            if (_isFacingRight)
             {
                 closestDirection = Vector2.right;
             }
@@ -1218,7 +1186,7 @@ public class Player : NetworkBehaviour
     private void CheckForTouchingWall()
     {
         float originEndPoint = 0f;
-        if (IsFacingRight)
+        if (_isFacingRight)
         {
             originEndPoint = BodyColl.bounds.max.x;
         }
