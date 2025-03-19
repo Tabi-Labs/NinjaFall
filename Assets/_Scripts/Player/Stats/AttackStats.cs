@@ -12,6 +12,8 @@ public class AttackStats : ScriptableObject
     public float AttackRate;
     public float KnockbackForce;
     public float AttackCooldown;
+    [Header("PARRY")]
+    [Range(0,1)] public float ParryTime = 0.12f;
     [Header(" DEBUGGING ")]
     public bool DebugAttackArea;
 }

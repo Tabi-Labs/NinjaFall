@@ -17,6 +17,7 @@ MonoBehaviour:
   RangedAttackRange: 0
   AttackHeight: 0.54
   AttackRate: 0
-  KnockbackForce: 5
+  KnockbackForce: 20
   AttackCooldown: 0
+  ParryTime: 0.12
   DebugAttackArea: 1
