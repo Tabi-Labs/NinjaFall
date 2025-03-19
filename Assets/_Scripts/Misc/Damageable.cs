@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Damageable : MonoBehaviour, IDamageable
+public class Damageable : NetworkBehaviour, IDamageable
 {   
     [SerializeField] private Material _hitEffectMaterial;
     [SerializeField] private float _hitEffectDuration = 0.1f;

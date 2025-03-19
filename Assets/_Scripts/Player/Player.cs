@@ -157,6 +157,7 @@ public class Player : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
+        Debug.Log("SOY NET");
         InitInput();
         StateMachine = new PlayerStateMachine();
 
@@ -189,7 +190,7 @@ public class Player : NetworkBehaviour
     {
         if(NetworkManager)
         {
-            Debug.Log("SOY NET");
+            
             OnNetworkSpawn();
             
         }
@@ -363,7 +364,11 @@ public class Player : NetworkBehaviour
     {
         IsDead = true;
     }
-
+    [Rpc(SendTo.Everyone)]
+    public void DeathRPC()
+    {
+        StateMachine.ChangeState(DeathState);
+    }
     public void Death()
     {
         StateMachine.ChangeState(DeathState);
