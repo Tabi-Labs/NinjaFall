@@ -5179,6 +5179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8602396005169628399}
   - component: {fileID: 5227078153217827377}
+  - component: {fileID: 419467689843979511}
   - component: {fileID: 3356373829068391031}
   - component: {fileID: 8362286837060557456}
   - component: {fileID: 961465876201758951}
@@ -5188,6 +5189,7 @@ GameObject:
   - component: {fileID: 6175670069529148351}
   - component: {fileID: 965640323693487313}
   - component: {fileID: 7804810165732104520}
+  - component: {fileID: 5861120358706129540}
   m_Layer: 0
   m_Name: PlayerV2
   m_TagString: Player
@@ -5236,6 +5238,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &419467689843979511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 112830355
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &3356373829068391031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5288,7 +5311,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _projectileStats: {fileID: 11400000, guid: 088687ac7a6069f46afcbe0dcf717762, type: 2}
+  _attackStats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   _projectileSpawnPoint: {fileID: 1775966953388830712}
 --- !u!114 &8915735389700008266
@@ -5453,6 +5477,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5861120358706129540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 245fae0f2a2e5d042907b06f1c0eed95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0

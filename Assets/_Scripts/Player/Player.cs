@@ -20,6 +20,8 @@ public class Player : NetworkBehaviour
     public GhostTrail GhostTrail { get; private set; }
     public CustomInputManager InputManager {get; private set;}
 
+    public StatusEffectManager EffectManager { get; private set; }
+
     [Header("FX")]
     public GameObject JumpParticles;
     public GameObject SecondJumpParticles;
@@ -215,7 +217,9 @@ public class Player : NetworkBehaviour
             //initialize the direction
             IsFacingRight = true;
         }
-        
+
+        EffectManager = GetComponent<StatusEffectManager>();
+
     }
 
     private void Start()
@@ -257,6 +261,12 @@ public class Player : NetworkBehaviour
             }
         }
         StateMachine.CurrentState.StateFixedUpdate();
+    }
+
+    public void ApplyEffect(StatusEffect effect)
+    {
+        Debug.Log("Effect manager aplica efecto");
+        EffectManager.ApplyStatusEffect(effect, this.GameObject());
     }
 
     #endregion

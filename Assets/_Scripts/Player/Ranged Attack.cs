@@ -9,7 +9,8 @@ public class RangedAttack : NetworkBehaviour
     private Player _player;
     private IDamageable _selfDamageable;
     [Header("STATS")]
-    [SerializeField] AttackStats _stats;
+    [SerializeField] ProjectileStats _projectileStats;
+    [SerializeField] AttackStats _attackStats;
     [Header("PROJECTILE")]
     [SerializeField] GameObject _projectilePrefab;
     [SerializeField] Transform _projectileSpawnPoint;
@@ -36,7 +37,7 @@ public class RangedAttack : NetworkBehaviour
 
     void Update()
     {
-        if(_stats.DebugAttackArea)
+        if(_attackStats.DebugAttackArea)
             DebugAttack(_debugColor);
     }
 
@@ -62,6 +63,13 @@ public class RangedAttack : NetworkBehaviour
 
         //projectile.GetComponent<Projectile>().Init(_stats);
     }
+
+    public void ApplyGravity(float newGravity)
+    {
+        Debug.Log("Clase Ranged Attack");
+        _projectileStats.Gravity = newGravity;
+    }
+
     [Rpc(SendTo.Server)]
     void RequestSpawnProjectileRPC()
     {
@@ -72,7 +80,7 @@ public class RangedAttack : NetworkBehaviour
     }
     void DebugAttack(Color color)
     {
-        Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _stats.RangedAttackRange, color);
+        Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _attackStats.RangedAttackRange, color);
     }
 
     #endregion
