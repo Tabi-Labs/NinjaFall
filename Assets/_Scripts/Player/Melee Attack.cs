@@ -67,15 +67,25 @@ public class MeleeAttack : MonoBehaviour
                     _debugColor = Color.yellow;
                     continue;
                 }
-                damageableComponent.TakeDamage(_stats.AttackDamage);
-                _debugColor = Color.green;
+                if(!damageableComponent.IsParrying())
+                {
+                    damageableComponent.TakeDamage(_stats.AttackDamage);
+                    _debugColor = Color.green;
+                }
+                else
+                {
+                    OnMeleeAttackClash(collider.transform);
+                }
+
             }
         }
     }
 
-    void OnMeleeAttackClash()
+    void OnMeleeAttackClash(Transform clashTransform)
     {
-        //TODO implement clash
+        var knockbackDir = -(clashTransform.position - transform.position).normalized;
+        knockbackDir *= _stats.KnockbackForce;
+        _player.SetVelocities(knockbackDir);
     }
  
     #endregion

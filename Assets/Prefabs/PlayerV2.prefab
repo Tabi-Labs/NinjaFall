@@ -4969,7 +4969,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5768919808336617083}
-  - component: {fileID: 6047278243176776771}
+  - component: {fileID: 7852143630486293491}
   m_Layer: 7
   m_Name: Feet
   m_TagString: Player
@@ -4992,8 +4992,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7958636296872414868}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &6047278243176776771
-BoxCollider2D:
+--- !u!58 &7852143630486293491
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5024,19 +5024,9 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.23}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: -0.01, y: -0.225}
   serializedVersion: 2
-  m_Size: {x: 0.24, y: 0.1}
-  m_EdgeRadius: 0
+  m_Radius: 0.056255043
 --- !u!1 &1353751817239124350
 GameObject:
   m_ObjectHideFlags: 0
@@ -5283,7 +5273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveStats: {fileID: 11400000, guid: bf363a2298578c34390ef3717ccb4c06, type: 2}
-  FeetColl: {fileID: 6047278243176776771}
+  FeetColl: {fileID: 7852143630486293491}
   HeadColl: {fileID: 8164072107759422263}
   BodyColl: {fileID: 1008354027835368250}
   JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
