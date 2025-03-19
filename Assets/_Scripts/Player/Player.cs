@@ -8,7 +8,7 @@ using Unity.Netcode;
 public class Player : NetworkBehaviour
 {
     #region Variables
-    private InputManager _input;
+    private CustomInputManager _input;
     //component vars
     [Header("References")]
     public PlayerMovementStats MoveStats;
@@ -18,7 +18,7 @@ public class Player : NetworkBehaviour
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
-    public InputManager InputManager {get; private set;}
+    public CustomInputManager InputManager {get; private set;}
 
     [Header("FX")]
     public GameObject JumpParticles;
@@ -141,14 +141,14 @@ public class Player : NetworkBehaviour
     #endregion
 
     #region ---- INITIALIZERS ----
-    private void InitInput() => _input = GetComponent<InputManager>();
+    private void InitInput() => _input = GetComponent<CustomInputManager>();
     #endregion
 
     #region ---- GETTERS / SETTERS ----
-    public InputManager Input() 
+    public CustomInputManager Input() 
     {
         if(_input == null)
-            _input = transform.AddComponent<InputManager>();
+            _input = transform.AddComponent<CustomInputManager>();
         return _input;
     }
     #endregion
@@ -180,7 +180,7 @@ public class Player : NetworkBehaviour
         RB = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<InputManager>();
+        InputManager = GetComponent<CustomInputManager>();
 
         WallSlideParticles.gameObject.SetActive(false);
 
@@ -196,7 +196,7 @@ public class Player : NetworkBehaviour
         }
         else
         {
-            Debug.Log("No soy Net");
+            //Debug.Log("No soy Net");
             InitInput();
             StateMachine = new PlayerStateMachine();
 
@@ -225,7 +225,7 @@ public class Player : NetworkBehaviour
         RB = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<InputManager>();
+        InputManager = GetComponent<CustomInputManager>();
 
         WallSlideParticles.gameObject.SetActive(false);
 
@@ -594,8 +594,8 @@ public class Player : NetworkBehaviour
             if (!IsFalling)
             {
                 IsFalling = true;
-                Anim.ResetTrigger(LAND);
-                Anim.SetTrigger(FALL);
+                //Anim.ResetTrigger(LAND);
+                //Anim.SetTrigger(FALL);
                 Anim.Play("p_Fall");
             }
 
@@ -721,8 +721,8 @@ public class Player : NetworkBehaviour
         IsJumping = true;
         NumberOfJumpsUsed++;
 
-        Anim.SetTrigger(Player.JUMP);
-        Anim.ResetTrigger(Player.LAND);
+        //Anim.SetTrigger(Player.JUMP);
+        //Anim.ResetTrigger(Player.LAND);
         if (!TrailRenderer.emitting)
         {
             TrailRenderer.emitting = true;
@@ -782,7 +782,7 @@ public class Player : NetworkBehaviour
             NumberOfJumpsUsed++;
 
             IsWallSliding = false;
-            Anim.SetBool(IS_WALL_SLIDING, false);
+            //Anim.SetBool(IS_WALL_SLIDING, false);
         }
     }
 
@@ -954,8 +954,8 @@ public class Player : NetworkBehaviour
         HorizontalVelocity = ((Mathf.Abs(MoveStats.WallJumpDirection.x)) * dirMultiplier);
 
         //FX
-        Anim.SetTrigger("jump");
-        Anim.ResetTrigger("land");
+        //Anim.SetTrigger("jump");
+        //Anim.ResetTrigger("land");
         TrailRenderer.emitting = true;
 
         //Instantiate(particlesToSpawn, _particleSpawnTransform.position, Quaternion.identity);
@@ -996,7 +996,7 @@ public class Player : NetworkBehaviour
     {
         IsDashFastFalling = false;
         DashOnGroundTimer = -0.01f;
-        Anim.SetBool(IS_AIR_DASH_FALLING, false);
+        //Anim.SetBool(IS_AIR_DASH_FALLING, false);
     }
 
     public bool CanDash()
@@ -1084,7 +1084,7 @@ public class Player : NetworkBehaviour
         Quaternion particleRot = Quaternion.FromToRotation(Vector2.right, -DashDirection);
         Instantiate(DashParticles, transform.position, particleRot);
 
-        Anim.SetBool("isDashing", true);
+        //Anim.SetBool("isDashing", true);
         GhostTrail.LeaveGhostTrail(MoveStats.DashTime * 1.75f);
 
         ResetJumpValues();
@@ -1104,12 +1104,12 @@ public class Player : NetworkBehaviour
                 {
                     ResetDashes();
                 }
-                else { Anim.SetBool(IS_AIR_DASH_FALLING, true); }
+                //else { Anim.SetBool(IS_AIR_DASH_FALLING, true); }
 
                 IsAirDashing = false;
                 IsDashing = false;
 
-                Anim.SetBool(IS_DASHING, false);
+                //Anim.SetBool(IS_DASHING, false);
 
                 //start the time for upwards cancel
                 if (!IsJumping && !IsWallJumping)
