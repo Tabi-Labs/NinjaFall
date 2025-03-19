@@ -321,6 +321,11 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void SetVelocities(Vector2 velocity)
+    {
+        HorizontalVelocity = velocity.x;
+        VerticalVelocity = velocity.y;
+    }
     private void TurnCheck(Vector2 moveInput)
     {
         if (IsFacingRight && moveInput.x < 0)
