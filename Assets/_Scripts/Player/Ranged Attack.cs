@@ -9,7 +9,6 @@ public class RangedAttack : NetworkBehaviour
     private Player _player;
     private IDamageable _selfDamageable;
     [Header("STATS")]
-    [SerializeField] ProjectileStats _projectileStats;
     [SerializeField] AttackStats _attackStats;
     [Header("PROJECTILE")]
     [SerializeField] GameObject _projectilePrefab;
@@ -67,7 +66,22 @@ public class RangedAttack : NetworkBehaviour
     public void ApplyGravity(float newGravity)
     {
         Debug.Log("Clase Ranged Attack");
-        _projectileStats.Gravity = newGravity;
+        ProjectileBehaviour projectileBehaviour = _projectilePrefab.GetComponent<ProjectileBehaviour>();
+
+        if(projectileBehaviour != null)
+        {
+            Debug.Log("ProjectileBehaviour no null");
+            projectileBehaviour.ApplyGravity(newGravity);
+
+            if(newGravity > 9.8)
+            {
+                projectileBehaviour.SetGravityIgnoreTimer(0.0f);
+            }
+            else
+            {
+                projectileBehaviour.SetGravityIgnoreTimer(0.4f);
+            }
+        }
     }
 
     [Rpc(SendTo.Server)]

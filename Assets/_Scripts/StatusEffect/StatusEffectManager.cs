@@ -7,7 +7,7 @@ public class StatusEffectManager : MonoBehaviour
     private List<StatusEffect> activeEffects = new List<StatusEffect>();
     private Dictionary<StatusEffect, Coroutine> effectCoroutines = new Dictionary<StatusEffect, Coroutine>();
 
-    public void ApplyStatusEffect(StatusEffect effect, GameObject obj)
+    public void ApplyStatusEffect(StatusEffect effect, GameObject player)
     {
         Debug.Log("Clase Effect Manager aplicando efecto");
 
@@ -15,18 +15,22 @@ public class StatusEffectManager : MonoBehaviour
         {
             StopCoroutine(effectCoroutines[effect]);
             effectCoroutines.Remove(effect);
+            activeEffects.Remove(effect);
         }
 
-        effect.ApplyEffect(obj);
-        Coroutine coroutine = StartCoroutine(RemoveEffectAfterDuration(effect, obj));
+        effect.ApplyEffect(player);
+        activeEffects.Add(effect);
+        Coroutine coroutine = StartCoroutine(RemoveEffectAfterDuration(effect, player));
         effectCoroutines.Add(effect, coroutine);
     }
+    
 
-    private IEnumerator RemoveEffectAfterDuration(StatusEffect effect, GameObject obj)
+    private IEnumerator RemoveEffectAfterDuration(StatusEffect effect, GameObject player)
     {
         yield return new WaitForSeconds(effect.Duration);
         Debug.Log("Clase Effect Manager eliminando efecto");
-        effect.RemoveEffect(obj);
+        effect.RemoveEffect(player);
         effectCoroutines.Remove(effect);
+        activeEffects.Remove(effect);
     }
 }

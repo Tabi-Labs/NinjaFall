@@ -39,7 +39,7 @@ public class ProjectileBehaviour : MonoBehaviour
     {
         if(!_isMoving) return;
         _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
-        if(_isAffectedByGravity)
+        if (_isAffectedByGravity)
         _movement.ApplyGravity(_stats.Gravity, _stats.MaxFallSpeed);
         _movement.VerticalMove(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
     }
@@ -75,6 +75,16 @@ public class ProjectileBehaviour : MonoBehaviour
         _owner = owner;
         _canDamageOwner = canDamageOwner;
         
+    }
+
+    public void ApplyGravity(float gravity)
+    {
+       _stats.Gravity = gravity;
+    }
+
+    public void SetGravityIgnoreTimer(float time)
+    {
+        _stats.GravityIgnoreTime = time;
     }
 
     private void OnObstacleHit(Vector3 hitPoint)

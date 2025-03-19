@@ -6,16 +6,16 @@ using UnityEngine;
 public class GravityShurikenDebuff : StatusEffect
 
 {
-    public override void ApplyEffect(GameObject obj)
+    public override void ApplyEffect(GameObject player)
     {
-        RangedAttack rangedAttack = obj.GetComponent<RangedAttack>();
+        RangedAttack rangedAttack = player.GetComponent<RangedAttack>();
 
         Debug.Log("Se intenta aplicar gravedad");
 
         if (rangedAttack != null)
         {
             Debug.Log("Se aplica gravedad");
-            rangedAttack.ApplyGravity(15.0f);
+            rangedAttack.ApplyGravity(90.0f);
         }
     }
 
@@ -35,7 +35,7 @@ public class GravityShurikenDebuff : StatusEffect
     private void OnTriggerEnter2D(Collider2D other)
     {
         Player player = other.GetComponentInParent<Player>();
-        if (player != null)
+        if (player != null && other.CompareTag("Player"))
         {
             Debug.Log("Aplicando efecto");
             player.ApplyEffect(this);
