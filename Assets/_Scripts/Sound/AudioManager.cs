@@ -14,7 +14,9 @@ public class AudioManager : MonoBehaviour
     [Header("Sources")]
     [SerializeField] private AudioSource[] music_source;
     [SerializeField] private AudioSource speech_source;
-    [SerializeField] private AudioSource sound_source;
+    //[SerializeField] private AudioSource sound_source;
+    private AudioSource sound_source = new AudioSource();
+    private PoolingManager<AudioSource> audio_pool = new PoolingManager<AudioSource> ();
 
     private float fade_duration = 0.5f;
 
@@ -41,6 +43,8 @@ public class AudioManager : MonoBehaviour
         music_list.InitializeList();
         speech_list.InitializeList();
         sound_list.InitializeList();
+
+        audio_pool.InitializePool(sound_source, this.transform);
     }
     #endregion
 
@@ -84,11 +88,15 @@ public class AudioManager : MonoBehaviour
                 break;
             case 2:
                 //AudioSource.PlayClipAtPoint(clip, position);
-                AudioSource audio_source = Instantiate(sound_source, position, Quaternion.identity);
-                audio_source.clip = clip;
-                audio_source.Play();
+                GameObject audio_source = audio_pool.GetFree();
+                audio_source.transform.position = position;
+                audio_source.GetComponent<AudioSource>().clip = clip;
+                audio_source.GetComponent<AudioSource>().Play();
+                //AudioSource audio_source = Instantiate(sound_source, position, Quaternion.identity);
+                //audio_source.clip = clip;
+                //audio_source.Play();
 
-                StartCoroutine(MonitorAudioProgress(audio_source));
+                //StartCoroutine(MonitorAudioProgress(audio_source));
                 break;
         }
     }
