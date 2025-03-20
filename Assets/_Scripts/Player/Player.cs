@@ -157,6 +157,7 @@ public class Player : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         if (!IsOwner) return;
+        Debug.Log("SOY NET");
         InitInput();
         StateMachine = new PlayerStateMachine();
 
@@ -189,7 +190,7 @@ public class Player : NetworkBehaviour
     {
         if(NetworkManager)
         {
-            //Debug.Log("SOY NET");
+            
             OnNetworkSpawn();
             
         }
@@ -368,7 +369,11 @@ public class Player : NetworkBehaviour
     {
         IsDead = true;
     }
-
+    [Rpc(SendTo.Everyone)]
+    public void DeathRPC()
+    {
+        StateMachine.ChangeState(DeathState);
+    }
     public void Death()
     {
         StateMachine.ChangeState(DeathState);
@@ -376,7 +381,19 @@ public class Player : NetworkBehaviour
 
     public void DeletePlayer()
     {
-        Destroy(gameObject);
+        if(!NetworkManager)
+            Destroy(gameObject);
+        else
+        {
+            if (IsOwner)
+                DeletePlayerRPC();
+        }
+    }
+    [Rpc(SendTo.Server)]
+    void DeletePlayerRPC()
+    {
+        NetworkObject.Despawn(true); 
+        Destroy(gameObject); 
     }
     #endregion
 
@@ -1384,17 +1401,6 @@ public class Player : NetworkBehaviour
             previousPosition = drawPoint;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
     #endregion
 
 }

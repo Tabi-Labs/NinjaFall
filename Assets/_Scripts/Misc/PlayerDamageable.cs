@@ -31,8 +31,15 @@ public class PlayerDamageable : Damageable
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
+
+        if (_player != null)
+        {
+            if(NetworkManager)
+                _player.DeathRPC();
+            else
+                _player.Death();
+        }
         
-        if(_player != null) _player.Death();
     }
 
     public override bool CanParry()

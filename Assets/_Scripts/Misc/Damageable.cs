@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.Netcode;
 using UnityEngine;
 
-public class Damageable : MonoBehaviour, IDamageable
+public class Damageable : NetworkBehaviour, IDamageable
 {   
     [Header("DEBUGGING")]
     [SerializeField] private bool _canParry;
