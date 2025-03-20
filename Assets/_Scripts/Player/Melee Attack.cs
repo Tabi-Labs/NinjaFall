@@ -85,7 +85,7 @@ public class MeleeAttack : MonoBehaviour
     {
         var knockbackDir = -(clashTransform.position - transform.position).normalized;
         knockbackDir *= _stats.KnockbackForce;
-        _player.SetVelocities(knockbackDir);
+        _player.Movement.Impulse(knockbackDir, _stats.KnockbackTime);
     }
  
     #endregion

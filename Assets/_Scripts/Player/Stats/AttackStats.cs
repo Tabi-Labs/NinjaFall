@@ -11,6 +11,7 @@ public class AttackStats : ScriptableObject
     public float AttackHeight;
     public float AttackRate;
     public float KnockbackForce;
+    [Range(0,5)] public float KnockbackTime = 0.15f;
     public float AttackCooldown;
     [Header("PARRY")]
     [Range(0,1)] public float ParryTime = 0.12f;
