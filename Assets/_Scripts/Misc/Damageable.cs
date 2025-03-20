@@ -5,9 +5,8 @@ using UnityEngine;
 
 public class Damageable : MonoBehaviour, IDamageable
 {   
-    [Header("DEBUGGING")]
-    [SerializeField] private bool _canParry;
-    [SerializeField] private bool _isParrying;
+    [Header("DEBUGGING"), SerializeField] private bool _canParry;
+    [SerializeField] protected bool _isParrying;
     [SerializeField] private Material _hitEffectMaterial;
     [SerializeField] private float _hitEffectDuration = 0.1f;
     private float _lerpAmount;
