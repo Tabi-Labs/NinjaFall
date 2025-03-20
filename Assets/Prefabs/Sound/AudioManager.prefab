@@ -55,7 +55,7 @@ MonoBehaviour:
   - {fileID: 856370368810810127}
   - {fileID: 1486275993043797008}
   speech_source: {fileID: 8521584450964148430}
-  sound_source: {fileID: 1860607272513012396}
+  sound_prefab: {fileID: 6490129123253230449}
 --- !u!1 &2670131485595154520
 GameObject:
   m_ObjectHideFlags: 0
