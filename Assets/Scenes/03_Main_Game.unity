@@ -405,6 +405,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffPrefabs:
   - {fileID: 2336691694653834552, guid: 562ff48d14388224daf9f7c7257bba71, type: 3}
+  - {fileID: 877132933890674336, guid: 95c6436b0740130458fe12af15de47c5, type: 3}
+  - {fileID: 8869890544649212729, guid: 7e4e6564cc9ec3c4b8ec56c50bd1c889, type: 3}
   spawnPoints:
   - {fileID: 1555052382}
   - {fileID: 1069542877}

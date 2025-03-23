@@ -86,6 +86,8 @@ public class Player : NetworkBehaviour
 
     public bool SpeedBuff { get; private set; }
 
+    public bool InvertControlDebuff { get; private set; }
+
     // death vars
     public bool IsDeath { get; private set; }
 
@@ -310,6 +312,12 @@ public class Player : NetworkBehaviour
     /// <param name="MoveSpeed"></param>
     public void Move(float acceleration, float deceleration, Vector2 moveInput)
     {
+
+        if (InvertControlDebuff)
+        {
+            moveInput.x = -moveInput.x;
+        }
+
         if (!IsDashing)
         {
             float moveSpeed = 0f;
@@ -364,6 +372,11 @@ public class Player : NetworkBehaviour
     public void SetSpeedBuff(bool speedBuff)
     {
         SpeedBuff = speedBuff;
+    }
+
+    public void SetInvertControlDebuff(bool invertControl)
+    {
+        InvertControlDebuff = invertControl;
     }
 
 
