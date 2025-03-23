@@ -12,6 +12,7 @@ public class SpeedBuff : StatusEffect
         if(_player != null )
         {
             _player.SetSpeedBuff(true);
+            _player.SpeedParticles.Play();
         }
     }
 
@@ -22,6 +23,7 @@ public class SpeedBuff : StatusEffect
         if (_player != null)
         {
             _player.SetSpeedBuff(false);
+            _player.SpeedParticles.Stop();
         }
     }
 }
