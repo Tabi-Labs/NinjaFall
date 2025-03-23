@@ -32,15 +32,4 @@ public class GravityShurikenDebuff : StatusEffect
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        Player player = other.GetComponentInParent<Player>();
-        if (player != null && other.CompareTag("Player"))
-        {
-            Debug.Log("Aplicando efecto");
-            player.ApplyEffect(this);
-            Destroy(gameObject);
-        }
-    }
-
 }

@@ -84,6 +84,8 @@ public class Player : NetworkBehaviour
     public bool IsFacingRight { get; private set; }
     public float HorizontalVelocity { get; private set; }
 
+    public bool SpeedBuff { get; private set; }
+
     // death vars
     public bool IsDeath { get; private set; }
 
@@ -311,7 +313,7 @@ public class Player : NetworkBehaviour
         if (!IsDashing)
         {
             float moveSpeed = 0f;
-            if (InputManager.RunIsHeld)
+            if (InputManager.RunIsHeld || SpeedBuff)
             {
                 moveSpeed = MoveStats.MaxRunSpeed;
             }
@@ -357,6 +359,11 @@ public class Player : NetworkBehaviour
             IsFacingRight = false;
             transform.Rotate(0f, -180f, 0f);
         }
+    }
+
+    public void SetSpeedBuff(bool speedBuff)
+    {
+        SpeedBuff = speedBuff;
     }
 
 
