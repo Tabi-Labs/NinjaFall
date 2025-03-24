@@ -61,7 +61,10 @@ public class Timer : NetworkBehaviour
     {
         if (!timeStarted.Value) { return; }
         if (!regresiveTimerFinished) { return; }
-        Debug.Log("Time started");
+        timerUpdate();
+    }
+    private void timerUpdate()
+    {
         tiempo -= Time.fixedDeltaTime;
         GUI.text = ((int)tiempo).ToString();
         //GUI2.text = ((int)tiempo).ToString();
@@ -107,10 +110,19 @@ public class Timer : NetworkBehaviour
                 .SetEase(Ease.InOutSine);
             });
     }
-    public void CambiarVariable()
+    public void ChangeTimeVariable()
     {
-        timeStarted.Value = true;
-        StartRegresiveCountdownClientRPC();
+        if(NetworkManager)
+        {
+            timeStarted.Value = true;
+            StartRegresiveCountdownClientRPC();
+        }
+        else
+        {
+            timeStarted.Value = true;
+            StartCoroutine(RunTimer());
+        }
+
     }
     [ClientRpc]
     private void StartRegresiveCountdownClientRPC()

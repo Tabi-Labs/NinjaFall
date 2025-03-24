@@ -31,7 +31,7 @@ public class TestingNet : MonoBehaviour
         {
             Debug.Log("Starting Host...");
             NetworkManager.Singleton.StartHost();
-            timer.CambiarVariable();
+            timer.ChangeTimeVariable();
         }
         else
         {
