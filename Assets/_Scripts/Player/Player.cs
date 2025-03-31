@@ -372,7 +372,7 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void DeathRPC()
     {
-        StateMachine.ChangeState(DeathState);
+        Death();
     }
     public void Death()
     {
