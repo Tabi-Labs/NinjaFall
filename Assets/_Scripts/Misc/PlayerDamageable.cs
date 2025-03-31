@@ -7,7 +7,6 @@ public class PlayerDamageable : Damageable
 {
     [SerializeField] private AttackStats _stats;
     private Player _player;
-    private bool _isParrying;
     private float _parryTimer;
 
     #region ----- MONOBEHAVIOUR CALLBACKS -----
