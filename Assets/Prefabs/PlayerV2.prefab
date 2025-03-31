@@ -5191,6 +5191,7 @@ GameObject:
   - component: {fileID: 7804810165732104520}
   - component: {fileID: 3815804795741728254}
   - component: {fileID: 8098176461020872992}
+  - component: {fileID: 2921895603650039220}
   m_Layer: 0
   m_Name: PlayerV2
   m_TagString: Player
@@ -5251,7 +5252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 600317332
+  GlobalObjectIdHash: 2393098702
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5327,8 +5328,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b9297d8eee6a624b9c607a4922f38c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canParry: 0
+  _isParrying: 0
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
+  _stats: {fileID: 0}
 --- !u!212 &7882907021759217884
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5438,7 +5442,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerInput: {fileID: 0}
-  Movement: {x: 0, y: 0}
   JumpWasPressed: 0
   JumpIsHeld: 0
   JumpWasReleased: 0
@@ -5522,6 +5525,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
   m_Animator: {fileID: 5227078153217827377}
+--- !u!114 &2921895603650039220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2c16419e998904b8d6b23b48372223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0

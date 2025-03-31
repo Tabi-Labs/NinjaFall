@@ -14,6 +14,7 @@ public class Player : NetworkBehaviour
     [SerializeField] private Collider2D FeetColl;
     [SerializeField] private Collider2D HeadColl;
     [SerializeField] private Collider2D BodyColl;
+    private KillsCounter KillsCounter;
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
@@ -201,8 +202,8 @@ public class Player : NetworkBehaviour
         InitMovement();  
         InitAnimator();
         InitRigidbody();
-        InitGhostTrail(); 
-
+        InitGhostTrail();
+        KillsCounter = FindObjectOfType<KillsCounter>();
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
     }
@@ -275,6 +276,7 @@ public class Player : NetworkBehaviour
     public void Death()
     {
         StateMachine.ChangeState(DeathState);
+        KillsCounter.Instance.PlayerDied();
     }
 
     public void DeletePlayer()
