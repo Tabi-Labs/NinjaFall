@@ -124,12 +124,12 @@ public class PlayerInAirState : PlayerState
         //movement
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, _player.InputManager.Movement);
+            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration, _player.InputManager.Movement,_moveStats.WallJumpMoveDeceleration);
         }
 
         else
         {
-            _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);     
+            _player.Movement.Move(_moveStats.AirAcceleration, _player.InputManager.Movement, _moveStats.AirDeceleration);     
         }
     }
 }

@@ -18,6 +18,8 @@ MonoBehaviour:
   AttackHeight: 0.54
   AttackRate: 0
   KnockbackForce: 20
+  KnockbackTime: 0.15
   AttackCooldown: 0
-  ParryTime: 0.12
+  ParryTime: 0.246
+  ParryWindow: 0.142
   DebugAttackArea: 1
