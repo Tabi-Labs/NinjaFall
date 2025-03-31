@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,11 @@ using UnityEngine.SceneManagement;
 
 public class PlayerConfigurationManager : MonoBehaviour
 {
-    [SerializeField] private int MaxPlayers = 2;
     [SerializeField] public InputSystemUIInputModule inputModule;
+    [SerializeField] private CharacterSelectorHandler[] characterSelectorHandlers;
+    [SerializeField] private CharacterData[] characterDatas;
+    public bool[] lockedCharacterData{ get; private set; }
+    public int MaxPlayers {get; private set;}
 
     private List<PlayerConfiguration> playerConfigs;
 
@@ -30,7 +34,16 @@ public class PlayerConfigurationManager : MonoBehaviour
             DontDestroyOnLoad(Instance);
             playerConfigs = new List<PlayerConfiguration>();
         }
-        
+    }
+
+    void Start()
+    {
+        lockedCharacterData = new bool[characterDatas.Length];
+        for (int i = 0; i < lockedCharacterData.Length; i++)
+        {
+            lockedCharacterData[i] = false;
+        }
+        MaxPlayers = characterSelectorHandlers.Length;
     }
 
     // Brief: Handle player join, called from PlayerInputManager
@@ -38,15 +51,25 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     public void HandlePlayerJoin(PlayerInput pi)
     {
-        Debug.Log("player joined " + pi.playerIndex);
-        pi.transform.SetParent(transform);
-        pi.uiInputModule = inputModule;
-        Debug.Log("pi.uiInputModule: " + pi.uiInputModule);
-        if(!playerConfigs.Any(p => p.PlayerIndex == pi.playerIndex))
+        int i;
+        CharacterSelectorHandler csh = null;
+
+        // Get free CharacterSelectorHandler
+        for(i = 0; i < characterSelectorHandlers.Length; i++)
         {
-            playerConfigs.Add(new PlayerConfiguration(pi));
+            if(characterSelectorHandlers[i].isAvailable)
+            {
+                csh = characterSelectorHandlers[i];
+                break;
+            }
         }
 
+        // Assign PlayerInput to CharacterSelectorHandler
+        if(csh){
+            pi.transform.SetParent(csh.transform);
+            pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            csh.Activate();
+        }
     }
 
     // Getters and Setters
@@ -69,6 +92,43 @@ public class PlayerConfigurationManager : MonoBehaviour
         {
             SceneManager.LoadScene("SampleScene");
         }
+    }
+
+public bool GetCharacterData(int currentIndex, int direction, out CharacterData data, out int newIndex, out bool isLocked)
+{
+    int index = (currentIndex + direction + characterDatas.Length) % characterDatas.Length;
+    if (index < 0 || index >= characterDatas.Length)
+    {
+        Debug.LogError("Index out of range: " + index);
+        data = null;
+        isLocked = false;
+        newIndex = -1;
+        return false;
+    }
+
+    data = characterDatas[index];
+    isLocked = lockedCharacterData[index];
+    newIndex = index;
+    return true;
+}
+
+    public bool LockCharacter(int index)
+    {
+        if (index < 0 || index >= lockedCharacterData.Length)
+        {
+            Debug.LogError("Index out of range: " + index);
+            return false;
+        }
+
+        lockedCharacterData[index] = true;
+        for(int i = 0; i < characterSelectorHandlers.Length; i++)
+        {
+            if(characterSelectorHandlers[i].isAvailable){
+                characterSelectorHandlers[i].NotifyLock(index, true);
+            }
+        }
+
+        return true;
     }
 }
 
