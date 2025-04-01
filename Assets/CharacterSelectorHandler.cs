@@ -6,10 +6,25 @@ using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 using DG.Tweening;
 using System;
+using TMPro;
 
 public class CharacterSelectorHandler : MonoBehaviour
 {
 
+    [Header("Visual Settings")]
+    [SerializeField] private float shakeAngle = 3.0f;
+    [SerializeField] private float shakeDuration = 0.3f;
+    [SerializeField] private float scaleFactor = 0.06f;
+    [SerializeField] private float luminosityFactor = 0.3f;
+    [SerializeField] private string defaultTopText = "null";
+
+    [Header("Audio Settings")]
+    [SerializeField] private string selectionSoundID = "FX_ChooseCharacter";
+    [SerializeField] private string changeSoundID = "FX_ChangeCharacter";
+    [SerializeField] private string cancelSoundID = "FX_FreeCharacter";
+    [SerializeField] private string denySoundID = "FX_Deny";
+
+    // References
     private RectTransform portraitPanel;
     private RectTransform emptyPanel;
     private Selectable nameButton;
@@ -17,23 +32,24 @@ public class CharacterSelectorHandler : MonoBehaviour
     private Selectable rightArrow;
     private MultiplayerEventSystem eventSystem;
     private Image portraitImage;
+    private Outline portraitOutline;
     private Image nameImage;
+    private Image overlay;
+    private TextMeshProUGUI topText;
     private PlayerConfigurationManager pcm;
 
-    [Header("Visual Settings")]
-    [SerializeField] private float shakeAngle = 3.0f;
-    [SerializeField] private float shakeDuration = 0.3f;
-    [SerializeField] private float scaleFactor = 0.06f;
-    [SerializeField] private float luminosityFactor = 0.3f;
-
-    private CharacterData currCharacterData;
-    
+    // Properties    
     public bool isAvailable {get; private set;} = true;
     public bool isSelected {get; private set;} = false;
 
+    // Private Variables
     private int currCharacterIdx = 0;
+    private CharacterData currCharacterData;
    
-    // Start is called before the first frame update
+   
+    // Initialization and Setup
+    // --------------------------------------------------------------------------------
+
     void Start()
     {
         portraitPanel = transform.Find("PortraitPanel").GetComponent<RectTransform>();
@@ -42,37 +58,63 @@ public class CharacterSelectorHandler : MonoBehaviour
         rightArrow = transform.Find("PortraitPanel/RightArrow").GetComponent<Selectable>();
         eventSystem = transform.Find("EventSystem").GetComponent<MultiplayerEventSystem>();
         portraitImage = transform.Find("PortraitPanel/Portrait").GetComponent<Image>();
-        
-        Transform text = transform.Find("PortraitPanel/Name");
-        nameButton = text.GetComponent<Selectable>();
-        nameImage = nameButton.GetComponent<Image>();
+        overlay = transform.Find("PortraitPanel/Overlay").GetComponent<Image>();
+        topText = transform.Find("TopText").GetComponent<TextMeshProUGUI>();
+
+        portraitOutline = portraitImage.GetComponent<Outline>();
+
+        Transform nameText = transform.Find("PortraitPanel/Name");
+        nameButton = nameText.GetComponent<Selectable>();
+        nameImage = nameText.GetComponent<Image>();
         
         pcm = PlayerConfigurationManager.Instance;
         
+        topText.text = defaultTopText;
+
         AddSelectionListeners(leftArrow);
         AddSelectionListeners(rightArrow);
         AddSubmitListeners(nameButton);
+        AddCancelListeners(nameButton);
         UpdateCharacterData(currCharacterIdx, 0);
         
         Deactivate();
     }
 
+    public void Activate()
+    {
+        StartCoroutine(SetAvailabilityNextFrame(false));
+        portraitPanel.gameObject.SetActive(true);
+        emptyPanel.gameObject.SetActive(false);
+    }
+
+    private IEnumerator SetAvailabilityNextFrame(bool available)
+    {
+        yield return null;
+        isAvailable = available;
+    }
+
+    public void Deactivate()
+    {
+        isAvailable = true;
+        portraitPanel.gameObject.SetActive(false);
+        emptyPanel.gameObject.SetActive(true);
+    }
+
+
     void Update()
     {
-        // Each frame check if current character has been selected
-
-    }
-
-    public void NotifyLock(int index, bool isLocked){
-        // Update Current Color if locked
-        if (index == currCharacterIdx)
+        if(!isSelected && pcm.lockedCharacterData[currCharacterIdx])
         {
-            float luminosity = currCharacterData.portraitLuminosity - (isLocked ? luminosityFactor : 0);
-            float nameLum = 1 - (isLocked ? luminosityFactor * 2 : 0);
-            portraitImage.color = new Color(luminosity, luminosity, luminosity, 1);
-            nameImage.color = new Color(nameLum, nameLum, nameLum, 1);
+            overlay.gameObject.SetActive(true);
+        }
+        else
+        {
+            overlay.gameObject.SetActive(false);
         }
     }
+
+    /// Add Event Trigger Listeners
+    /// --------------------------------------------------------------------------------
 
     protected virtual void AddSubmitListeners(Selectable selectable){
         EventTrigger trigger = selectable.gameObject.GetComponent<EventTrigger>();
@@ -86,6 +128,20 @@ public class CharacterSelectorHandler : MonoBehaviour
         };
         SubmitEntry.callback.AddListener(OnSubmit);
         trigger.triggers.Add(SubmitEntry);
+    }
+
+    protected virtual void AddCancelListeners(Selectable selectable){
+        EventTrigger trigger = selectable.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = selectable.gameObject.AddComponent<EventTrigger>();
+        }
+
+        EventTrigger.Entry CancelEntry = new EventTrigger.Entry{
+            eventID = EventTriggerType.Cancel
+        };
+        CancelEntry.callback.AddListener(OnCancel);
+        trigger.triggers.Add(CancelEntry);
     }
 
     protected virtual void AddSelectionListeners(Selectable selectable)
@@ -103,20 +159,56 @@ public class CharacterSelectorHandler : MonoBehaviour
         trigger.triggers.Add(SelectEntry);
     }
 
+    /// Event Trigger Callbacks
+    /// --------------------------------------------------------------------------------
+
     public void OnSelect(BaseEventData eventData)
     {
         if (eventSystem.currentSelectedGameObject == leftArrow.gameObject)
         {
-            HandleArrow(-1); // -1 for left arrow
+            HandleArrow(-1);
         }
         else if (eventSystem.currentSelectedGameObject == rightArrow.gameObject)
         {
-            HandleArrow(1); // 1 for right arrow
+            HandleArrow(1);
         }
 
-        // Delay the selection reset slightly
         Invoke(nameof(ResetSelection), 0.1f);
     }
+
+    public void OnCancel(BaseEventData eventData){
+        if (!isSelected) return;
+        if (isAvailable) return;
+        portraitPanel.DOKill(true);
+        pcm.UnlockCharacter(currCharacterIdx);
+        isSelected = false;
+        portraitPanel.DOPunchScale(new Vector3(-scaleFactor, -scaleFactor, -scaleFactor), 0.2f, 5, 1);
+        portraitOutline.enabled = false;
+        AudioManager.PlaySound(cancelSoundID);
+        leftArrow.gameObject.SetActive(true);
+        rightArrow.gameObject.SetActive(true);
+    }
+
+    public void OnSubmit(BaseEventData eventData){
+        if (isSelected) return;
+        if (isAvailable) return;
+        portraitPanel.DOKill(true);
+        if (pcm.lockedCharacterData[currCharacterIdx]){
+            portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.2f, 5, 1);
+            AudioManager.PlaySound(denySoundID);
+        } else {
+            bool selectionOk = pcm.LockCharacter(currCharacterIdx);
+            isSelected = selectionOk;
+            AudioManager.PlaySound(selectionSoundID);
+            portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.5f, 10, 1);
+            leftArrow.gameObject.SetActive(false);
+            rightArrow.gameObject.SetActive(false);
+            portraitOutline.enabled = true;
+        }
+    }
+
+    // Auxiliary Methods
+    // --------------------------------------------------------------------------------
 
     private void HandleArrow(int direction)
     {
@@ -139,12 +231,6 @@ public class CharacterSelectorHandler : MonoBehaviour
         AudioManager.PlaySound("FX_ChangeCharacter");
     }
 
-    public void OnSubmit(BaseEventData eventData){
-        if (isSelected) return;
-        bool selectionOk = pcm.LockCharacter(currCharacterIdx);
-        isSelected = selectionOk;
-    }
-
     public void UpdateCharacterData(int index, int direction)
     {
         bool fetchOk = pcm.GetCharacterData(index, direction, out CharacterData data, out int newIndex, out bool isLocked);
@@ -158,12 +244,11 @@ public class CharacterSelectorHandler : MonoBehaviour
         currCharacterIdx = newIndex;
         currCharacterData = data;
 
-        float portraitLum = data.portraitLuminosity - (isLocked ? luminosityFactor : 0);
-        float nameLum = 1 - (isLocked ? luminosityFactor*2 : 0);
+        if(isLocked) overlay.gameObject.SetActive(true);
+        else overlay.gameObject.SetActive(false);
 
+        portraitImage.color = new Color(data.portraitLuminosity, data.portraitLuminosity, data.portraitLuminosity, 1.0f);
         portraitImage.sprite = data.portrait;
-        portraitImage.color = new Color(portraitLum, portraitLum, portraitLum, 1);
-        nameImage.color = new Color(nameLum, nameLum, nameLum, 1);
         portraitImage.GetComponent<Animator>().runtimeAnimatorController = data.portraitAnimator;
         // portraitImage.material = data.mat;
         nameImage.sprite = data.text;
@@ -174,20 +259,5 @@ public class CharacterSelectorHandler : MonoBehaviour
     private void ResetSelection()
     {
         eventSystem.SetSelectedGameObject(nameButton.gameObject);
-    }
-
-    public void Activate()
-    {
-        isAvailable = false;
-        portraitPanel.gameObject.SetActive(true);
-        emptyPanel.gameObject.SetActive(false);
-    }
-
-    public void Deactivate()
-    {
-        isAvailable = true;
-        portraitPanel.gameObject.SetActive(false);
-        emptyPanel.gameObject.SetActive(true);
-    }
-
+        }
 }

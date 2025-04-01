@@ -12,9 +12,13 @@ public class PlayerConfigurationManager : MonoBehaviour
     [SerializeField] public InputSystemUIInputModule inputModule;
     [SerializeField] private CharacterSelectorHandler[] characterSelectorHandlers;
     [SerializeField] private CharacterData[] characterDatas;
+    [SerializeField] private string previousScene = "MainMenuScene";
+    [SerializeField] private string gameScene = "GameScene";
+    [SerializeField] private GameObject GameStartBanner;
     public bool[] lockedCharacterData{ get; private set; }
     public int MaxPlayers {get; private set;}
-
+    public int readyCount {get; private set;} = 0;
+    public int hostIndex {get; private set;} = -1;
     private List<PlayerConfiguration> playerConfigs;
 
     // Singleton Pattern
@@ -34,10 +38,6 @@ public class PlayerConfigurationManager : MonoBehaviour
             DontDestroyOnLoad(Instance);
             playerConfigs = new List<PlayerConfiguration>();
         }
-    }
-
-    void Start()
-    {
         lockedCharacterData = new bool[characterDatas.Length];
         for (int i = 0; i < lockedCharacterData.Length; i++)
         {
@@ -85,32 +85,23 @@ public class PlayerConfigurationManager : MonoBehaviour
         playerConfigs[index].playerMaterial = color;
     }
 
-    public void SetPlayerReady(int index)
+    public bool GetCharacterData(int currentIndex, int direction, out CharacterData data, out int newIndex, out bool isLocked)
     {
-        playerConfigs[index].isReady = true;
-        if (playerConfigs.Count == MaxPlayers && playerConfigs.All(p => p.isReady == true))
+        int index = (currentIndex + direction + characterDatas.Length) % characterDatas.Length;
+        if (index < 0 || index >= characterDatas.Length)
         {
-            SceneManager.LoadScene("SampleScene");
+            Debug.LogError("Index out of range: " + index);
+            data = null;
+            isLocked = false;
+            newIndex = -1;
+            return false;
         }
-    }
 
-public bool GetCharacterData(int currentIndex, int direction, out CharacterData data, out int newIndex, out bool isLocked)
-{
-    int index = (currentIndex + direction + characterDatas.Length) % characterDatas.Length;
-    if (index < 0 || index >= characterDatas.Length)
-    {
-        Debug.LogError("Index out of range: " + index);
-        data = null;
-        isLocked = false;
-        newIndex = -1;
-        return false;
+        data = characterDatas[index];
+        isLocked = lockedCharacterData[index];
+        newIndex = index;
+        return true;
     }
-
-    data = characterDatas[index];
-    isLocked = lockedCharacterData[index];
-    newIndex = index;
-    return true;
-}
 
     public bool LockCharacter(int index)
     {
@@ -121,13 +112,22 @@ public bool GetCharacterData(int currentIndex, int direction, out CharacterData 
         }
 
         lockedCharacterData[index] = true;
-        for(int i = 0; i < characterSelectorHandlers.Length; i++)
+        readyCount++;
+        if(readyCount >= 2) GameStartBanner.SetActive(true);
+        return true;
+    }
+
+    public bool UnlockCharacter(int index)
+    {
+        if (index < 0 || index >= lockedCharacterData.Length)
         {
-            if(characterSelectorHandlers[i].isAvailable){
-                characterSelectorHandlers[i].NotifyLock(index, true);
-            }
+            Debug.LogError("Index out of range: " + index);
+            return false;
         }
 
+        readyCount--;
+        if(readyCount <= 1) GameStartBanner.SetActive(false);
+        lockedCharacterData[index] = false;
         return true;
     }
 }
