@@ -96,11 +96,11 @@ public class PlayerWallSlideState : PlayerState
     {
         base.StateFixedUpdate();
 
-        _player.Movement.ChangeVerticalVelocity(Mathf.Lerp(_player.Movement.VerticalVelocity, -_player.MoveStats.WallSlideSpeed, _player.MoveStats.WallSlideDecelerationSpeed * Time.fixedDeltaTime));
+        _player.ChangeVerticalVelocity(Mathf.Lerp(_player.VerticalVelocity, -_player.MoveStats.WallSlideSpeed, _player.MoveStats.WallSlideDecelerationSpeed * Time.fixedDeltaTime));
 
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration , _player.InputManager.Movement, _moveStats.WallJumpMoveDeceleration);
+            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, _player.InputManager.Movement);
         }
 
         //movement
@@ -116,16 +116,16 @@ public class PlayerWallSlideState : PlayerState
 
             if (_player.InputManager.Movement.x > 0 && _hitPosition.x > _player.transform.position.x)
             {
-                _player.Movement.Move(_moveStats.AirAcceleration, Vector2.zero, _moveStats.AirDeceleration);
+                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, Vector2.zero);
             }
 
             else if (_player.InputManager.Movement.x < 0 && _hitPosition.x < _player.transform.position.x)
             {
-                 _player.Movement.Move(_moveStats.AirAcceleration, Vector2.zero, _moveStats.AirDeceleration);
+                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, Vector2.zero);
             }
             else
             {
-                _player.Movement.Move(_moveStats.AirAcceleration, _player.InputManager.Movement, _moveStats.AirDeceleration);
+                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);
             }
         }
     }

@@ -56,7 +56,7 @@ public class PlayerState
         //handle falling (might happen with a low enough deceleration after movement stops)
 
         _player.CheckForFalling();
-        _player.TurnCheck(_player.Input().Movement);
+        
          
     }
 
@@ -69,6 +69,7 @@ public class PlayerState
         _player.JumpPhysics();
         _player.WallJumpPhysics();
         _player.DashPhysics();
+        _player.ApplyVelocity();
     }
 
 

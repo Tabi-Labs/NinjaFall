@@ -24,7 +24,7 @@ public class PlayerMeleeAttackState : PlayerState
     public override void StateFixedUpdate()
     {
         base.StateFixedUpdate();
-        _player.Movement.Move(_player.MoveStats.GroundAcceleration,_player.InputManager.Movement, _player.MoveStats.GroundDeceleration);
+        _player.Move(_player.MoveStats.GroundAcceleration,_player.MoveStats.GroundDeceleration,_player.InputManager.Movement);
     }
 
     public override void StateUpdate()

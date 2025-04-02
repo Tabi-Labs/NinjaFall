@@ -102,12 +102,12 @@ public class PlayerRunState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for acceleration/movement
-        _player.Movement.Move(_moveStats.MaxRunSpeed, _moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
+        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, _player.InputManager.Movement);
     }
 
     private void HandleSpeedParticles()
     {
-        if (Mathf.Abs(_player.Movement.HorizontalVelocity) >= _player.MoveStats.MaxRunSpeed - 2f)
+        if (Mathf.Abs(_player.HorizontalVelocity) >= _player.MoveStats.MaxRunSpeed - 2f)
         {
             if (!_player.SpeedParticles.isPlaying)
             {

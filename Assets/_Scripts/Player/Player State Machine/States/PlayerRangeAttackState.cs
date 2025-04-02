@@ -14,6 +14,7 @@ public class PlayerRangeAttackState : PlayerState
       
         _player.SetIsAttacking(true);
         _player.Anim.Play("p_RangeAttack_1");
+        _player.RangeAttackWasPressed();
     }
 
     public override void StateExit()
