@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c746ebd30a15df74bbcaac3ea89acfdb, type: 3}
+  m_Name: yellow_data
+  m_EditorClassIdentifier: 
+  portrait: {fileID: -293882521, guid: 1c62eb4b361265b4b850a93b24132bcb, type: 3}
+  portraitLuminosity: 0.9
+  portraitAnimator: {fileID: 9100000, guid: f46d96d25d10ed34c8355b52c900756c, type: 2}
+  text: {fileID: 21300000, guid: 228bcbeefd55d0f4cbbda4facb1b06df, type: 3}
+  textOutlineColor: {r: 0.5019608, g: 0.3882353, b: 0.15294118, a: 1}
+  mat: {fileID: 0}

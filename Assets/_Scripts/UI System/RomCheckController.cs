@@ -10,7 +10,8 @@ public class RomCheckController : MonoBehaviour
     [SerializeField] float _lerpDelay = 0.5f;
     [SerializeField] float _lerpDuration = 0.5f;
     [SerializeField] string _musicID = "MX_MainMenu";
-
+    [SerializeField] Button _startButton;
+    
     private TextMeshProUGUI _text;
     private Image _background;
 
@@ -19,6 +20,7 @@ public class RomCheckController : MonoBehaviour
         _text = GetComponentInChildren<TextMeshProUGUI>();
         _background = GetComponentInChildren<Image>();
 
+        _startButton.enabled = false;
         StartCoroutine(LerpText());
     }
 
@@ -50,6 +52,7 @@ public class RomCheckController : MonoBehaviour
             _background.color = new Color(1, 1, 1, Mathf.Lerp(start, end, t));
             yield return null;
         }
+        _startButton.enabled = true;
         Destroy(gameObject);
     }
 }

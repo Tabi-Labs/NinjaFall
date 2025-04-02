@@ -4,10 +4,27 @@ using UnityEngine;
 
 public class DontDestroyOnLoadScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    // Singleton instance
+    public static DontDestroyOnLoadScript Instance { get; private set; }
+
+    private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
+
+    // // Start is called before the first frame update
+    // void Start()
+    // {
+    //     DontDestroyOnLoad(gameObject);
+    // }
 
 }

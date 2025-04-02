@@ -347,8 +347,7 @@ public class Player : NetworkBehaviour
         IsAttacking = isAttacking;
     }
 
-
-    #endregion 
+    #endregion
 
     #region Jump
 
@@ -842,7 +841,7 @@ public class Player : NetworkBehaviour
         }
         else { dirMultiplier = 1; }
 
-        Vector2 wallJumpDir = new Vector2(Mathf.Abs(MoveStats.WallJumpDirection.x) * dirMultiplier, MoveStats.WallJumpDirection.y);
+        Vector2 wallJumpDir = new Vector2(Mathf.Abs(MoveStats.WallJumpDirection.x) * dirMultiplier, Movement.VerticalVelocity);
         Movement.Impulse(wallJumpDir, 0f);
 
         //FX
@@ -1049,6 +1048,11 @@ public class Player : NetworkBehaviour
 
     #endregion
 
+    public void SetIsAttacking(bool isAttacking)
+    {
+        IsAttacking = isAttacking;
+    }
+    
     #region Collision Checks
 
     public void CollisionChecks()
