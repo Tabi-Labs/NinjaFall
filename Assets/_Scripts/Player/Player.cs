@@ -809,7 +809,7 @@ public class Player : NetworkBehaviour
         }
         else { dirMultiplier = 1; }
 
-        Vector2 wallJumpDir = new Vector2(Mathf.Abs(MoveStats.WallJumpDirection.x) * dirMultiplier, MoveStats.WallJumpDirection.y);
+        Vector2 wallJumpDir = new Vector2(Mathf.Abs(MoveStats.WallJumpDirection.x) * dirMultiplier, Movement.VerticalVelocity);
         Movement.Impulse(wallJumpDir, 0f);
 
         //FX
