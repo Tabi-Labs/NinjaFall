@@ -1037,6 +1037,11 @@ public class Player : NetworkBehaviour
 
     #endregion
 
+    public void SetIsAttacking(bool isAttacking)
+    {
+        IsAttacking = isAttacking;
+    }
+    
     #region Collision Checks
 
     public void CollisionChecks()

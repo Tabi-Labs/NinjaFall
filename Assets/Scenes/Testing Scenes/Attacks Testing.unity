@@ -11208,17 +11208,9 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3227815637
       objectReference: {fileID: 0}
-    - target: {fileID: 1533841538458920446, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
-      propertyPath: InScenePlacedSourceGlobalObjectIdHash
-      value: 607330330
-      objectReference: {fileID: 0}
     - target: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
       propertyPath: m_Name
       value: PlayerV2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8602396005169628399, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14116,8 +14108,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f4d4435ed536604b86960c51354d167, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _movementStats: {fileID: 0}
-  _movement: {fileID: 0}
 --- !u!95 &1712285368
 Animator:
   serializedVersion: 5
