@@ -11,31 +11,32 @@ public class KillsCounter : NetworkBehaviour
     // Arreglo para las vidas de cada jugador, se inicializan en 5
     public NetworkVariable<int>[] playerLives = new NetworkVariable<int>[4];
 
-    // Contenedor para los TextMeshProUGUI
-    [SerializeField] private GameObject textPrefab;  // Prefab de TextMeshProUGUI
-    [SerializeField] private Transform uiContainer;  // Contenedor donde se añadirán los textos
+    // Referencias a los TextMeshProUGUI ya existentes en la escena
+    [SerializeField] private TextMeshProUGUI P1TextMesh;
+    [SerializeField] private TextMeshProUGUI P2TextMesh;
+    [SerializeField] private TextMeshProUGUI P3TextMesh;
+    [SerializeField] private TextMeshProUGUI P4TextMesh;
 
     private TextMeshProUGUI[] playerTextMeshes;  // Arreglo de TextMeshProUGUI generados
+
+    // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tamaño del array de players
+    private int localPlayerCount = 3;
 
     private void Awake()
     {
         Instance = this;
 
-        // Inicializamos las vidas de los jugadores
-        playerLives[0] = new NetworkVariable<int>(5);
-        playerLives[1] = new NetworkVariable<int>(5);
-        playerLives[2] = new NetworkVariable<int>(5);
-        playerLives[3] = new NetworkVariable<int>(5);
+        // Inicializamos las NetworkVariables para las vidas de cada jugador
+        for (int i = 0; i < 4; i++)
+        {
+            playerLives[i] = new NetworkVariable<int>(5);
+        }
     }
 
     private void Start()
     {
-        // Inicializamos la interfaz de usuario al principio, dependiendo de si estamos en el servidor o en cliente
-        if (IsServer || IsHost)
-        {
-            GeneratePlayerTextMeshes();
-            UpdateUI();
-        }
+        GeneratePlayerTextMeshes();  // Generamos los TextMeshPro en la UI
+        UpdateUI();  // Actualizamos la UI según las vidas iniciales de los jugadores
     }
 
     // Método para ser llamado cuando un jugador mata a otro
@@ -85,19 +86,25 @@ public class KillsCounter : NetworkBehaviour
         Debug.Log($"Jugador {playerID + 1} eliminado. ¡Juego terminado!");
     }
 
-    // Genera los TextMeshProUGUI para cada jugador activo
+    // Asocia los TextMeshPro existentes y activa/desactiva según los jugadores activos
     private void GeneratePlayerTextMeshes()
     {
-        playerTextMeshes = new TextMeshProUGUI[4];  // Asumiendo que solo hay 4 jugadores en el juego
+        playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
-        // Creamos los TextMeshProUGUI para cada jugador (basado en el número de jugadores activos)
-        for (int i = 0; i < playerLives.Length; i++)
+        // Si estamos en modo multijugador, usamos el número de clientes conectados
+        int numberOfPlayers = (NetworkManager) ?
+            NetworkManager.Singleton.ConnectedClients.Count : localPlayerCount;
+
+        // Aquí activamos/desactivamos los TextMeshPro según el número de jugadores
+        for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (playerLives[i] != null)  // Solo generamos TextMeshProUGUI para jugadores activos
+            if (i < numberOfPlayers)
             {
-                // Instanciamos el prefab de TextMeshPro
-                TextMeshProUGUI playerTextMesh = Instantiate(textPrefab, uiContainer).GetComponent<TextMeshProUGUI>();
-                playerTextMeshes[i] = playerTextMesh;
+                playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
+            }
+            else
+            {
+                playerTextMeshes[i].gameObject.SetActive(false); // Desactivamos los TextMeshPro de jugadores inactivos
             }
         }
     }
@@ -111,7 +118,7 @@ public class KillsCounter : NetworkBehaviour
             for (int i = 0; i < playerLives.Length; i++)
             {
                 // Aseguramos que solo actualizamos el texto para jugadores activos
-                if (playerTextMeshes[i] != null)
+                if (playerTextMeshes[i] != null && playerTextMeshes[i].gameObject.activeSelf)
                 {
                     // Cambiamos el formato del texto a "P+IDJugador: X Vidas"
                     playerTextMeshes[i].text = "P" + (i + 1) + ": " + playerLives[i].Value + " Vidas";

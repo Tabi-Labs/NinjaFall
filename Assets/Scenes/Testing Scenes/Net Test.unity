@@ -17233,18 +17233,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f934304dceb4046bd20c60b4a6ac39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  P1Lives:
-    m_InternalValue: 5
-  P2Lives:
-    m_InternalValue: 5
-  P3Lives:
-    m_InternalValue: 5
-  P4Lives:
-    m_InternalValue: 5
+  playerLives:
+  - m_InternalValue: 0
+  - m_InternalValue: 0
+  - m_InternalValue: 0
+  - m_InternalValue: 0
   P1TextMesh: {fileID: 1148567376}
   P2TextMesh: {fileID: 673088383}
   P3TextMesh: {fileID: 985620531}
   P4TextMesh: {fileID: 1307012957}
+  localPlayerCount: 1
 --- !u!1 &71383274891555235
 GameObject:
   m_ObjectHideFlags: 0
