@@ -655,6 +655,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271026765}
   m_CullTransparentMesh: 1
+--- !u!1 &295462170 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6490129123253230449, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
+  m_PrefabInstance: {fileID: 5213064384968397913}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &457161929
 GameObject:
   m_ObjectHideFlags: 0
@@ -2860,6 +2865,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 342415069822818732, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
+      propertyPath: sound_prefab
+      value: 
+      objectReference: {fileID: 295462170}
     - target: {fileID: 1384564111540189269, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
       propertyPath: m_Name
       value: AudioManager

@@ -7,7 +7,6 @@ public class PlayerDamageable : Damageable
 {
     [SerializeField] private AttackStats _stats;
     private Player _player;
-    private bool _isParrying;
     private float _parryTimer;
 
     #region ----- MONOBEHAVIOUR CALLBACKS -----
@@ -31,8 +30,15 @@ public class PlayerDamageable : Damageable
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
+
+        if (_player != null)
+        {
+            if(NetworkManager)
+                _player.DeathRPC();
+            else
+                _player.Death();
+        }
         
-        if(_player != null) _player.Death();
     }
 
     public override bool CanParry()

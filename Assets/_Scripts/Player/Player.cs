@@ -8,17 +8,15 @@ using Unity.Netcode;
 public class Player : NetworkBehaviour
 {
     #region Variables
-    private CustomInputManager _input;
-    //component vars
+  
     [Header("References")]
     public PlayerMovementStats MoveStats;
-    public Collider2D FeetColl;
-    public Collider2D HeadColl;
-    public Collider2D BodyColl;
+    [SerializeField] private Collider2D FeetColl;
+    [SerializeField] private Collider2D HeadColl;
+    [SerializeField] private Collider2D BodyColl;
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
-    public CustomInputManager InputManager {get; private set;}
 
     [Header("FX")]
     public GameObject JumpParticles;
@@ -51,6 +49,15 @@ public class Player : NetworkBehaviour
     public const string IS_ATTACKING = "isAttacking";
     public const string IS_DEATH = "isDeath";
 
+      
+    #region ----- COMPONENT VARS -------
+    private CustomInputManager _input;
+    public CustomInputManager InputManager => _input;
+    private Movement _movement;
+    public Movement Movement => _movement;
+    
+    #endregion
+
     //state vars
     public PlayerStateMachine StateMachine { get; private set; }
     public PlayerIdleState IdleState { get; private set; }
@@ -78,9 +85,7 @@ public class Player : NetworkBehaviour
     public RaycastHit2D WallHit { get; private set; }
     private RaycastHit2D _lastWallHit;
 
-    //movement vars
-    public bool IsFacingRight { get; private set; }
-    public float HorizontalVelocity { get; private set; }
+    private bool _isFacingRight = true;
 
     // death vars
     public bool IsDeath { get; private set; }
@@ -89,7 +94,6 @@ public class Player : NetworkBehaviour
     public bool IsAttacking { get; private set; }
 
     //jump vars
-    public float VerticalVelocity { get; set; }
     public bool IsJumping { get; set; }
     public bool IsFastFalling { get; set; }
     public bool IsFalling { get; set; }
@@ -142,25 +146,10 @@ public class Player : NetworkBehaviour
 
     #region ---- INITIALIZERS ----
     private void InitInput() => _input = GetComponent<CustomInputManager>();
-    #endregion
-
-    #region ---- GETTERS / SETTERS ----
-    public CustomInputManager Input() 
+    private void InitStateMachine()
     {
-        if(_input == null)
-            _input = transform.AddComponent<CustomInputManager>();
-        return _input;
-    }
-    #endregion
-    #region ---- UNITY CALLBACKS ----
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        if (!IsOwner) return;
-        InitInput();
         StateMachine = new PlayerStateMachine();
 
-        //initialize the individual states here
         IdleState = new PlayerIdleState(this, StateMachine);
         WalkState = new PlayerWalkState(this, StateMachine);
         RunState = new PlayerRunState(this, StateMachine);
@@ -173,167 +162,77 @@ public class Player : NetworkBehaviour
         RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
         DeathState = new PlayerDeathState(this, StateMachine);
 
-        //initialize the direction
-        IsFacingRight = true;
+        
+    }
+    private void InitMovement() => _movement = GetComponent<Movement>();
+    private void InitRigidbody() => RB = GetComponent<Rigidbody2D>();
+    private void InitAnimator() =>  Anim = GetComponent<Animator>();
+    private void InitGhostTrail() => GhostTrail = GetComponent<GhostTrail>();
+    #endregion
 
-        RB = GetComponent<Rigidbody2D>();
-        Anim = GetComponent<Animator>();
-        GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<CustomInputManager>();
+    #region ---- GETTERS / SETTERS ----
+    public CustomInputManager Input() 
+    {
+        if(_input == null)
+            _input = transform.AddComponent<CustomInputManager>();
+        return _input;
+    }
+    #endregion
 
-        WallSlideParticles.gameObject.SetActive(false);
+    #region ---- UNITY CALLBACKS ----
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        if (!IsOwner) return;
+        Initialize();
 
-        StateMachine.InitializeDefaultState(IdleState);
+       
     }
     private void Awake()
     {
-        if(NetworkManager)
-        {
-            //Debug.Log("SOY NET");
-            OnNetworkSpawn();
-            
-        }
-        else
-        {
-            //Debug.Log("No soy Net");
-            InitInput();
-            StateMachine = new PlayerStateMachine();
-
-            //initialize the individual states here
-            IdleState = new PlayerIdleState(this, StateMachine);
-            WalkState = new PlayerWalkState(this, StateMachine);
-            RunState = new PlayerRunState(this, StateMachine);
-            JumpState = new PlayerJumpState(this, StateMachine);
-            InAirState = new PlayerInAirState(this, StateMachine);
-            WallSlideState = new PlayerWallSlideState(this, StateMachine);
-            WallJumpState = new PlayerWallJumpState(this, StateMachine);
-            DashState = new PlayerDashState(this, StateMachine);
-            MeleeAttackState = new PlayerMeleeAttackState(this, StateMachine);
-            RangeAttackState = new PlayerRangeAttackState(this, StateMachine);
-            DeathState = new PlayerDeathState(this, StateMachine);
-
-            //initialize the direction
-            IsFacingRight = true;
-        }
-        
+        if(!NetworkManager)
+            Initialize();
     }
 
-    private void Start()
+    private void Initialize()
     {
-        if (NetworkManager) return;
-        RB = GetComponent<Rigidbody2D>();
-        Anim = GetComponent<Animator>();
-        GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<CustomInputManager>();
-
-        WallSlideParticles.gameObject.SetActive(false);
+        InitInput();
+        InitStateMachine(); 
+        InitMovement();  
+        InitAnimator();
+        InitRigidbody();
+        InitGhostTrail(); 
 
         StateMachine.InitializeDefaultState(IdleState);
+        WallSlideParticles.gameObject.SetActive(false);
     }
-
     private void OnDisable()
     {
         
     }
     private void Update()
     {
-        if(NetworkManager)
-        {
-            if (!IsOwner)
-            {
-                return;
-            }
-        }
+        if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateUpdate();
     }
 
     private void FixedUpdate()
     {
-        if (NetworkManager)
-        {
-            if (!IsOwner)
-            {
-                return;
-            }
-        }
+        if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateFixedUpdate();
     }
 
     #endregion
-    public void ApplyVelocity()
+   
+    #region ------ SPRITE HANDLING ------
+    public void TurnCheck(Vector2 moveInput)
     {
-        //clamp speed
-        if (!IsDashing)
-        {
-            ChangeVerticalVelocity(Mathf.Clamp(VerticalVelocity, -MoveStats.MaxFallSpeed, 50f));
-        }
-        else
-        {
-            ChangeVerticalVelocity(Mathf.Clamp(VerticalVelocity, -50f, 50f));
-        }
-
-        RB.velocity = new Vector2(HorizontalVelocity, VerticalVelocity);
-    }
-
-    public void ChangeVerticalVelocity(float changeAmount)
-    {
-        VerticalVelocity = changeAmount;
-        //Debug.Log(VerticalVelocity);
-    }
-
-    public void IncrementVerticalVelocity(float incrementAmount)
-    {
-        VerticalVelocity += incrementAmount;
-        //Debug.Log(VerticalVelocity);
-    }
-
-    #region Movement
-
-    /// <summary>
-    /// Use this to move your player. Call from states in FixedUpdate
-    /// </summary>
-    /// <param name="acceleration"></param>
-    /// <param name="deceleration"></param>
-    /// <param name="moveInput"></param>
-    /// <param name="MoveSpeed"></param>
-    public void Move(float acceleration, float deceleration, Vector2 moveInput)
-    {
-        if (!IsDashing)
-        {
-            float moveSpeed = 0f;
-            if (InputManager.RunIsHeld)
-            {
-                moveSpeed = MoveStats.MaxRunSpeed;
-            }
-            else { moveSpeed = MoveStats.MaxWalkSpeed; }
-
-            if (Mathf.Abs(moveInput.x) > MoveStats.MoveThreshold)
-            {
-                TurnCheck(moveInput);
-                float targetVelocity = moveInput.x * moveSpeed;
-                HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, targetVelocity, acceleration * Time.fixedDeltaTime); 
-            }
-
-            else
-            {
-                HorizontalVelocity = Mathf.Lerp(HorizontalVelocity, 0f, deceleration * Time.deltaTime);
-            }
-        }
-    }
-
-    public void SetVelocities(Vector2 velocity)
-    {
-        HorizontalVelocity = velocity.x;
-        VerticalVelocity = velocity.y;
-    }
-    private void TurnCheck(Vector2 moveInput)
-    {
-        if (IsFacingRight && moveInput.x < 0)
+        if (_isFacingRight && moveInput.x < 0)
         {
             Turn(false);
         }
 
-        else if (!IsFacingRight && moveInput.x > 0)
+        else if (!_isFacingRight && moveInput.x > 0)
         {
             Turn(true);
         }
@@ -343,19 +242,19 @@ public class Player : NetworkBehaviour
     {
         if (turnRight)
         {
-            IsFacingRight = true;
+            _isFacingRight = true;
             transform.Rotate(0f, 180f, 0f);
         }
 
         else
         {
-            IsFacingRight = false;
+            _isFacingRight = false;
             transform.Rotate(0f, -180f, 0f);
         }
     }
 
-
     #endregion
+   
 
     #region Death
 
@@ -368,7 +267,11 @@ public class Player : NetworkBehaviour
     {
         IsDead = true;
     }
-
+    [Rpc(SendTo.Everyone)]
+    public void DeathRPC()
+    {
+        StateMachine.ChangeState(DeathState);
+    }
     public void Death()
     {
         StateMachine.ChangeState(DeathState);
@@ -376,23 +279,25 @@ public class Player : NetworkBehaviour
 
     public void DeletePlayer()
     {
-        Destroy(gameObject);
+        if(!NetworkManager)
+            Destroy(gameObject);
+        else
+        {
+            if (IsOwner)
+                DeletePlayerRPC();
+        }
     }
-    #endregion
-
-    #region Range Attack
-
-    public void RangeAttackWasPressed()
+    [Rpc(SendTo.Server)]
+    void DeletePlayerRPC()
     {
-        // Se lanza shuriken
-        //Instantiate(Shuriken, FirePoint.position, FirePoint.rotation);
-
+        NetworkObject.Despawn(true); 
+        Destroy(gameObject); 
     }
     #endregion
     #region Landed
     public bool HasLanded()
     {
-        if ((IsJumping || IsFalling || IsWallJumpFalling || IsWallJumping || IsWallSlideFalling || IsWallSliding || IsDashFastFalling) && IsGrounded && VerticalVelocity <= 0f)
+        if ((IsJumping || IsFalling || IsWallJumpFalling || IsWallJumping || IsWallSlideFalling || IsWallSliding || IsDashFastFalling) && IsGrounded && Movement.VerticalVelocity <= 0f)
         {
             ResetJumpValues();
             StopWallSliding();
@@ -400,7 +305,7 @@ public class Player : NetworkBehaviour
             ResetWallJumpValues();
             ResetDashes();
 
-            ChangeVerticalVelocity(Physics2D.gravity.y);
+            Movement.ChangeVerticalVelocity(Physics2D.gravity.y);
 
             ReplenishJumps();
             TrailRenderer.emitting = false;
@@ -432,16 +337,6 @@ public class Player : NetworkBehaviour
     }
 
     #endregion
-
-    #region Melee Attack
-
-    public void SetIsAttacking(bool isAttacking)
-    {
-        IsAttacking = isAttacking;
-    }
-
-
-    #endregion 
 
     #region Jump
 
@@ -485,7 +380,7 @@ public class Player : NetworkBehaviour
             JumpReleasedDuringBuffer = true;
         }
 
-        if (IsJumping && VerticalVelocity > 0f)
+        if (IsJumping && Movement.VerticalVelocity > 0f)
         {
             if (IsPastApexThreshold)
             {
@@ -494,13 +389,13 @@ public class Player : NetworkBehaviour
                 FastFallTime = MoveStats.TimeForUpwardsCancel;
 
                 //gets rid of floatiness
-                ChangeVerticalVelocity(0f);
+                Movement.ChangeVerticalVelocity(0f);
 
             }
             else
             {
                 IsFastFalling = true;
-                FastFallReleaseSpeed = VerticalVelocity;
+                FastFallReleaseSpeed = Movement.VerticalVelocity;
             }
         }
     }
@@ -615,10 +510,10 @@ public class Player : NetworkBehaviour
                 IsFastFalling = true;
             }
 
-            if (VerticalVelocity >= 0f)
+            if (Movement.VerticalVelocity >= 0f)
             {
                 //APEX CONTROLS
-                ApexPoint = Mathf.InverseLerp(MoveStats.InitialJumpVelocity, 0f, VerticalVelocity);
+                ApexPoint = Mathf.InverseLerp(MoveStats.InitialJumpVelocity, 0f, Movement.VerticalVelocity);
 
                 if (ApexPoint > MoveStats.ApexThreshold)
                 {
@@ -633,19 +528,19 @@ public class Player : NetworkBehaviour
                         TimePastApexThreshold += Time.fixedDeltaTime;
                         if (TimePastApexThreshold < MoveStats.ApexHangTime)
                         {
-                            ChangeVerticalVelocity(0f);
+                            Movement.ChangeVerticalVelocity(0f);
                         }
                         else
                         {
                             //start moving downward
-                            ChangeVerticalVelocity(-0.01f);
+                            Movement.ChangeVerticalVelocity(-0.01f);
                         }
                     }
                 }
 
                 else if (!IsFastFalling)
                 {
-                    IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime);
+                    Movement.IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime);
 
                     if (IsPastApexThreshold)
                     {
@@ -657,10 +552,10 @@ public class Player : NetworkBehaviour
 
             else if (!IsFastFalling)
             {
-                IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime);
             }
 
-            else if (VerticalVelocity < 0f)
+            else if (Movement.VerticalVelocity < 0f)
             {
                 if (!IsFalling)
                     IsFalling = true;
@@ -670,7 +565,7 @@ public class Player : NetworkBehaviour
         //NORMAL FALLING (Without Jumping)
         if (IsFalling && !IsJumping && !IsGrounded)
         {
-            IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime);
+            Movement.IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime);
         }
 
         //HANDLE RELEASED JUMP DECELERATION
@@ -678,11 +573,11 @@ public class Player : NetworkBehaviour
         {
             if (FastFallTime >= MoveStats.TimeForUpwardsCancel)
             {
-                IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime);
             }
             else if (FastFallTime < MoveStats.TimeForUpwardsCancel)
             {
-                ChangeVerticalVelocity(Mathf.Lerp(FastFallReleaseSpeed, 0f, (FastFallTime / MoveStats.TimeForUpwardsCancel)));
+                Movement.ChangeVerticalVelocity(Mathf.Lerp(FastFallReleaseSpeed, 0f, (FastFallTime / MoveStats.TimeForUpwardsCancel)));
             }
 
             FastFallTime += Time.fixedDeltaTime;
@@ -699,7 +594,7 @@ public class Player : NetworkBehaviour
 
     public void InitiateJump()
     {
-        ChangeVerticalVelocity(MoveStats.InitialJumpVelocity);
+        Movement.ChangeVerticalVelocity(MoveStats.InitialJumpVelocity);
 
         ResetWallJumpValues();
         IsJumping = true;
@@ -715,7 +610,7 @@ public class Player : NetworkBehaviour
         if (JumpReleasedDuringBuffer)
         {
             IsFastFalling = true;
-            FastFallReleaseSpeed = VerticalVelocity;
+            FastFallReleaseSpeed = Movement.VerticalVelocity;
         }
 
         TrackHeight();
@@ -740,7 +635,7 @@ public class Player : NetworkBehaviour
     {
         if (IsTouchingWall && !IsGrounded && !IsDashing)
         {
-            if (VerticalVelocity < 0f && !IsWallSliding)
+            if (Movement.VerticalVelocity < 0f && !IsWallSliding)
             {
                 return true;
             }
@@ -802,7 +697,7 @@ public class Player : NetworkBehaviour
     {
         if (!IsWallSliding && !IsTouchingWall && IsWallJumping)
         {
-            if (IsWallJumping && VerticalVelocity > 0f)
+            if (IsWallJumping && Movement.VerticalVelocity > 0f)
             {
                 if (IsPastWallJumpApexThreshold)
                 {
@@ -811,12 +706,12 @@ public class Player : NetworkBehaviour
                     WallJumpFastFallTime = MoveStats.TimeForUpwardsCancel;
 
                     //gets rid of floatiness
-                    ChangeVerticalVelocity(0f);
+                    Movement.ChangeVerticalVelocity(0f);
                 }
                 else
                 {
                     IsWallJumpFastFalling = true;
-                    WallJumpFastFallReleaseSpeed = VerticalVelocity;
+                    WallJumpFastFallReleaseSpeed = Movement.VerticalVelocity;
                 }
             }
         }
@@ -842,10 +737,10 @@ public class Player : NetworkBehaviour
             }
 
             //GRAVITY IN ASCENDING
-            if (VerticalVelocity >= 0f)
+            if (Movement.VerticalVelocity >= 0f)
             {
                 //APEX CONTROLS
-                WallJumpApexPoint = Mathf.InverseLerp(MoveStats.WallJumpDirection.y, 0f, VerticalVelocity);
+                WallJumpApexPoint = Mathf.InverseLerp(MoveStats.WallJumpDirection.y, 0f, Movement.VerticalVelocity);
 
                 if (WallJumpApexPoint > MoveStats.ApexThreshold)
                 {
@@ -860,11 +755,11 @@ public class Player : NetworkBehaviour
                         TimePastWallJumpApexThreshold += Time.fixedDeltaTime;
                         if (TimePastWallJumpApexThreshold < MoveStats.ApexHangTime)
                         {
-                            ChangeVerticalVelocity(0f);
+                            Movement.ChangeVerticalVelocity(0f);
                         }
                         else
                         {
-                            ChangeVerticalVelocity(-0.01f);
+                            Movement.ChangeVerticalVelocity(-0.01f);
                         }
                     }
                 }
@@ -872,7 +767,7 @@ public class Player : NetworkBehaviour
                 //GRAVITY IN ASCENDING BUT NOT PAST APEX THRESHOLD
                 else if (!IsWallJumpFastFalling)
                 {
-                    IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime);
+                    Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime);
 
                     if (IsPastWallJumpApexThreshold)
                     {
@@ -885,10 +780,10 @@ public class Player : NetworkBehaviour
             //GRAVITY ON DESCENDING
             else if (!IsWallJumpFastFalling)
             {
-                IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime);
             }
 
-            else if (VerticalVelocity < 0f)
+            else if (Movement.VerticalVelocity < 0f)
             {
                 if (!IsWallJumpFalling)
                     IsWallJumpFalling = true;
@@ -901,11 +796,11 @@ public class Player : NetworkBehaviour
         {
             if (WallJumpFastFallTime >= MoveStats.TimeForUpwardsCancel)
             {
-                IncrementVerticalVelocity(MoveStats.WallJumpGravity * MoveStats.WallJumpGravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * MoveStats.WallJumpGravityOnReleaseMultiplier * Time.fixedDeltaTime);
             }
             else if (WallJumpFastFallTime < MoveStats.TimeForUpwardsCancel)
             {
-                ChangeVerticalVelocity(Mathf.Lerp(WallJumpFastFallReleaseSpeed, 0f, (WallJumpFastFallTime / MoveStats.TimeForUpwardsCancel)));
+                Movement.ChangeVerticalVelocity(Mathf.Lerp(WallJumpFastFallReleaseSpeed, 0f, (WallJumpFastFallTime / MoveStats.TimeForUpwardsCancel)));
             }
 
             WallJumpFastFallTime += Time.fixedDeltaTime;
@@ -924,7 +819,7 @@ public class Player : NetworkBehaviour
 
         ResetJumpValues();
         WallJumpTime = 0f;
-        ChangeVerticalVelocity(MoveStats.InitialWallJumpVelocity);
+        Movement.ChangeVerticalVelocity(MoveStats.InitialWallJumpVelocity);
 
         int dirMultiplier = 0;
         Vector2 hitDir = _lastWallHit.collider.ClosestPoint(BodyColl.bounds.center);
@@ -935,7 +830,8 @@ public class Player : NetworkBehaviour
         }
         else { dirMultiplier = 1; }
 
-        HorizontalVelocity = ((Mathf.Abs(MoveStats.WallJumpDirection.x)) * dirMultiplier);
+        Vector2 wallJumpDir = new Vector2(Mathf.Abs(MoveStats.WallJumpDirection.x) * dirMultiplier, Movement.VerticalVelocity);
+        Movement.Impulse(wallJumpDir, 0f);
 
         //FX
         //Anim.SetTrigger("jump");
@@ -1049,7 +945,7 @@ public class Player : NetworkBehaviour
         //handle direction if we have no input
         if (closestDirection == Vector2.zero)
         {
-            if (IsFacingRight)
+            if (_isFacingRight)
             {
                 closestDirection = Vector2.right;
             }
@@ -1099,7 +995,7 @@ public class Player : NetworkBehaviour
                 if (!IsJumping && !IsWallJumping)
                 {
                     DashFastFallTime = 0f;
-                    DashFastFallReleaseSpeed = VerticalVelocity;
+                    DashFastFallReleaseSpeed = Movement.VerticalVelocity;
 
                     if (!IsGrounded)
                         IsDashFastFalling = true;
@@ -1108,38 +1004,44 @@ public class Player : NetworkBehaviour
                 return;
             }
 
-            HorizontalVelocity = MoveStats.DashSpeed * DashDirection.x;
+            Vector2 dashDir = new Vector2(MoveStats.DashSpeed * DashDirection.x, 0f);
+            Movement.Impulse(dashDir, 0f);
 
             if (DashDirection.y != 0f || IsAirDashing)
-                ChangeVerticalVelocity(MoveStats.DashSpeed * DashDirection.y);
+                Movement.ChangeVerticalVelocity(MoveStats.DashSpeed * DashDirection.y);
         }
 
         //HANDLE DASH CUT TIME
         else if (IsDashFastFalling)
         {
             //new
-            if (VerticalVelocity > 0f)
+            if (Movement.VerticalVelocity > 0f)
             {
                 if (DashFastFallTime < MoveStats.DashTimeForUpwardsCancel)
                 {
-                    ChangeVerticalVelocity(Mathf.Lerp(DashFastFallReleaseSpeed, 0f, (DashFastFallTime / MoveStats.DashTimeForUpwardsCancel)));
+                    Movement.ChangeVerticalVelocity(Mathf.Lerp(DashFastFallReleaseSpeed, 0f, (DashFastFallTime / MoveStats.DashTimeForUpwardsCancel)));
                 }
                 else if (DashFastFallTime >= MoveStats.DashTimeForUpwardsCancel)
                 {
-                    IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                    Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime);
                 }
 
                 DashFastFallTime += Time.fixedDeltaTime;
             }
             else
             {
-                IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime);
             }
         }
     }
 
     #endregion
 
+    public void SetIsAttacking(bool isAttacking)
+    {
+        IsAttacking = isAttacking;
+    }
+    
     #region Collision Checks
 
     public void CollisionChecks()
@@ -1214,7 +1116,7 @@ public class Player : NetworkBehaviour
     private void CheckForTouchingWall()
     {
         float originEndPoint = 0f;
-        if (IsFacingRight)
+        if (_isFacingRight)
         {
             originEndPoint = BodyColl.bounds.max.x;
         }
@@ -1384,17 +1286,6 @@ public class Player : NetworkBehaviour
             previousPosition = drawPoint;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
     #endregion
 
 }
