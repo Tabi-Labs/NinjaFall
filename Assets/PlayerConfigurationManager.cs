@@ -138,6 +138,7 @@ public class PlayerConfigurationManager : MonoBehaviour
             return;
         }
         SceneLoader.Instance.ChangeScene(gameScene);
+        PlayerSpawner.Instance.SpawnPlayers(playerConfigs);
     }
 
     public void BackToMainMenu()

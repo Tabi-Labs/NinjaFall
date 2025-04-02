@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
+using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,16 +14,40 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField]
     private string sceneName;
     private LateJoinsBehaviour lateJoinsBehaviour;
+    private Transform[] spawnPoints;
 
+    // Singleton Pattern
+    // --------------------------------------------------------------------------------
 
-    //[SerializeField]
-    //private Transform playerBucketTransform;
-
+    public static PlayerSpawner Instance { get; private set; }
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.Log("[Singleton] Trying to instantiate a seccond instance of a singleton class.");
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        foreach (Transform child in transform)
+        {
+            spawnPoints.Append(child);
+        }
+
         if(!NetworkManager)
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+    }
+
+    public void SpawnPlayers(List<PlayerConfiguration> playerConfigs)
+    {
+        for (int i = 0; i < playerConfigs.Count; i++)
+        {
+            GameObject instance = Instantiate(playerPrefab, spawnPoints[i]);
+            instance.GetComponent<SpriteRenderer>().material = playerConfigs[i].playerMaterial;
         }
     }
 
