@@ -280,7 +280,7 @@ public class Player : NetworkBehaviour
     public void Death()
     {
         StateMachine.ChangeState(DeathState);
-        KillsCounter.Instance.PlayerKilled((int)NetworkManager.LocalClientId);
+        //KillsCounter.Instance.PlayerKilled((int)NetworkManager.LocalClientId);
     }
 
     public void DeletePlayer()
