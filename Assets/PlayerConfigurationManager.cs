@@ -18,7 +18,7 @@ public class PlayerConfigurationManager : MonoBehaviour
     public bool[] lockedCharacterData{ get; private set; }
     public int MaxPlayers {get; private set;}
     public int readyCount {get; private set;} = 0;
-    public int hostIndex {get; private set;} = -1;
+    public int playerCount {get; private set;} = 0;
     private List<PlayerConfiguration> playerConfigs;
 
     // Singleton Pattern
@@ -68,7 +68,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         if(csh){
             pi.transform.SetParent(csh.transform);
             pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
-            csh.Activate();
+            csh.Activate(playerCount++);
         }
     }
 
@@ -129,6 +129,20 @@ public class PlayerConfigurationManager : MonoBehaviour
         if(readyCount <= 1) GameStartBanner.SetActive(false);
         lockedCharacterData[index] = false;
         return true;
+    }
+
+    public void StartGame()
+    {
+        if (playerCount < 2){
+            Debug.LogError("Not enough players to start the game.");
+            return;
+        }
+        SceneLoader.Instance.ChangeScene(gameScene);
+    }
+
+    public void BackToMainMenu()
+    {
+        SceneLoader.Instance.ChangeScene(previousScene);
     }
 }
 

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 using TMPro;
+using UnityEditor.SearchService;
 
 public class CharacterSelectorHandler : MonoBehaviour
 {
@@ -38,15 +39,15 @@ public class CharacterSelectorHandler : MonoBehaviour
     private TextMeshProUGUI topText;
     private PlayerConfigurationManager pcm;
 
-    // Properties    
+    // Properties
     public bool isAvailable {get; private set;} = true;
     public bool isSelected {get; private set;} = false;
+    public int playerIndex {get; private set;} = -1;
 
     // Private Variables
     private int currCharacterIdx = 0;
     private CharacterData currCharacterData;
-   
-   
+
     // Initialization and Setup
     // --------------------------------------------------------------------------------
 
@@ -66,9 +67,9 @@ public class CharacterSelectorHandler : MonoBehaviour
         Transform nameText = transform.Find("PortraitPanel/Name");
         nameButton = nameText.GetComponent<Selectable>();
         nameImage = nameText.GetComponent<Image>();
-        
+
         pcm = PlayerConfigurationManager.Instance;
-        
+
         topText.text = defaultTopText;
 
         AddSelectionListeners(leftArrow);
@@ -76,15 +77,16 @@ public class CharacterSelectorHandler : MonoBehaviour
         AddSubmitListeners(nameButton);
         AddCancelListeners(nameButton);
         UpdateCharacterData(currCharacterIdx, 0);
-        
+
         Deactivate();
     }
 
-    public void Activate()
+    public void Activate(int playerIndex)
     {
         StartCoroutine(SetAvailabilityNextFrame(false));
         portraitPanel.gameObject.SetActive(true);
         emptyPanel.gameObject.SetActive(false);
+        this.playerIndex = playerIndex;
     }
 
     private IEnumerator SetAvailabilityNextFrame(bool available)
@@ -98,6 +100,7 @@ public class CharacterSelectorHandler : MonoBehaviour
         isAvailable = true;
         portraitPanel.gameObject.SetActive(false);
         emptyPanel.gameObject.SetActive(true);
+        playerIndex = -1;
     }
 
 
@@ -177,7 +180,11 @@ public class CharacterSelectorHandler : MonoBehaviour
     }
 
     public void OnCancel(BaseEventData eventData){
-        if (!isSelected) return;
+        if (!isSelected){
+            if(playerIndex == 0){
+                pcm.BackToMainMenu();
+            }
+        }
         if (isAvailable) return;
         portraitPanel.DOKill(true);
         pcm.UnlockCharacter(currCharacterIdx);
@@ -190,8 +197,13 @@ public class CharacterSelectorHandler : MonoBehaviour
     }
 
     public void OnSubmit(BaseEventData eventData){
-        if (isSelected) return;
         if (isAvailable) return;
+        if (isSelected) {
+            if (playerIndex == 0){
+                pcm.StartGame();
+            }
+            return;
+        };
         portraitPanel.DOKill(true);
         if (pcm.lockedCharacterData[currCharacterIdx]){
             portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.2f, 5, 1);
@@ -259,5 +271,5 @@ public class CharacterSelectorHandler : MonoBehaviour
     private void ResetSelection()
     {
         eventSystem.SetSelectedGameObject(nameButton.gameObject);
-        }
+    }
 }

@@ -299,8 +299,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd456b4e39f50514cbc63a3dc044e4e3, type: 2}
   - {fileID: 11400000, guid: df079a20b4a21714d9780409eb0c436b, type: 2}
   - {fileID: 11400000, guid: 5924aa73809de454fb056a8592b3128c, type: 2}
-  previousScene: MainMenuScene
-  gameScene: GameScene
+  previousScene: 01_Start_Menu
+  gameScene: 03_Main_Game
   GameStartBanner: {fileID: 2062076157}
 --- !u!114 &132585211
 MonoBehaviour:

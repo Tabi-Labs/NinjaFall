@@ -219,7 +219,7 @@ RectTransform:
   m_Children:
   - {fileID: 459852347}
   - {fileID: 805171888}
-  m_Father: {fileID: 713939202}
+  m_Father: {fileID: 795785389}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -241,6 +241,7 @@ MonoBehaviour:
   _lerpDelay: 1
   _lerpDuration: 2
   _musicID: MX_MainMenu
+  _startButton: {fileID: 319098358}
 --- !u!1 &134406343
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +272,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 795785389}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &134406345
 MonoBehaviour:
@@ -681,7 +682,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 319098355}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -2676,7 +2677,6 @@ GameObject:
   - component: {fileID: 549113146}
   - component: {fileID: 549113145}
   - component: {fileID: 549113144}
-  - component: {fileID: 549113143}
   m_Layer: 5
   m_Name: Scene Transition Canvas
   m_TagString: Untagged
@@ -2704,18 +2704,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &549113143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 549113141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 256d85142cab3494a9d54bb41b8a4e7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &549113144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3140,9 +3128,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 134406345}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: ChangeScene
+      - m_Target: {fileID: 594429480}
+        m_TargetAssemblyTypeName: MenuEventSystemHandler, Assembly-CSharp
+        m_MethodName: LoadScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5050,7 +5038,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 18334701}
   - {fileID: 1194267600}
   - {fileID: 1655405883}
   - {fileID: 594429476}
@@ -5088,8 +5075,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 18334701}
   - {fileID: 528216182}
-  - {fileID: 134406344}
   - {fileID: 1451113694}
   - {fileID: 549113142}
   m_Father: {fileID: 0}
@@ -6906,9 +6893,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 134406345}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: ChangeScene
+      - m_Target: {fileID: 594429480}
+        m_TargetAssemblyTypeName: MenuEventSystemHandler, Assembly-CSharp
+        m_MethodName: LoadScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7039,9 +7026,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 134406345}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: ChangeScene
+      - m_Target: {fileID: 594429480}
+        m_TargetAssemblyTypeName: MenuEventSystemHandler, Assembly-CSharp
+        m_MethodName: LoadScene
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7521,6 +7508,7 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 134406344}
   - {fileID: 795785389}
   - {fileID: 1169637898}
   - {fileID: 1325083520}

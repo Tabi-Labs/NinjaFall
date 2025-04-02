@@ -12,6 +12,22 @@ public class SceneLoader : MonoBehaviour
     [SerializeField]
     float transitionDuration = 0.5f;
 
+    // Singleton instance
+    public static SceneLoader Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // Method to change scene by name
     public void ChangeScene(string sceneName)
     {

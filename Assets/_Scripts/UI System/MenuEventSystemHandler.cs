@@ -172,4 +172,9 @@ public class MenuEventSystemHandler : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(_lastSelected.gameObject);
         }
     }
+
+    public void LoadScene(string sceneName)
+    {
+        SceneLoader.Instance.ChangeScene(sceneName);
+    }
 }
