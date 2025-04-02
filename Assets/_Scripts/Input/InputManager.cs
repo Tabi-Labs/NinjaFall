@@ -12,7 +12,9 @@ public class CustomInputManager : MonoBehaviour
     public event Action MeleeAttackEvent;
     public event Action RangedAttackEvent;
     #endregion
-    public Vector2 Movement;
+
+    private Vector2 _movement;
+    public Vector2 Movement => _movement;
     public bool JumpWasPressed;
     public  bool JumpIsHeld;
     public  bool JumpWasReleased;
@@ -63,7 +65,7 @@ public class CustomInputManager : MonoBehaviour
     }
     private void Update()
     {
-        Movement = _moveAction.ReadValue<Vector2>();
+        _movement = _moveAction.ReadValue<Vector2>();
 
         JumpWasPressed = _jumpAction.WasPressedThisFrame();
         JumpIsHeld = _jumpAction.IsPressed();
