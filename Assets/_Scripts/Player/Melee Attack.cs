@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -59,6 +59,7 @@ public class MeleeAttack : MonoBehaviour
 
         foreach(Collider2D collider in colliders)
         { 
+            
             var damageableComponent = collider.GetComponentInParent<IDamageable>();
             if(damageableComponent != null)
             {
@@ -67,15 +68,30 @@ public class MeleeAttack : MonoBehaviour
                     _debugColor = Color.yellow;
                     continue;
                 }
-                damageableComponent.TakeDamage(_stats.AttackDamage);
-                _debugColor = Color.green;
+                Sequence sequence = DOTween.Sequence();
+                sequence.AppendInterval(_stats.ParryWindow);
+                sequence.AppendCallback(() =>
+                {
+                if(!damageableComponent.IsParrying())
+                {
+                    damageableComponent.TakeDamage(_stats.AttackDamage);
+                    _debugColor = Color.green;
+                }
+                else
+                {
+                    OnMeleeAttackClash(collider.transform);
+                }
+                });
+            
             }
         }
     }
 
-    void OnMeleeAttackClash()
+    void OnMeleeAttackClash(Transform clashTransform)
     {
-        //TODO implement clash
+        var knockbackDir = -(clashTransform.position - transform.position).normalized;
+        knockbackDir *= _stats.KnockbackForce;
+        _player.Movement.Impulse(knockbackDir, _stats.KnockbackTime);
     }
  
     #endregion

@@ -14,7 +14,7 @@ public class PlayerWalkState : PlayerState
         //_player.DisableSwordCollider();
 
         _player.Anim.Play("p_Walk");
-        _player.Anim.SetBool(Player.IS_WALKING, true);
+        //_player.Anim.SetBool(Player.IS_WALKING, true);
     }
 
     public override void StateExit()
@@ -41,7 +41,7 @@ public class PlayerWalkState : PlayerState
 
         else if (Mathf.Abs(_player.InputManager.Movement.x) < _moveStats.MoveThreshold)
         {
-            _player.Anim.SetBool(Player.IS_WALKING, false);
+            //_player.Anim.SetBool(Player.IS_WALKING, false);
 
             _player.StateMachine.ChangeState(_player.IdleState);
 
@@ -93,6 +93,6 @@ public class PlayerWalkState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for acceleration/movement
-        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, _player.InputManager.Movement);
+        _player.Movement.Move(_moveStats.MaxWalkSpeed, _moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
     }
 }

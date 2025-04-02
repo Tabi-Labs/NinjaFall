@@ -36,7 +36,7 @@ public class PlayerWallSlideState : PlayerState
         _player.IsWallSlideFalling = false;
         _player.IsWallSliding = true;
 
-        _player.Anim.SetBool(Player.IS_WALL_SLIDING, true);
+        //_player.Anim.SetBool(Player.IS_WALL_SLIDING, true);
 
         if (_player.MoveStats.ResetJumpsOnWallSlide)
         {
@@ -96,11 +96,11 @@ public class PlayerWallSlideState : PlayerState
     {
         base.StateFixedUpdate();
 
-        _player.ChangeVerticalVelocity(Mathf.Lerp(_player.VerticalVelocity, -_player.MoveStats.WallSlideSpeed, _player.MoveStats.WallSlideDecelerationSpeed * Time.fixedDeltaTime));
+        _player.Movement.ChangeVerticalVelocity(Mathf.Lerp(_player.Movement.VerticalVelocity, -_player.MoveStats.WallSlideSpeed, _player.MoveStats.WallSlideDecelerationSpeed * Time.fixedDeltaTime));
 
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Move(_moveStats.WallJumpMoveAcceleration, _moveStats.WallJumpMoveDeceleration, _player.InputManager.Movement);
+            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration , _player.InputManager.Movement, _moveStats.WallJumpMoveDeceleration);
         }
 
         //movement
@@ -116,16 +116,16 @@ public class PlayerWallSlideState : PlayerState
 
             if (_player.InputManager.Movement.x > 0 && _hitPosition.x > _player.transform.position.x)
             {
-                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, Vector2.zero);
+                _player.Movement.Move(_moveStats.AirAcceleration, Vector2.zero, _moveStats.AirDeceleration);
             }
 
             else if (_player.InputManager.Movement.x < 0 && _hitPosition.x < _player.transform.position.x)
             {
-                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, Vector2.zero);
+                 _player.Movement.Move(_moveStats.AirAcceleration, Vector2.zero, _moveStats.AirDeceleration);
             }
             else
             {
-                _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);
+                _player.Movement.Move(_moveStats.AirAcceleration, _player.InputManager.Movement, _moveStats.AirDeceleration);
             }
         }
     }

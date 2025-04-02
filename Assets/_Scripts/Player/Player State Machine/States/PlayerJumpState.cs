@@ -30,7 +30,7 @@ public class PlayerJumpState : PlayerState
 
         //even though we exit this state immediately, we need to account for movement in case a physics update is called before the transition is made for the sake of smooth movement
 
-        _player.Move(_moveStats.AirAcceleration, _moveStats.AirDeceleration, _player.InputManager.Movement);
+        _player.Movement.Move(_moveStats.AirAcceleration, _player.InputManager.Movement, _moveStats.AirDeceleration);
     }
 
     public override void StateUpdate()

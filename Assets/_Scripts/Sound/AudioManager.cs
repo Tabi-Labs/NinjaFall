@@ -14,7 +14,9 @@ public class AudioManager : MonoBehaviour
     [Header("Sources")]
     [SerializeField] private AudioSource[] music_source;
     [SerializeField] private AudioSource speech_source;
-    [SerializeField] private AudioSource sound_source;
+    //[SerializeField] private AudioSource sound_source;
+    [SerializeField] private GameObject sound_prefab;
+    private PoolingManager audio_pool = new PoolingManager();
 
     private float fade_duration = 0.5f;
 
@@ -41,6 +43,8 @@ public class AudioManager : MonoBehaviour
         music_list.InitializeList();
         speech_list.InitializeList();
         sound_list.InitializeList();
+
+        audio_pool.InitializePool(sound_prefab, sound_prefab.transform);
     }
     #endregion
 
@@ -48,12 +52,15 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator MonitorAudioProgress(AudioSource audio_source)
     {
-        while (audio_source.time + 0.05f < audio_source.clip.length)
+        if (audio_source == null) yield break;
+
+        while (audio_source != null && (audio_source.time + 0.05f < audio_source.clip.length))
         { 
             yield return null;
         }
 
-        Destroy(audio_source.gameObject);
+        if(audio_source != null)
+            Destroy(audio_source.gameObject);
     }
 
     private void PlayAudio(int source, AudioClip clip, Vector3 position = new Vector3())
@@ -80,12 +87,15 @@ public class AudioManager : MonoBehaviour
                 speech_source.PlayOneShot(clip);
                 break;
             case 2:
-                //AudioSource.PlayClipAtPoint(clip, position);
-                AudioSource audio_source = Instantiate(sound_source, position, Quaternion.identity);
-                audio_source.clip = clip;
-                audio_source.Play();
-
-                StartCoroutine(MonitorAudioProgress(audio_source));
+                GameObject audio_source = audio_pool.GetObject();
+                AudioSource source_component = audio_source.GetComponent<AudioSource>();
+                if (source_component.isPlaying)
+                {
+                    Debug.LogWarning("The requested audio source " + audio_source.name + " is busy. Consider expanding the pooling");
+                }
+                audio_source.transform.position = position;
+                source_component.clip = clip;
+                source_component.Play();
                 break;
         }
     }
@@ -147,10 +157,10 @@ public class AudioManager : MonoBehaviour
                 speech_source.Pause();
                 break;
             case 2:
-                var sounds = GameObject.FindObjectsOfType<AudioSource>();
-                foreach (var sound in sounds)
+                foreach (GameObject gO in audio_pool.pool)
                 {
-                    if (sound.name == "SoundSource(Clone)") { sound.GetComponent<AudioSource>().Pause(); }
+                    AudioSource source_component = gO.GetComponent<AudioSource>();
+                    if (source_component.isPlaying) { source_component.Pause(); }
                 }
                 break;
             default:
@@ -192,7 +202,7 @@ public class AudioManager : MonoBehaviour
     }
     #endregion
 
-    #region Pause
+    #region Resume
     private void ResumeAudio(int source)
     {
         switch (source)
@@ -206,10 +216,10 @@ public class AudioManager : MonoBehaviour
                 speech_source.UnPause();
                 break;
             case 2:
-                var sounds = GameObject.FindObjectsOfType<AudioSource>();
-                foreach (var sound in sounds)
+                foreach (GameObject gO in audio_pool.pool)
                 {
-                    if (sound.name == "SoundSource(Clone)") { sound.GetComponent<AudioSource>().UnPause(); }
+                    AudioSource source_component = gO.GetComponent<AudioSource>();
+                    if (!source_component.isPlaying) { source_component.UnPause(); }
                 }
                 break;
             default:

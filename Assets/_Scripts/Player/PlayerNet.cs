@@ -16,7 +16,7 @@ public class PlayerNet : NetworkBehaviour
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
-    public InputManager InputManager {get; private set;}
+    public CustomInputManager InputManager {get; private set;}
 
     [Header("FX")]
     public GameObject JumpParticles;
@@ -148,7 +148,7 @@ public class PlayerNet : NetworkBehaviour
         RB = GetComponent<Rigidbody2D>();
         Anim = GetComponent<Animator>();
         GhostTrail = GetComponent<GhostTrail>();
-        InputManager = GetComponent<InputManager>();
+        InputManager = GetComponent<CustomInputManager>();
 
         WallSlideParticles.gameObject.SetActive(false);
 

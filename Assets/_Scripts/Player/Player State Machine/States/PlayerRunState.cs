@@ -12,8 +12,8 @@ public class PlayerRunState : PlayerState
     {
         base.StateEnter();
         _player.Anim.Play("p_Walk");
-        _player.Anim.SetBool(Player.IS_WALKING, true);
-        _player.Anim.SetBool(Player.IS_RUNNING, true);
+        /* _player.Anim.SetBool(Player.IS_WALKING, true);
+        _player.Anim.SetBool(Player.IS_RUNNING, true); */
     }
 
     public override void StateExit()
@@ -34,8 +34,8 @@ public class PlayerRunState : PlayerState
         //transitions
         if (Mathf.Abs(_player.InputManager.Movement.x) < _moveStats.MoveThreshold)
         {
-            _player.Anim.SetBool(Player.IS_WALKING, false);
-            _player.Anim.SetBool(Player.IS_RUNNING, false);
+            //_player.Anim.SetBool(Player.IS_WALKING, false);
+            //_player.Anim.SetBool(Player.IS_RUNNING, false);
 
             _player.StateMachine.ChangeState(_player.IdleState);
 
@@ -44,7 +44,7 @@ public class PlayerRunState : PlayerState
 
         else if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld)
         {
-            _player.Anim.SetBool(Player.IS_RUNNING, false);
+            //_player.Anim.SetBool(Player.IS_RUNNING, false);
 
             _player.StateMachine.ChangeState(_player.WalkState);
 
@@ -102,12 +102,12 @@ public class PlayerRunState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for acceleration/movement
-        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, _player.InputManager.Movement);
+        _player.Movement.Move(_moveStats.MaxRunSpeed, _moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
     }
 
     private void HandleSpeedParticles()
     {
-        if (Mathf.Abs(_player.HorizontalVelocity) >= _player.MoveStats.MaxRunSpeed - 2f)
+        if (Mathf.Abs(_player.Movement.HorizontalVelocity) >= _player.MoveStats.MaxRunSpeed - 2f)
         {
             if (!_player.SpeedParticles.isPlaying)
             {
