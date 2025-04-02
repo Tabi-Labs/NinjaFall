@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -16,6 +17,24 @@ public class PlayerSpawner : NetworkBehaviour
     //[SerializeField]
     //private Transform playerBucketTransform;
 
+    private void Awake()
+    {
+        if(!NetworkManager)
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Cambiar a que instancie segun la estructura de datos
+        Instantiate(playerPrefab);
+    }
+    void OnDisable()
+    {
+        if(!NetworkManager)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     public override void OnNetworkSpawn()
     {
