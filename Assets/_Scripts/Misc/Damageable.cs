@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using DG.Tweening;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -12,7 +14,7 @@ public class Damageable : MonoBehaviour, IDamageable
     private int _hitEffectAmount = Shader.PropertyToID("_HitEffectAmount");
     private bool inmune = false;
 
-    private Transform[] spawnPoints;
+    private List<Transform> spawnPoints = new List<Transform>();
 
     private SpriteRenderer[] _spriteRenderers;
     private Material[] _materials;
@@ -31,7 +33,34 @@ public class Damageable : MonoBehaviour, IDamageable
 
     }
 
-   
+    void Start()
+    {
+        LoadSpots();
+    }
+
+    void LoadSpots()
+    {
+        GameObject[] foundSpots = GameObject.FindGameObjectsWithTag("Spot"); 
+
+        // Comprobar si se han encontrado spots
+        if (foundSpots.Length == 0)
+        {
+            Debug.LogWarning("No se encontraron objetos con la etiqueta 'Spot'.");
+            return; 
+        }
+
+
+        // Asignar los transform de los spots a spawnPoints
+        for (int i = 0; i < foundSpots.Length; i++)
+        {
+            if (foundSpots[i] != null)
+            {
+                spawnPoints.Add(foundSpots[i].transform);
+            }
+        }
+    }
+
+
     public void TakeDamage(float damage)
     {
 
@@ -66,9 +95,20 @@ public class Damageable : MonoBehaviour, IDamageable
 
     void Spawn()
     {
-        // TODO: Spawn aleatorio del jugador
-        
+        int spawnPointIndex = Random.Range(0, spawnPoints.Count);
 
+        Transform newSpot = spawnPoints[spawnPointIndex];
+
+        Vector3 newPosition = newSpot.position + new Vector3(GetRandomSign(), 0, 0);
+
+        transform.position = newPosition;
+
+
+    }
+
+    private float GetRandomSign()
+    {
+        return Random.Range(0, 2) == 0 ? 1.0f : -1.0f;
     }
 
     private void HitAnimation()
