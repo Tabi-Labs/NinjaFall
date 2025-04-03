@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Damageable : MonoBehaviour, IDamageable
 {   
@@ -9,6 +10,9 @@ public class Damageable : MonoBehaviour, IDamageable
     [SerializeField] private float _hitEffectDuration = 0.1f;
     private float _lerpAmount;
     private int _hitEffectAmount = Shader.PropertyToID("_HitEffectAmount");
+    private bool inmune = false;
+
+    private Transform[] spawnPoints;
 
     private SpriteRenderer[] _spriteRenderers;
     private Material[] _materials;
@@ -22,17 +26,49 @@ public class Damageable : MonoBehaviour, IDamageable
         {  
             _materials[i] = _spriteRenderers[i].material;
         }
+
+        
+
     }
+
+   
     public void TakeDamage(float damage)
     {
-        HitAnimation();
-        OnDamageTaken();
-        
+
+        if (!inmune)
+        {
+            HitAnimation();
+            OnDamageTaken();
+        } else
+        {
+            Spawn();
+        }
+
+        StartCoroutine(RemoveImmunityAfterDelay(0.5f));
+    }
+
+    public void SetInmune(bool inmune)
+    {
+        this.inmune = inmune;
     }
 
     protected virtual void OnDamageTaken()
     {
         //override this function to add more functionality
+    }
+
+    private IEnumerator RemoveImmunityAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        inmune = false; // Desactivar la inmunidad después del tiempo
+        Debug.Log("La inmunidad ha terminado.");
+    }
+
+    void Spawn()
+    {
+        // TODO: Spawn aleatorio del jugador
+        
+
     }
 
     private void HitAnimation()

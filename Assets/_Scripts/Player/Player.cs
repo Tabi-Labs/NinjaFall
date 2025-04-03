@@ -97,7 +97,8 @@ public class Player : NetworkBehaviour
 
     public bool ToxicBuff {  get; private set; }
 
-    public bool Inmune {  get; private set; }
+    public bool InmuneToxic {  get; private set; }
+
 
     //jump vars
     public float VerticalVelocity { get; set; }
@@ -278,14 +279,15 @@ public class Player : NetworkBehaviour
         EffectManager.ApplyStatusEffect(effect, this.GameObject());
     }
 
-    public void SetInmune(bool inmune)
+
+    public void SetInmuneToxic(bool inmune)
     {
-        this.Inmune = inmune;
+        this.InmuneToxic = inmune;
     }
 
-    public bool IsInmune()
+    public bool IsInmuneToxic()
     {
-        return Inmune;
+        return InmuneToxic;
     }
 
     #endregion

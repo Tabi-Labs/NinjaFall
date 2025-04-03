@@ -60,7 +60,7 @@ public class ToxicParticlesTrigger : MonoBehaviour
 
         Player player = collider.GetComponentInParent<Player>();
 
-        if ( player != null && player.IsInmune())
+        if ( player != null && player.IsInmuneToxic())
         {
             return;
         }

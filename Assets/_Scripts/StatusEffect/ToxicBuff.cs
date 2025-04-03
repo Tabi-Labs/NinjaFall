@@ -11,7 +11,7 @@ public class ToxicBuff : StatusEffect
         if (_player != null)
         {
             _player.SetToxicBuff(true);
-            _player.SetInmune(true);
+            _player.SetInmuneToxic(true);
         }
     }
 
@@ -22,7 +22,7 @@ public class ToxicBuff : StatusEffect
         if (_player != null)
         {
             _player.SetToxicBuff(false);
-            _player.SetInmune(false);
+            _player.SetInmuneToxic(false);
         }
     }
 }
