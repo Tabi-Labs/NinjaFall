@@ -14127,6 +14127,7 @@ MonoBehaviour:
   DashParticles: {fileID: 0}
   WallSlideParticles: {fileID: 0}
   HeightTracker: {fileID: 0}
+  OnPlayerDeath: {fileID: 0}
   ShowEnteredStateDebugLog: 0
 --- !u!1 &1148567374
 GameObject:
@@ -17242,7 +17243,6 @@ MonoBehaviour:
   P2TextMesh: {fileID: 673088383}
   P3TextMesh: {fileID: 985620531}
   P4TextMesh: {fileID: 1307012957}
-  localPlayerCount: 1
 --- !u!1 &71383274891555235
 GameObject:
   m_ObjectHideFlags: 0

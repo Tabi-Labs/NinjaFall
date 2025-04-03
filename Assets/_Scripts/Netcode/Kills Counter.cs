@@ -18,23 +18,29 @@ public class KillsCounter : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI P4TextMesh;
 
     private TextMeshProUGUI[] playerTextMeshes;  // Arreglo de TextMeshProUGUI generados
+    private int[] localLives = new int[4] { 5, 5, 5, 5 };
 
     // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tamaño del array de players
     private int localPlayerCount = 3;
-
-    private void Awake()
+    public override void OnNetworkSpawn()
     {
-        Instance = this;
-
+        base.OnNetworkSpawn();
+        
         // Inicializamos las NetworkVariables para las vidas de cada jugador
         for (int i = 0; i < 4; i++)
         {
             playerLives[i] = new NetworkVariable<int>(5);
         }
+        Initialize();
     }
-
-    private void Start()
+    private void Awake()
     {
+        if (!NetworkManager)
+            Initialize();
+    }
+    private void Initialize()
+    {
+        Instance = this;
         GeneratePlayerTextMeshes();  // Generamos los TextMeshPro en la UI
         UpdateUI();  // Actualizamos la UI según las vidas iniciales de los jugadores
     }
@@ -42,21 +48,15 @@ public class KillsCounter : NetworkBehaviour
     // Método para ser llamado cuando un jugador mata a otro
     public void PlayerKilled(int playerID)
     {
-        if (IsServer || IsHost)
-        {
-            // Restamos una vida al jugador que murió
-            DecreaseLives(playerID);
-        }
-        else
-        {
-            // Si es cliente, le pedimos al servidor que lo haga
+
             SubmitKillServerRpc(playerID);
-        }
+
     }
 
     // Restamos una vida al jugador que murió
     private void DecreaseLives(int playerID)
     {
+        Debug.Log($"Jugador {playerID + 1} ha sido eliminado. Vidas restantes: {GetLives(playerID) - 1}");
         // Decrementamos las vidas del jugador
         playerLives[playerID].Value--;
 
@@ -75,7 +75,7 @@ public class KillsCounter : NetworkBehaviour
     // Método para obtener las vidas de un jugador (basado en su ID)
     private int GetLives(int playerID)
     {
-        return playerLives[playerID].Value;
+        return (NetworkManager) ? playerLives[playerID].Value : localLives[playerID];
     }
 
     // Método que maneja lo que pasa cuando un jugador se queda sin vidas
@@ -92,13 +92,13 @@ public class KillsCounter : NetworkBehaviour
         playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
         // Si estamos en modo multijugador, usamos el número de clientes conectados
-        int numberOfPlayers = (NetworkManager) ?
+        int numberOfPlayers = (IsServer || IsHost) ?
             NetworkManager.Singleton.ConnectedClients.Count : localPlayerCount;
 
         // Aquí activamos/desactivamos los TextMeshPro según el número de jugadores
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (i < numberOfPlayers)
+            if (i < 3)
             {
                 playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
             }
@@ -112,17 +112,12 @@ public class KillsCounter : NetworkBehaviour
     // Actualizamos la UI en todos los clientes
     private void UpdateUI()
     {
-        if (NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsHost)
+        for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            // Iteramos a través de los jugadores y actualizamos su UI
-            for (int i = 0; i < playerLives.Length; i++)
+            if (playerTextMeshes[i] != null && playerTextMeshes[i].gameObject.activeSelf)
             {
-                // Aseguramos que solo actualizamos el texto para jugadores activos
-                if (playerTextMeshes[i] != null && playerTextMeshes[i].gameObject.activeSelf)
-                {
-                    // Cambiamos el formato del texto a "P+IDJugador: X Vidas"
-                    playerTextMeshes[i].text = "P" + (i + 1) + ": " + playerLives[i].Value + " Vidas";
-                }
+                int lives = GetLives(i);
+                playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
             }
         }
     }
