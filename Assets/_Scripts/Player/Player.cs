@@ -25,6 +25,7 @@ public class Player : NetworkBehaviour
     [Header("FX")]
     public GameObject JumpParticles;
     public GameObject SecondJumpParticles;
+    public GameObject ToxicParticles;
     public GameObject LandParticles;
     public Transform ParticleSpawnTransform;
     public TrailRenderer TrailRenderer;
@@ -93,6 +94,10 @@ public class Player : NetworkBehaviour
 
     // attack vars
     public bool IsAttacking { get; private set; }
+
+    public bool ToxicBuff {  get; private set; }
+
+    public bool Inmune {  get; private set; }
 
     //jump vars
     public float VerticalVelocity { get; set; }
@@ -271,6 +276,16 @@ public class Player : NetworkBehaviour
     {
         Debug.Log("Effect manager aplica efecto");
         EffectManager.ApplyStatusEffect(effect, this.GameObject());
+    }
+
+    public void SetInmune(bool inmune)
+    {
+        this.Inmune = inmune;
+    }
+
+    public bool IsInmune()
+    {
+        return Inmune;
     }
 
     #endregion
@@ -1320,8 +1335,19 @@ public class Player : NetworkBehaviour
 
     #region FX
 
+    public void SetToxicBuff(bool buff)
+    {
+        ToxicBuff = buff;
+    }
+
+    public bool IsToxicBuffActive()
+    {
+        return ToxicBuff;
+    }
+
     public void SpawnJumpParticles(GameObject particlesToSpawn)
     {
+
         Instantiate(particlesToSpawn, ParticleSpawnTransform.position, Quaternion.identity);
     }
 

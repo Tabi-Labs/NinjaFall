@@ -405,8 +405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buffPrefabs:
   - {fileID: 2336691694653834552, guid: 562ff48d14388224daf9f7c7257bba71, type: 3}
-  - {fileID: 877132933890674336, guid: 95c6436b0740130458fe12af15de47c5, type: 3}
-  - {fileID: 8869890544649212729, guid: 7e4e6564cc9ec3c4b8ec56c50bd1c889, type: 3}
+  - {fileID: 3173432899295892857, guid: 7a9327ca5ae3983499131c99c947ad04, type: 3}
   spawnPoints:
   - {fileID: 1555052382}
   - {fileID: 1069542877}
@@ -580,7 +579,7 @@ GameObject:
   - component: {fileID: 539054866}
   m_Layer: 3
   m_Name: TilemapCollider
-  m_TagString: Untagged
+  m_TagString: Obstacles
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4642,7 +4641,7 @@ GameObject:
   - component: {fileID: 1923061799}
   m_Layer: 3
   m_Name: Tilemap
-  m_TagString: Untagged
+  m_TagString: Obstacles
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

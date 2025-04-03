@@ -52,7 +52,14 @@ public class PlayerWalkState : PlayerState
         {
             if (_player.CanJump())
             {
-                _player.SpawnJumpParticles(_player.JumpParticles);
+                if (_player.IsToxicBuffActive())
+                {
+                    _player.SpawnJumpParticles(_player.ToxicParticles);
+                }
+                else
+                {
+                    _player.SpawnJumpParticles(_player.JumpParticles);
+                }
 
                 _player.StateMachine.ChangeState(_player.JumpState);
 

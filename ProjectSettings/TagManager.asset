@@ -7,6 +7,7 @@ TagManager:
   - GameUIData
   - Sword
   - Gravity Area
+  - Obstacles
   layers:
   - Default
   - TransparentFX
