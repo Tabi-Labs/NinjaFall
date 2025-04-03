@@ -13,6 +13,7 @@ public class PlayerDeathState : PlayerState
         base.StateEnter();
        
         _player.Anim.Play("p_Death");
+        _player.OnPlayerDeath.Raise(_player, null);
     }
 
     public override void StateExit()
@@ -28,7 +29,7 @@ public class PlayerDeathState : PlayerState
 
     public override void StateUpdate()
     {
-        // Transición a Idle si la animación de ataque ha terminado
+        // Transiciï¿½n a Idle si la animaciï¿½n de ataque ha terminado
         if (_player.Anim.GetCurrentAnimatorStateInfo(0).IsName("p_Death") &&
             _player.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
         {

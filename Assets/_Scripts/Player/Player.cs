@@ -18,6 +18,7 @@ public class Player : NetworkBehaviour
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
 
+
     [Header("FX")]
     public GameObject JumpParticles;
     public GameObject SecondJumpParticles;
@@ -33,6 +34,9 @@ public class Player : NetworkBehaviour
 
     [Header("Height Tracker")]
     public Transform HeightTracker;
+
+    [Header("Events")]
+    public GameEvent OnPlayerDeath;
 
     [Header("Debug")]
     public bool ShowEnteredStateDebugLog = false;
@@ -1041,7 +1045,7 @@ public class Player : NetworkBehaviour
     {
         IsAttacking = isAttacking;
     }
-    
+
     #region Collision Checks
 
     public void CollisionChecks()
