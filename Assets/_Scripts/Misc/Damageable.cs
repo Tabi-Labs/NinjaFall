@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using DG.Tweening;
+using Unity.Netcode;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 using UnityEngine;

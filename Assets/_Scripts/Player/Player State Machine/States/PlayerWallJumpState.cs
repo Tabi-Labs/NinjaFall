@@ -31,7 +31,7 @@ public class PlayerWallJumpState : PlayerState
 
         //movement
 
-        _player.Movement.Move(_moveStats.WallJumpMoveAcceleration, _player.InputManager.Movement, _moveStats.WallJumpMoveDeceleration);
+        _player.Movement.Move(_moveStats.WallJumpMoveAcceleration, _player.GetMovement(), _moveStats.WallJumpMoveDeceleration);
         
     }
 

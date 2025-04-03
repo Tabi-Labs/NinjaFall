@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : NetworkBehaviour
 {
@@ -184,6 +185,8 @@ public class Player : NetworkBehaviour
     private void InitRigidbody() => RB = GetComponent<Rigidbody2D>();
     private void InitAnimator() =>  Anim = GetComponent<Animator>();
     private void InitGhostTrail() => GhostTrail = GetComponent<GhostTrail>();
+
+    private void InitEffectManager() => EffectManager = GetComponent<StatusEffectManager>();
     #endregion
 
     #region ---- GETTERS / SETTERS ----
@@ -217,7 +220,8 @@ public class Player : NetworkBehaviour
         InitMovement();  
         InitAnimator();
         InitRigidbody();
-        InitGhostTrail(); 
+        InitGhostTrail();
+        InitEffectManager();
 
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
@@ -240,8 +244,8 @@ public class Player : NetworkBehaviour
 
     public void ApplyEffect(StatusEffect effect)
     {
-        Debug.Log("Effect manager aplica efecto");
-        EffectManager.ApplyStatusEffect(effect, this.GameObject());
+        Debug.Log("Effect manager aplica efecto " + effect.name + " al jugador: ", this.gameObject);
+        EffectManager.ApplyStatusEffect(effect, gameObject);
     }
 
 
@@ -295,6 +299,18 @@ public class Player : NetworkBehaviour
     public void SetInvertControlDebuff(bool invertControl)
     {
         InvertControlDebuff = invertControl;
+    }
+
+    public Vector2 GetMovement()
+    {
+        Vector2 movement = InputManager.Movement;
+
+        if (InvertControlDebuff)
+        {
+            movement.x = -movement.x;
+        }
+
+        return movement;
     }
 
 

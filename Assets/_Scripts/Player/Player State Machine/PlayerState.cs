@@ -56,7 +56,15 @@ public class PlayerState
         //handle falling (might happen with a low enough deceleration after movement stops)
 
         _player.CheckForFalling();
-        _player.TurnCheck(_player.Input().Movement);
+
+        Vector2 movement = _player.Input().Movement;
+
+        if (_player.InvertControlDebuff)
+        {
+            movement.x = -movement.x;
+        }
+
+        _player.TurnCheck(movement);
          
     }
 

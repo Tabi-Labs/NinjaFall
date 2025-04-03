@@ -32,7 +32,7 @@ public class PlayerIdleState : PlayerState
             return;
         }
 
-        else if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld)
+        else if ((Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld) || _player.SpeedBuff)
         {
             _player.StateMachine.ChangeState(_player.RunState);
             return;
@@ -93,6 +93,8 @@ public class PlayerIdleState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for deceleration
-        _player.Movement.Move(_moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
+
+
+        _player.Movement.Move(_moveStats.GroundAcceleration, _player.GetMovement(), _moveStats.GroundDeceleration);
     }
 }

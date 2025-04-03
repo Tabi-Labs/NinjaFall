@@ -32,7 +32,7 @@ public class PlayerRunState : PlayerState
 
 
         //transitions
-        if (Mathf.Abs(_player.InputManager.Movement.x) < _moveStats.MoveThreshold)
+        if (Mathf.Abs(_player.InputManager.Movement.x) < _moveStats.MoveThreshold && !_player.SpeedBuff)
         {
             //_player.Anim.SetBool(Player.IS_WALKING, false);
             //_player.Anim.SetBool(Player.IS_RUNNING, false);
@@ -42,7 +42,7 @@ public class PlayerRunState : PlayerState
             return;
         }
 
-        else if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld)
+        else if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && !_player.InputManager.RunIsHeld && !_player.SpeedBuff)
         {
             //_player.Anim.SetBool(Player.IS_RUNNING, false);
 
@@ -109,7 +109,8 @@ public class PlayerRunState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for acceleration/movement
-        _player.Movement.Move(_moveStats.MaxRunSpeed, _moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
+
+        _player.Movement.Move(_moveStats.MaxRunSpeed, _moveStats.GroundAcceleration, _player.GetMovement(), _moveStats.GroundDeceleration);
     }
 
     private void HandleSpeedParticles()
