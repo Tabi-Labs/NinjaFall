@@ -404,8 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buffPrefabs:
-  - {fileID: 2336691694653834552, guid: 562ff48d14388224daf9f7c7257bba71, type: 3}
-  - {fileID: 3173432899295892857, guid: 7a9327ca5ae3983499131c99c947ad04, type: 3}
+  - {fileID: 2026671363326652256, guid: 4e22970402c765443bfa7ae5bd9eeb65, type: 3}
   spawnPoints:
   - {fileID: 1555052382}
   - {fileID: 1069542877}
@@ -1801,7 +1800,7 @@ GameObject:
   - component: {fileID: 866701632}
   m_Layer: 0
   m_Name: Spot3
-  m_TagString: Untagged
+  m_TagString: Spot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3795,7 +3794,7 @@ GameObject:
   - component: {fileID: 1069542877}
   m_Layer: 0
   m_Name: Spot2
-  m_TagString: Untagged
+  m_TagString: Spot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4492,7 +4491,7 @@ GameObject:
   - component: {fileID: 1555052382}
   m_Layer: 0
   m_Name: Spot1
-  m_TagString: Untagged
+  m_TagString: Spot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4523,7 +4522,7 @@ GameObject:
   - component: {fileID: 1600620671}
   m_Layer: 0
   m_Name: Spot4
-  m_TagString: Untagged
+  m_TagString: Spot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5615,7 +5614,7 @@ GameObject:
   - component: {fileID: 1998752200}
   m_Layer: 0
   m_Name: Spot5
-  m_TagString: Untagged
+  m_TagString: Spot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -8,6 +8,7 @@ TagManager:
   - Sword
   - Gravity Area
   - Obstacles
+  - Spot
   layers:
   - Default
   - TransparentFX
