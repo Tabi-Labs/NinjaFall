@@ -4969,7 +4969,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5768919808336617083}
-  - component: {fileID: 7852143630486293491}
+  - component: {fileID: 8517245640764526601}
   m_Layer: 7
   m_Name: Feet
   m_TagString: Player
@@ -4992,7 +4992,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7958636296872414868}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &7852143630486293491
+--- !u!58 &8517245640764526601
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5024,9 +5024,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.01, y: -0.225}
+  m_Offset: {x: 0, y: -0.22}
   serializedVersion: 2
-  m_Radius: 0.056255043
+  m_Radius: 0.08
 --- !u!1 &1353751817239124350
 GameObject:
   m_ObjectHideFlags: 0
@@ -5181,6 +5181,7 @@ GameObject:
   - component: {fileID: 5227078153217827377}
   - component: {fileID: 419467689843979511}
   - component: {fileID: 3356373829068391031}
+  - component: {fileID: 7190624549323204343}
   - component: {fileID: 8362286837060557456}
   - component: {fileID: 961465876201758951}
   - component: {fileID: 8915735389700008266}
@@ -5272,7 +5273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveStats: {fileID: 11400000, guid: bf363a2298578c34390ef3717ccb4c06, type: 2}
-  FeetColl: {fileID: 7852143630486293491}
+  FeetColl: {fileID: 8517245640764526601}
   HeadColl: {fileID: 8164072107759422263}
   BodyColl: {fileID: 1008354027835368250}
   JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
@@ -5285,7 +5286,20 @@ MonoBehaviour:
   DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
   WallSlideParticles: {fileID: 2940781082615036196}
   HeightTracker: {fileID: 1280714515081318487}
+  OnPlayerDeath: {fileID: 11400000, guid: 09b9bff2cbddd704693658c819239dbb, type: 2}
   ShowEnteredStateDebugLog: 1
+--- !u!114 &7190624549323204343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2c16419e998904b8d6b23b48372223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8362286837060557456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5327,6 +5341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b9297d8eee6a624b9c607a4922f38c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canParry: 0
+  _isParrying: 0
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
   spawnPoints:
@@ -5335,6 +5351,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
 --- !u!212 &7882907021759217884
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5444,7 +5461,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerInput: {fileID: 0}
-  Movement: {x: 0, y: 0}
   JumpWasPressed: 0
   JumpIsHeld: 0
   JumpWasReleased: 0

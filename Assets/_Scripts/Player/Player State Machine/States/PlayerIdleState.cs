@@ -93,6 +93,6 @@ public class PlayerIdleState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for deceleration
-        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, _player.InputManager.Movement);
+        _player.Movement.Move(_moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
     }
 }

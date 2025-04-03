@@ -100,6 +100,6 @@ public class PlayerWalkState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for acceleration/movement
-        _player.Move(_moveStats.GroundAcceleration, _moveStats.GroundDeceleration, _player.InputManager.Movement);
+        _player.Movement.Move(_moveStats.MaxWalkSpeed, _moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
     }
 }

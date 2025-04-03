@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using DG.Tweening;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
+
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public class Damageable : MonoBehaviour, IDamageable
+public class Damageable : NetworkBehaviour, IDamageable
 {   
+    [Header("DEBUGGING"), SerializeField] private bool _canParry;
+    [SerializeField] protected bool _isParrying;
     [SerializeField] private Material _hitEffectMaterial;
     [SerializeField] private float _hitEffectDuration = 0.1f;
     private float _lerpAmount;
@@ -89,7 +92,7 @@ public class Damageable : MonoBehaviour, IDamageable
     private IEnumerator RemoveImmunityAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        inmune = false; // Desactivar la inmunidad después del tiempo
+        inmune = false; // Desactivar la inmunidad despuï¿½s del tiempo
         Debug.Log("La inmunidad ha terminado.");
     }
 
@@ -151,5 +154,13 @@ public class Damageable : MonoBehaviour, IDamageable
         _lerpAmount = newValue;
     }
 
-    
+    public virtual bool CanParry()
+    {
+        return _canParry;
+    }
+
+    public virtual bool IsParrying()
+    {
+        return _isParrying;
+    }
 }
