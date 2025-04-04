@@ -528,8 +528,8 @@ public class Player : NetworkBehaviour
         {
             if (!IsFalling)
             {
-                Anim.ResetTrigger(LAND);
-                Anim.SetTrigger(FALL);
+                //Anim.ResetTrigger(LAND);
+                //Anim.SetTrigger(FALL);
                 IsFalling = true;
 
                 if (!IsAttacking)

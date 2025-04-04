@@ -57,7 +57,7 @@ MonoBehaviour:
   DebugShowIsGroundedBox: 1
   DebugShowHeadBumpBox: 1
   DebugShowWallHitBox: 1
-  DebugShowHeightLogOnLand: 1
+  DebugShowHeightLogOnLand: 0
   TimeScale: 1
   ShowWalkJumpArc: 1
   ShowRunJumpArc: 1
