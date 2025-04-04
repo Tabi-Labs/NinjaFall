@@ -31,3 +31,5 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 9509656a8d0b73e4880e2bd260eaadf7, type: 3}
   - id: FX_Placeholder
     clip: {fileID: 8300000, guid: 329a67900d593914c8df9fb7f74a06c2, type: 3}
+  - id: FX_SwordClash
+    clip: {fileID: 8300000, guid: 5faf0d28613fa854291a27d1ba123b9f, type: 3}

@@ -16,6 +16,7 @@ public class MeleeAttack : MonoBehaviour
     private IDamageable _selfDamageable;
     private Color _debugColor = Color.red;
 
+    private Vector3 hitPoint;
     #region ----- UNITY CALLBACKS -------
 
     void Awake()
@@ -47,9 +48,9 @@ public class MeleeAttack : MonoBehaviour
 
     void Melee()
     {
-        var boxCenter = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
+        hitPoint = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
         var boxSize = new Vector2(_stats.MeleeAttackRange, _stats.AttackHeight);
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(boxCenter, boxSize, 0f);
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(hitPoint, boxSize, 0f);
 
         if(colliders.Length == 0) 
         {
@@ -92,8 +93,15 @@ public class MeleeAttack : MonoBehaviour
         var knockbackDir = -(clashTransform.position - transform.position).normalized;
         knockbackDir *= _stats.KnockbackForce;
         _player.Movement.Impulse(knockbackDir, _stats.KnockbackTime);
+
+        ClashEffects();
     }
- 
+    
+    void ClashEffects()
+    {
+        if(AudioManager.Instance) AudioManager.PlaySound("FX_SwordClash");
+        VFXManager.PlayVFX("VFX_Impact", hitPoint, Quaternion.identity);
+    }
     #endregion
 
     #region ---- DEBUG ------
