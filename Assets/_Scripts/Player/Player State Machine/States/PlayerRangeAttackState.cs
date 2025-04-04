@@ -55,7 +55,7 @@ public class PlayerRangeAttackState : PlayerState
             }
 
             // Transici�n a Run si el jugador comienza a correr
-            if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld)
+            if ((Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld) || _player.SpeedBuff)
             {
                 _player.StateMachine.ChangeState(_player.RunState);
                 return;

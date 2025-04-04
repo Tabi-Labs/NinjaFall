@@ -100,7 +100,8 @@ public class PlayerWallSlideState : PlayerState
 
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration , _player.InputManager.Movement, _moveStats.WallJumpMoveDeceleration);
+
+            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration , _player.GetMovement(), _moveStats.WallJumpMoveDeceleration);
         }
 
         //movement
@@ -125,7 +126,7 @@ public class PlayerWallSlideState : PlayerState
             }
             else
             {
-                _player.Movement.Move(_moveStats.AirAcceleration, _player.InputManager.Movement, _moveStats.AirDeceleration);
+                _player.Movement.Move(_moveStats.AirAcceleration, _player.GetMovement(), _moveStats.AirDeceleration);
             }
         }
     }
