@@ -17,6 +17,8 @@ public class MeleeAttack : MonoBehaviour
     private Color _debugColor = Color.red;
 
     private Vector3 hitPoint;
+
+
     #region ----- UNITY CALLBACKS -------
 
     void Awake()

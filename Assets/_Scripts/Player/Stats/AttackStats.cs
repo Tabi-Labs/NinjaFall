@@ -7,6 +7,7 @@ public class AttackStats : ScriptableObject
 {
     public float AttackDamage;
     public float MeleeAttackRange;
+    [SerializeField, Range(0,5)] public int MaxShurikens;
     public float RangedAttackRange;
     public float AttackHeight;
     public float AttackRate;

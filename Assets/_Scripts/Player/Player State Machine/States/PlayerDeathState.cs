@@ -16,6 +16,7 @@ public class PlayerDeathState : PlayerState
         _player.OnPlayerDeath.Raise(_player, null);
 
         _player.Input().Disable();
+        _player.Movement.Stop();
     }
 
     public override void StateExit()

@@ -18,7 +18,8 @@ public class RangedAttack : NetworkBehaviour
     private bool wallBuff = false;
     private float gravityDebuff = 1.0f;
     private float gravityIgnoreTimer = 0.4f;
-
+    public int ShurikensCount{get;private set;}
+    public GameEvent shurikenAmmoEvent;
     private Color _debugColor = Color.red;
 
     #region ----- UNITY CALLBACKS -------
@@ -61,8 +62,14 @@ public class RangedAttack : NetworkBehaviour
         }
         else
         {
+           
+            
+            if (ShurikensCount >= _attackStats.MaxShurikens) return;
             var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
             projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer,gravityDebuff);
+            ShurikensCount++;
+            if(ShurikensCount > _attackStats.MaxShurikens) ShurikensCount = _attackStats.MaxShurikens;
+            shurikenAmmoEvent.Raise(_player, ShurikensCount);
         }
 
         //projectile.GetComponent<Projectile>().Init(_stats);
@@ -105,5 +112,23 @@ public class RangedAttack : NetworkBehaviour
         Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _attackStats.RangedAttackRange, color);
     }
 
+    public void OnShurikenPickedUp()
+    {   
+        ShurikensCount--;
+        if (ShurikensCount < 0) ShurikensCount = 0;
+    
+        shurikenAmmoEvent.Raise(_player, ShurikensCount);
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Shuriken"))
+        {
+            var shuriken = collision.GetComponent<ProjectileBehaviour>();
+            if(shuriken.IsMoving) return;
+            Destroy(shuriken.gameObject);
+            OnShurikenPickedUp();
+        }
+    }
     #endregion
 }
