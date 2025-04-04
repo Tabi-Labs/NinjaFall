@@ -32,7 +32,7 @@ public class PlayerWalkState : PlayerState
             return;
         }
 
-        if (Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld)
+        if ((Mathf.Abs(_player.InputManager.Movement.x) > _moveStats.MoveThreshold && _player.InputManager.RunIsHeld) || _player.SpeedBuff)
         {
             _player.StateMachine.ChangeState(_player.RunState);
             return;
@@ -52,7 +52,14 @@ public class PlayerWalkState : PlayerState
         {
             if (_player.CanJump())
             {
-                _player.SpawnJumpParticles(_player.JumpParticles);
+                if (_player.IsToxicBuffActive())
+                {
+                    _player.SpawnJumpParticles(_player.ToxicParticles);
+                }
+                else
+                {
+                    _player.SpawnJumpParticles(_player.JumpParticles);
+                }
 
                 _player.StateMachine.ChangeState(_player.JumpState);
 
@@ -93,6 +100,8 @@ public class PlayerWalkState : PlayerState
         base.StateFixedUpdate();
 
         //this gets called here for acceleration/movement
-        _player.Movement.Move(_moveStats.MaxWalkSpeed, _moveStats.GroundAcceleration, _player.InputManager.Movement, _moveStats.GroundDeceleration);
+
+
+        _player.Movement.Move(_moveStats.MaxWalkSpeed, _moveStats.GroundAcceleration, _player.GetMovement(), _moveStats.GroundDeceleration);
     }
 }

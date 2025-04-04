@@ -9,10 +9,15 @@ public class RangedAttack : NetworkBehaviour
     private Player _player;
     private IDamageable _selfDamageable;
     [Header("STATS")]
-    [SerializeField] AttackStats _stats;
+    [SerializeField] AttackStats _attackStats;
     [Header("PROJECTILE")]
     [SerializeField] GameObject _projectilePrefab;
     [SerializeField] Transform _projectileSpawnPoint;
+
+
+    private bool wallBuff = false;
+    private float gravityDebuff = 1.0f;
+    private float gravityIgnoreTimer = 0.4f;
 
     private Color _debugColor = Color.red;
 
@@ -36,7 +41,7 @@ public class RangedAttack : NetworkBehaviour
 
     void Update()
     {
-        if(_stats.DebugAttackArea)
+        if(_attackStats.DebugAttackArea)
             DebugAttack(_debugColor);
     }
 
@@ -57,22 +62,47 @@ public class RangedAttack : NetworkBehaviour
         else
         {
             var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-            projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+            projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer,gravityDebuff);
         }
 
         //projectile.GetComponent<Projectile>().Init(_stats);
     }
+
+    public void ApplyGravity(float newGravity)
+    {
+        Debug.Log("Clase Ranged Attack");
+
+        gravityDebuff = newGravity;
+
+        if (newGravity > 1.0f)
+        {
+            gravityIgnoreTimer = 0.0f;
+        }
+        else
+        {
+            gravityIgnoreTimer = 0.4f;
+        }
+
+    }
+
+    public void ApplyWallBuff(bool buff)
+    {
+        Debug.Log("Shuriken wall buff - Se intenta aplicar: " + buff);
+        wallBuff = buff;
+
+    }
+
     [Rpc(SendTo.Server)]
     void RequestSpawnProjectileRPC()
     {
         var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true);
+        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer, gravityDebuff);
         NetworkObject networkObject = projectile.GetComponent<NetworkObject>();
         networkObject.Spawn();
     }
     void DebugAttack(Color color)
     {
-        Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _stats.RangedAttackRange, color);
+        Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _attackStats.RangedAttackRange, color);
     }
 
     #endregion

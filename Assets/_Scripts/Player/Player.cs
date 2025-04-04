@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class Player : NetworkBehaviour
 {
@@ -19,9 +20,12 @@ public class Player : NetworkBehaviour
     public GhostTrail GhostTrail { get; private set; }
 
 
+    public StatusEffectManager EffectManager { get; private set; }
+
     [Header("FX")]
     public GameObject JumpParticles;
     public GameObject SecondJumpParticles;
+    public GameObject ToxicParticles;
     public GameObject LandParticles;
     public Transform ParticleSpawnTransform;
     public TrailRenderer TrailRenderer;
@@ -91,11 +95,20 @@ public class Player : NetworkBehaviour
 
     private bool _isFacingRight = true;
 
+    public bool SpeedBuff { get; private set; }
+
+    public bool InvertControlDebuff { get; private set; }
+
     // death vars
     public bool IsDeath { get; private set; }
 
     // attack vars
     public bool IsAttacking { get; private set; }
+
+    public bool ToxicBuff {  get; private set; }
+
+    public bool InmuneToxic {  get; private set; }
+
 
     //jump vars
     public bool IsJumping { get; set; }
@@ -172,6 +185,8 @@ public class Player : NetworkBehaviour
     private void InitRigidbody() => RB = GetComponent<Rigidbody2D>();
     private void InitAnimator() =>  Anim = GetComponent<Animator>();
     private void InitGhostTrail() => GhostTrail = GetComponent<GhostTrail>();
+
+    private void InitEffectManager() => EffectManager = GetComponent<StatusEffectManager>();
     #endregion
 
     #region ---- GETTERS / SETTERS ----
@@ -205,7 +220,8 @@ public class Player : NetworkBehaviour
         InitMovement();  
         InitAnimator();
         InitRigidbody();
-        InitGhostTrail(); 
+        InitGhostTrail();
+        InitEffectManager();
 
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
@@ -224,6 +240,23 @@ public class Player : NetworkBehaviour
     {
         if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateFixedUpdate();
+    }
+
+    public void ApplyEffect(StatusEffect effect)
+    {
+        Debug.Log("Effect manager aplica efecto " + effect.name + " al jugador: ", this.gameObject);
+        EffectManager.ApplyStatusEffect(effect, gameObject);
+    }
+
+
+    public void SetInmuneToxic(bool inmune)
+    {
+        this.InmuneToxic = inmune;
+    }
+
+    public bool IsInmuneToxic()
+    {
+        return InmuneToxic;
     }
 
     #endregion
@@ -256,6 +289,30 @@ public class Player : NetworkBehaviour
             transform.Rotate(0f, -180f, 0f);
         }
     }
+
+
+    public void SetSpeedBuff(bool speedBuff)
+    {
+        SpeedBuff = speedBuff;
+    }
+
+    public void SetInvertControlDebuff(bool invertControl)
+    {
+        InvertControlDebuff = invertControl;
+    }
+
+    public Vector2 GetMovement()
+    {
+        Vector2 movement = InputManager.Movement;
+
+        if (InvertControlDebuff)
+        {
+            movement.x = -movement.x;
+        }
+
+        return movement;
+    }
+
 
     #endregion
    
@@ -1201,8 +1258,19 @@ public class Player : NetworkBehaviour
 
     #region FX
 
+    public void SetToxicBuff(bool buff)
+    {
+        ToxicBuff = buff;
+    }
+
+    public bool IsToxicBuffActive()
+    {
+        return ToxicBuff;
+    }
+
     public void SpawnJumpParticles(GameObject particlesToSpawn)
     {
+
         Instantiate(particlesToSpawn, ParticleSpawnTransform.position, Quaternion.identity);
     }
 

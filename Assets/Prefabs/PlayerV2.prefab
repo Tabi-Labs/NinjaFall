@@ -5179,7 +5179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8602396005169628399}
   - component: {fileID: 5227078153217827377}
-  - component: {fileID: 1533841538458920446}
+  - component: {fileID: 419467689843979511}
   - component: {fileID: 3356373829068391031}
   - component: {fileID: 7190624549323204343}
   - component: {fileID: 8362286837060557456}
@@ -5190,6 +5190,7 @@ GameObject:
   - component: {fileID: 6175670069529148351}
   - component: {fileID: 965640323693487313}
   - component: {fileID: 7804810165732104520}
+  - component: {fileID: 5861120358706129540}
   m_Layer: 0
   m_Name: PlayerV2
   m_TagString: Player
@@ -5238,7 +5239,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1533841538458920446
+--- !u!114 &419467689843979511
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5250,8 +5251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 337236508
-  InScenePlacedSourceGlobalObjectIdHash: 607330330
+  GlobalObjectIdHash: 112830355
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -5277,6 +5278,7 @@ MonoBehaviour:
   BodyColl: {fileID: 1008354027835368250}
   JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
   SecondJumpParticles: {fileID: 7613757481095289963, guid: cd4faf7013b831b498a109c771a95e87, type: 3}
+  ToxicParticles: {fileID: 4476422978619088364, guid: bb09990889e6e3f46b90302eb6e12691, type: 3}
   LandParticles: {fileID: 5835083849461746053, guid: 427c1d73877fed8479897748b827ba28, type: 3}
   ParticleSpawnTransform: {fileID: 8247011537788828137}
   TrailRenderer: {fileID: 265306988447210922}
@@ -5324,7 +5326,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _attackStats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   _projectileSpawnPoint: {fileID: 1775966953388830712}
 --- !u!114 &8915735389700008266
@@ -5343,6 +5345,12 @@ MonoBehaviour:
   _isParrying: 0
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
+  spawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
 --- !u!212 &7882907021759217884
 SpriteRenderer:
@@ -5491,6 +5499,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &5861120358706129540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 245fae0f2a2e5d042907b06f1c0eed95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0

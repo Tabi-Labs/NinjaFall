@@ -17,6 +17,6 @@ MonoBehaviour:
   RedirectionAcceleration: 30
   MaxFallSpeed: -10
   Gravity: 9.8
-  GravityIgnoreTime: 0.4
+  GravityIgnoreTime: 0
   Damage: 10
   OwnerInvulnerabilityTime: 0.5

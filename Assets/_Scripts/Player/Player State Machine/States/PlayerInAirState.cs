@@ -28,7 +28,14 @@ public class PlayerInAirState : PlayerState
         {
             if (_player.CanJump())
             {
-                _player.SpawnJumpParticles(_player.JumpParticles);
+                if (_player.IsToxicBuffActive())
+                {
+                    _player.SpawnJumpParticles(_player.ToxicParticles);
+                }
+                else
+                {
+                    _player.SpawnJumpParticles(_player.JumpParticles);
+                }
 
                 _player.StateMachine.ChangeState(_player.JumpState);
 
@@ -116,20 +123,21 @@ public class PlayerInAirState : PlayerState
     {
         base.StateFixedUpdate();
 
-       /*  _player.JumpPhysics();
-        _player.WallJumpPhysics();
-        _player.DashPhysics(); */
+        /*  _player.JumpPhysics();
+         _player.WallJumpPhysics();
+         _player.DashPhysics(); */
+
 
 
         //movement
         if (_player.UseWallJumpMoveStats)
         {
-            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration, _player.InputManager.Movement,_moveStats.WallJumpMoveDeceleration);
+            _player.Movement.Move(_moveStats.WallJumpMoveAcceleration, _player.GetMovement(), _moveStats.WallJumpMoveDeceleration);
         }
 
         else
         {
-            _player.Movement.Move(_moveStats.AirAcceleration, _player.InputManager.Movement, _moveStats.AirDeceleration);     
+            _player.Movement.Move(_moveStats.AirAcceleration, _player.GetMovement(), _moveStats.AirDeceleration);     
         }
     }
 }
