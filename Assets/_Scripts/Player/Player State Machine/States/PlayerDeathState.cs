@@ -14,6 +14,8 @@ public class PlayerDeathState : PlayerState
        
         _player.Anim.Play("p_Death");
         _player.OnPlayerDeath.Raise(_player, null);
+
+        _player.Input().Disable();
     }
 
     public override void StateExit()

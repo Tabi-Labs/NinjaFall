@@ -48,20 +48,39 @@ public class CustomInputManager : MonoBehaviour
         _meleeAttackAction.performed += OnMeleeAttack;
     }
 
+    public void Enable()
+    {
+        _moveAction.Enable();
+        _jumpAction.Enable();
+        _runAction.Enable();
+        _dashAction.Enable();
+        _meleeAttackAction.Enable();
+        _rangeAttackAction.Enable();
+        _testAction.Enable();
+
+        _rangeAttackAction.performed += OnRangeAttack;
+        _meleeAttackAction.performed += OnMeleeAttack;
+    }
+    public void Disable()
+    {
+        _moveAction.Disable();
+        _jumpAction.Disable();
+        _runAction.Disable();
+        _dashAction.Disable();
+        _meleeAttackAction.Disable();
+        _rangeAttackAction.Disable();
+        _testAction.Disable();
+
+        _rangeAttackAction.performed -= OnRangeAttack;
+        _meleeAttackAction.performed -= OnMeleeAttack;
+    }
     void OnDisable()
     {
-         _rangeAttackAction.performed -= OnRangeAttack;
-        _meleeAttackAction.performed -= OnMeleeAttack;
+          Disable();
     }
     private void OnEnable()
     {
-       /*   if(_inputActions == null)
-        {
-            _inputActions = new Controls();
-            _inputActions.Player.AddCallbacks(this);
-        }
-        _inputActions.Player.SetCallbacks(this);
-        _inputActions.Player.Enable(); */
+        Enable();
     }
     private void Update()
     {
