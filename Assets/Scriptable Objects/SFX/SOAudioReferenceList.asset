@@ -33,3 +33,11 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 329a67900d593914c8df9fb7f74a06c2, type: 3}
   - id: FX_SwordClash
     clip: {fileID: 8300000, guid: 5faf0d28613fa854291a27d1ba123b9f, type: 3}
+  - id: FX_Death
+    clip: {fileID: 8300000, guid: ce52383583218d343ba0913e2e743888, type: 3}
+  - id: FX_ShurikenThrow
+    clip: {fileID: 8300000, guid: 896320f5f8b61e644afd669ed402e50e, type: 3}
+  - id: FX_ShurikenHit
+    clip: {fileID: 8300000, guid: 627c89dad471de3449e08c7d79e2013a, type: 3}
+  - id: FX_NoShurikens
+    clip: {fileID: 8300000, guid: 648c754771a7eea4ab64fc4d5f1889b5, type: 3}

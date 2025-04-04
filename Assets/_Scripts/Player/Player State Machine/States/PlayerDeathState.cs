@@ -14,9 +14,11 @@ public class PlayerDeathState : PlayerState
        
         _player.Anim.Play("p_Death");
         _player.OnPlayerDeath.Raise(_player, null);
-
+        
         _player.Input().Disable();
         _player.Movement.Stop();
+
+        AudioManager.PlaySound("FX_Death");
     }
 
     public override void StateExit()

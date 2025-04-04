@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class CustomInputManager : MonoBehaviour
 {
-    public PlayerInput PlayerInput;
+    private PlayerInput PlayerInput;
 
     #region --- INPUT EVENTS ----
     public event Action MeleeAttackEvent;
@@ -15,14 +15,14 @@ public class CustomInputManager : MonoBehaviour
 
     private Vector2 _movement;
     public Vector2 Movement => _movement;
-    public bool JumpWasPressed;
-    public  bool JumpIsHeld;
-    public  bool JumpWasReleased;
-    public  bool RunIsHeld;
-    public  bool DashWasPressed;
-    public  bool TestWasPressed;
-    public bool MeleeAttackWasPressed;
-    public bool RangeAttackWasPressed;
+    public bool JumpWasPressed {get; private set; }
+    public  bool JumpIsHeld{get; private set; }
+    public  bool JumpWasReleased{get; private set; }
+    public  bool RunIsHeld{get; private set; }
+    public  bool DashWasPressed{get; private set; }
+    public  bool TestWasPressed{get; private set; }
+    public bool MeleeAttackWasPressed{get; private set; }
+    public bool RangeAttackWasPressed{get; private set; }
 
     private InputAction _moveAction;
     private InputAction _jumpAction;

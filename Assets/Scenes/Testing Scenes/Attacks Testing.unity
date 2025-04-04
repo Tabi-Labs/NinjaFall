@@ -11208,6 +11208,10 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2023912440
       objectReference: {fileID: 0}
+    - target: {fileID: 965640323693487313, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+      propertyPath: DashWasPressed
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
       propertyPath: m_Name
       value: PlayerV2
@@ -14086,15 +14090,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fecb34f4a64864cbc29996a93d3397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerInput: {fileID: 0}
-  JumpWasPressed: 0
-  JumpIsHeld: 0
-  JumpWasReleased: 0
-  RunIsHeld: 0
-  DashWasPressed: 0
-  TestWasPressed: 0
-  MeleeAttackWasPressed: 0
-  RangeAttackWasPressed: 0
 --- !u!114 &1712285363
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -102,7 +102,7 @@ public class ProjectileBehaviour : MonoBehaviour
     private void OnObstacleHit(Vector3 hitPoint, Collider2D collision)
     {
         Debug.Log("Shuriken wall buff on hit: " + _shurikenWallBuff);
-
+        AudioManager.PlaySound("FX_ShurikenHit");
         if (_shurikenWallBuff)
         {
             isFollowingEdge = true;

@@ -64,9 +64,15 @@ public class RangedAttack : NetworkBehaviour
         {
            
             
-            if (ShurikensCount >= _attackStats.MaxShurikens) return;
+            if (ShurikensCount >= _attackStats.MaxShurikens) 
+            {
+                AudioManager.PlaySound("FX_NoShurikens");
+                VFXManager.PlayVFX("VFX_OutOfAmmo", _projectileSpawnPoint.position, Quaternion.LookRotation(transform.up, transform.right), transform);
+                return;
+            }
             var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
             projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer,gravityDebuff);
+            AudioManager.PlaySound("FX_ShurikenThrow");
             ShurikensCount++;
             if(ShurikensCount > _attackStats.MaxShurikens) ShurikensCount = _attackStats.MaxShurikens;
             shurikenAmmoEvent.Raise(_player, ShurikensCount);
