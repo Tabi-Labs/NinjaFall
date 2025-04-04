@@ -5531,15 +5531,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6fecb34f4a64864cbc29996a93d3397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerInput: {fileID: 0}
-  JumpWasPressed: 0
-  JumpIsHeld: 0
-  JumpWasReleased: 0
-  RunIsHeld: 0
-  DashWasPressed: 0
-  TestWasPressed: 0
-  MeleeAttackWasPressed: 0
-  RangeAttackWasPressed: 0
 --- !u!114 &7804810165732104520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5553,7 +5544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: 142a6349e24cce44cbe1f1da3ac37920, type: 3}
-  m_NotificationBehavior: 0
+  m_NotificationBehavior: 2
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -5564,7 +5555,51 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e4f38097-14c3-4772-b176-0b17da4166fe
+    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1c967a53-2cff-4885-a05a-7f402b1c3e47
+    m_ActionName: Player/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a3f2134c-f0d3-4edb-9724-956c09da356d
+    m_ActionName: Player/Run[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 4285a490-605f-450f-99b8-d1faa4b8c3ca
+    m_ActionName: Player/Dash[/Keyboard/q]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 793aec22-4dd3-4064-9567-71a9b20f0bd6
+    m_ActionName: Player/Test
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e718ad6b-9a4f-479b-b487-b6c2ec27a5ad
+    m_ActionName: Player/MeleeAttack[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 965640323693487313}
+        m_TargetAssemblyTypeName: CustomInputManager, Assembly-CSharp
+        m_MethodName: OnRangeAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 84fce8e4-cedb-4baa-beaa-598bc84249fd
+    m_ActionName: Player/RangeAttack[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0e2fc271-fc84-4933-83d1-ed8f061c1daa
+    m_ActionName: Player/Aim[/Mouse/position]
   m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
