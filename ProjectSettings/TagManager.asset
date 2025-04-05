@@ -9,6 +9,7 @@ TagManager:
   - Gravity Area
   - Obstacles
   - Spot
+  - Shuriken
   layers:
   - Default
   - TransparentFX
