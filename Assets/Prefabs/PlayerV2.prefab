@@ -5250,7 +5250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 607330330
+  GlobalObjectIdHash: 337236508
   InScenePlacedSourceGlobalObjectIdHash: 607330330
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5284,7 +5284,9 @@ MonoBehaviour:
   DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
   WallSlideParticles: {fileID: 2940781082615036196}
   HeightTracker: {fileID: 1280714515081318487}
+  dontDestroyOnLoadFlag: 1
   ShowEnteredStateDebugLog: 1
+  isReady: 0
 --- !u!114 &7190624549323204343
 MonoBehaviour:
   m_ObjectHideFlags: 0

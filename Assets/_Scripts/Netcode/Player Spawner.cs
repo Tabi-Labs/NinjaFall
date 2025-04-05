@@ -14,7 +14,7 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField]
     private string sceneName;
     private LateJoinsBehaviour lateJoinsBehaviour;
-    private Transform[] spawnPoints;
+    private List<Transform> spawnPoints;
 
     // Singleton Pattern
     // --------------------------------------------------------------------------------
@@ -31,9 +31,11 @@ public class PlayerSpawner : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(Instance);
         }
+
+        spawnPoints = new List<Transform>();
         foreach (Transform child in transform)
         {
-            spawnPoints.Append(child);
+            spawnPoints.Add(child);
         }
 
         if(!NetworkManager)
@@ -42,20 +44,39 @@ public class PlayerSpawner : NetworkBehaviour
         }
     }
 
-    public void SpawnPlayers(List<PlayerConfiguration> playerConfigs)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        for (int i = 0; i < playerConfigs.Count; i++)
+        SpawnPlayers();
+    }
+
+    public void SpawnPlayers()
+    {
+        GameObject[] tagPlayer = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] players = tagPlayer.Where(x => {
+                                            Player player = x.GetComponent<Player>();
+                                            return player != null && player.isReady;
+                                        }).ToArray();
+
+        for(int i = 0; players.Length > i; i++)
         {
-            GameObject instance = Instantiate(playerPrefab, spawnPoints[i]);
-            instance.GetComponent<SpriteRenderer>().material = playerConfigs[i].playerMaterial;
+            Transform spawnPoint = spawnPoints[i];
+            players[i].transform.position = spawnPoint.position;
+            players[i].transform.rotation = spawnPoint.rotation;
+            enablePlayerFields(players[i]);
         }
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void enablePlayerFields(GameObject player)
     {
-        // Cambiar a que instancie segun la estructura de datos
-        Instantiate(playerPrefab);
+        MonoBehaviour[] components = player.GetComponents<MonoBehaviour>();
+        foreach (MonoBehaviour component in components)
+        {
+            component.enabled = true;
+        }
+        player.GetComponent<SpriteRenderer>().enabled = true;
+        player.GetComponent<Animator>().enabled = true;
     }
+
     void OnDisable()
     {
         if(!NetworkManager)

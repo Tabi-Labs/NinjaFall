@@ -18,8 +18,6 @@ public class PlayerConfigurationManager : MonoBehaviour
     public bool[] lockedCharacterData{ get; private set; }
     public int MaxPlayers {get; private set;}
     public int readyCount {get; private set;} = 0;
-    public int playerCount {get; private set;} = 0;
-    private List<PlayerConfiguration> playerConfigs;
 
     // Singleton Pattern
     // --------------------------------------------------------------------------------
@@ -35,8 +33,6 @@ public class PlayerConfigurationManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(Instance);
-            playerConfigs = new List<PlayerConfiguration>();
         }
         lockedCharacterData = new bool[characterDatas.Length];
         for (int i = 0; i < lockedCharacterData.Length; i++)
@@ -64,26 +60,24 @@ public class PlayerConfigurationManager : MonoBehaviour
             }
         }
 
+        MonoBehaviour[] components = pi.GetComponents<MonoBehaviour>();
+        foreach (MonoBehaviour component in components)
+        {
+            if (component is PlayerInput) continue;
+            component.enabled = false;
+        }
+        pi.GetComponent<SpriteRenderer>().enabled = false;
+        pi.GetComponent<Animator>().enabled = false;
+
         // Assign PlayerInput to CharacterSelectorHandler
         if(csh){
-            pi.transform.SetParent(csh.transform);
             pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
-            csh.Activate(playerCount++);
+            csh.Activate(pi);
         }
     }
 
     // Getters and Setters
     // --------------------------------------------------------------------------------
-
-    public List<PlayerConfiguration> GetPlayerConfigs()
-    {
-        return playerConfigs;
-    }
-
-    public void SetPlayerColor(int index, Material color)
-    {
-        playerConfigs[index].playerMaterial = color;
-    }
 
     public bool GetCharacterData(int currentIndex, int direction, out CharacterData data, out int newIndex, out bool isLocked)
     {
@@ -103,62 +97,56 @@ public class PlayerConfigurationManager : MonoBehaviour
         return true;
     }
 
-    public bool LockCharacter(int index)
+    public bool LockCharacter(int charIdx, PlayerInput pi)
     {
-        if (index < 0 || index >= lockedCharacterData.Length)
+        if (charIdx < 0 || charIdx >= lockedCharacterData.Length)
         {
-            Debug.LogError("Index out of range: " + index);
+            Debug.LogError("charIdx out of range: " + charIdx);
             return false;
         }
 
-        lockedCharacterData[index] = true;
+        lockedCharacterData[charIdx] = true;
         readyCount++;
+
+        pi.GetComponent<SpriteRenderer>().material = characterDatas[charIdx].mat;
+        pi.GetComponent<Player>().isReady = true;
+
         if(readyCount >= 2) GameStartBanner.SetActive(true);
         return true;
     }
 
-    public bool UnlockCharacter(int index)
+    public bool UnlockCharacter(int charIdx, PlayerInput pi)
     {
-        if (index < 0 || index >= lockedCharacterData.Length)
+        if (charIdx < 0 || charIdx >= lockedCharacterData.Length)
         {
-            Debug.LogError("Index out of range: " + index);
+            Debug.LogError("charIdx out of range: " + charIdx);
             return false;
         }
 
+        pi.GetComponent<Player>().isReady = false;
+
         readyCount--;
         if(readyCount <= 1) GameStartBanner.SetActive(false);
-        lockedCharacterData[index] = false;
+        lockedCharacterData[charIdx] = false;
         return true;
     }
 
     public void StartGame()
     {
-        if (playerCount < 2){
+        if (readyCount < 2){
             Debug.LogError("Not enough players to start the game.");
             return;
         }
         SceneLoader.Instance.ChangeScene(gameScene);
-        PlayerSpawner.Instance.SpawnPlayers(playerConfigs);
     }
 
     public void BackToMainMenu()
     {
+        GameObject[] tagPlayer = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in tagPlayer)
+        {
+            Destroy(player);
+        }
         SceneLoader.Instance.ChangeScene(previousScene);
     }
-}
-
-// Auxiliary Class
-// --------------------------------------------------------------------------------
-public class PlayerConfiguration
-{
-    public PlayerConfiguration(PlayerInput pi)
-    {
-        PlayerIndex = pi.playerIndex;
-        Input = pi;
-    }
-
-    public PlayerInput Input { get; private set; }
-    public int PlayerIndex { get; private set; }
-    public bool isReady { get; set; }
-    public Material playerMaterial {get; set;}
 }
