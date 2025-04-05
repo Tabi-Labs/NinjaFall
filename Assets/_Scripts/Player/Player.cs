@@ -4,7 +4,8 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
-using static UnityEditor.Experimental.GraphView.GraphView;
+using UnityEngine.InputSystem;
+
 
 public class Player : NetworkBehaviour
 {
@@ -19,7 +20,7 @@ public class Player : NetworkBehaviour
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
-
+    private PlayerInput _playerInput;
 
     public StatusEffectManager EffectManager { get; private set; }
 
@@ -228,6 +229,7 @@ public class Player : NetworkBehaviour
         InitRigidbody();
         InitGhostTrail();
         KillsCounter = FindObjectOfType<KillsCounter>();
+        _playerInput = GetComponent<PlayerInput>();
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
         if(dontDestroyOnLoadFlag) DontDestroyOnLoad(this.gameObject);
@@ -343,7 +345,8 @@ public class Player : NetworkBehaviour
     {
         //if (!IsOwner) return;
         StateMachine.ChangeState(DeathState);
-        KillsCounter.Instance.PlayerKilled((int)NetworkManager.LocalClientId);
+        Debug.Log("Player ID: "+ _playerInput.playerIndex);
+        KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
     }
 
     public void DeletePlayer()

@@ -21,13 +21,13 @@ public class KillsCounter : NetworkBehaviour
     private int[] localLives = new int[4] { 5, 5, 5, 5 };
 
     // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tamaño del array de players
-    private int localPlayerCount = 3;
+    private int localPlayerCount;
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         
         // Inicializamos las NetworkVariables para las vidas de cada jugador
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < NetworkManager.ConnectedClients.Count; i++)
         {
             playerLives[i] = new NetworkVariable<int>(5);
         }
@@ -36,7 +36,11 @@ public class KillsCounter : NetworkBehaviour
     private void Awake()
     {
         if (!NetworkManager)
+        {
+            localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
             Initialize();
+        }
+            
     }
     private void Initialize()
     {
@@ -48,8 +52,10 @@ public class KillsCounter : NetworkBehaviour
     // Método para ser llamado cuando un jugador mata a otro
     public void PlayerKilled(int playerID)
     {
-
-            SubmitKillServerRpc(playerID);
+            if(NetworkManager)
+                SubmitKillServerRpc(playerID);
+            else
+                DecreaseLives(playerID);
 
     }
 
@@ -58,7 +64,11 @@ public class KillsCounter : NetworkBehaviour
     {
         Debug.Log($"Jugador {playerID + 1} ha sido eliminado. Vidas restantes: {GetLives(playerID) - 1}");
         // Decrementamos las vidas del jugador
-        playerLives[playerID].Value--;
+        if (NetworkManager)
+            playerLives[playerID].Value--;
+        else
+            localLives[playerID]--;
+
 
         // Comprobamos si el jugador se quedó sin vidas
         if (GetLives(playerID) <= 0)
@@ -98,7 +108,7 @@ public class KillsCounter : NetworkBehaviour
         // Aquí activamos/desactivamos los TextMeshPro según el número de jugadores
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (i < 3)
+            if (i < numberOfPlayers)
             {
                 playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
             }

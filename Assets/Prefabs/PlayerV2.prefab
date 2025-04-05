@@ -5279,6 +5279,7 @@ MonoBehaviour:
   BodyColl: {fileID: 1008354027835368250}
   JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
   SecondJumpParticles: {fileID: 7613757481095289963, guid: cd4faf7013b831b498a109c771a95e87, type: 3}
+  ToxicParticles: {fileID: 0}
   LandParticles: {fileID: 5835083849461746053, guid: 427c1d73877fed8479897748b827ba28, type: 3}
   ParticleSpawnTransform: {fileID: 8247011537788828137}
   TrailRenderer: {fileID: 265306988447210922}
@@ -5328,7 +5329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 662a206cc5292b948adbd82692e14d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
+  _attackStats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
   _projectilePrefab: {fileID: 9129203332263702124, guid: d00009ccb5bedd04b9fddad0da2f93aa, type: 3}
   _projectileSpawnPoint: {fileID: 1775966953388830712}
 --- !u!114 &8915735389700008266
