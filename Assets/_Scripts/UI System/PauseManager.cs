@@ -53,7 +53,7 @@ public class PauseManager : MonoBehaviour
         {
             if (player.GetComponent<CustomInputManager>() != null)
             {
-                player.GetComponent<CustomInputManager>().enabled = pause;
+                player.GetComponent<CustomInputManager>().enabled = !pause;
             }
 
         }
