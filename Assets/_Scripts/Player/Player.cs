@@ -4,7 +4,8 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using Unity.Netcode;
-using static UnityEditor.Experimental.GraphView.GraphView;
+using UnityEngine.InputSystem;
+
 
 public class Player : NetworkBehaviour
 {
@@ -15,10 +16,11 @@ public class Player : NetworkBehaviour
     [SerializeField] private Collider2D FeetColl;
     [SerializeField] private Collider2D HeadColl;
     [SerializeField] private Collider2D BodyColl;
+    private KillsCounter KillsCounter;
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     public GhostTrail GhostTrail { get; private set; }
-
+    private PlayerInput _playerInput;
 
     public StatusEffectManager EffectManager { get; private set; }
 
@@ -39,11 +41,16 @@ public class Player : NetworkBehaviour
     [Header("Height Tracker")]
     public Transform HeightTracker;
 
+    [Header("Dont Destroy On Load")]
+    public bool dontDestroyOnLoadFlag = true;
+
     [Header("Events")]
     public GameEvent OnPlayerDeath;
 
     [Header("Debug")]
     public bool ShowEnteredStateDebugLog = false;
+
+    public bool isReady = false;
 
     //animation vars
     public const string IS_WALKING = "isWalking";
@@ -221,10 +228,11 @@ public class Player : NetworkBehaviour
         InitAnimator();
         InitRigidbody();
         InitGhostTrail();
-        InitEffectManager();
-
+        KillsCounter = FindObjectOfType<KillsCounter>();
+        _playerInput = GetComponent<PlayerInput>();
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
+        if(dontDestroyOnLoadFlag) DontDestroyOnLoad(this.gameObject);
     }
     private void OnDisable()
     {
@@ -331,17 +339,20 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void DeathRPC()
     {
-        StateMachine.ChangeState(DeathState);
+        Death();
     }
     public void Death()
     {
+        //if (!IsOwner) return;
         StateMachine.ChangeState(DeathState);
+        Debug.Log("Player ID: "+ _playerInput.playerIndex);
+        KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
     }
 
     public void DeletePlayer()
     {
         if(!NetworkManager)
-            Destroy(gameObject);
+            this.gameObject.SetActive(false);
         else
         {
             if (IsOwner)
@@ -352,6 +363,7 @@ public class Player : NetworkBehaviour
     void DeletePlayerRPC()
     {
         NetworkObject.Despawn(true); 
+
         Destroy(gameObject); 
     }
     #endregion
@@ -395,6 +407,15 @@ public class Player : NetworkBehaviour
         }
 
         return false;
+    }
+
+    #endregion
+
+    #region Melee Attack
+
+    public void SetIsAttacking(bool isAttacking)
+    {
+        IsAttacking = isAttacking;
     }
 
     #endregion
@@ -1097,12 +1118,7 @@ public class Player : NetworkBehaviour
     }
 
     #endregion
-
-    public void SetIsAttacking(bool isAttacking)
-    {
-        IsAttacking = isAttacking;
-    }
-
+    
     #region Collision Checks
 
     public void CollisionChecks()

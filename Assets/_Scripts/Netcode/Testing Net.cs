@@ -7,6 +7,7 @@ public class TestingNet : MonoBehaviour
     [SerializeField] private Button hostButton;
     [SerializeField] private Button clientButton;
     [SerializeField] private Button shutdownButton;
+    [SerializeField] private Timer timer;
 
     private void Start()
     {
@@ -30,6 +31,7 @@ public class TestingNet : MonoBehaviour
         {
             Debug.Log("Starting Host...");
             NetworkManager.Singleton.StartHost();
+            timer.ChangeTimeVariable();
         }
         else
         {

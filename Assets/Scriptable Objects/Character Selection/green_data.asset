@@ -17,4 +17,4 @@ MonoBehaviour:
   portraitAnimator: {fileID: 9100000, guid: 67409ae4a3d2f584cb694b700d5a7e73, type: 2}
   text: {fileID: 21300000, guid: 6e906673d5f70ed4b8e2525f4d5286ff, type: 3}
   textOutlineColor: {r: 0.12156863, g: 0.47058824, b: 0.18431373, a: 1}
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: f13257c76408d4e4888074e329bdaf41, type: 2}
