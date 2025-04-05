@@ -59,6 +59,7 @@ public class PlayerSpawner : NetworkBehaviour
             Transform spawnPoint = spawnPoints[i];
             players[i].transform.position = spawnPoint.position;
             players[i].transform.rotation = spawnPoint.rotation;
+            if(i%2 == 0) players[i].GetComponent<Player>().isFacingRight = false;
             enablePlayerFields(players[i]);
         }
     }
@@ -102,7 +103,7 @@ public class PlayerSpawner : NetworkBehaviour
         player.GetComponent<Collider2D>().enabled = true;
         player.GetComponent<SpriteRenderer>().enabled = true;
 
-        // Sincronizar posición con clientes
+        // Sincronizar posiciï¿½n con clientes
         if (player.TryGetComponent<NetworkObject>(out var netObj))
         {
             UpdatePlayerPositionClientRpc(netObj, randomSpawn.position, randomSpawn.rotation);
