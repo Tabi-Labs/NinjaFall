@@ -352,7 +352,7 @@ public class Player : NetworkBehaviour
     public void DeletePlayer()
     {
         if(!NetworkManager)
-            Destroy(gameObject);
+            this.gameObject.SetActive(false);
         else
         {
             if (IsOwner)
@@ -363,6 +363,7 @@ public class Player : NetworkBehaviour
     void DeletePlayerRPC()
     {
         NetworkObject.Despawn(true); 
+
         Destroy(gameObject); 
     }
     #endregion

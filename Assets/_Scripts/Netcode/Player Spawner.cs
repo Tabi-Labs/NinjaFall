@@ -3,19 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
-using UnityEditor.U2D.Animation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerSpawner : NetworkBehaviour
 {
-    [SerializeField]
-    private GameObject playerPrefab;
-    [SerializeField]
-    private string sceneName;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private string sceneName;
     private LateJoinsBehaviour lateJoinsBehaviour;
     private List<Transform> spawnPoints;
-
+    [SerializeField] private float respawnDelay = 3f;
     // Singleton Pattern
     // --------------------------------------------------------------------------------
 
@@ -76,7 +73,51 @@ public class PlayerSpawner : NetworkBehaviour
         player.GetComponent<SpriteRenderer>().enabled = true;
         player.GetComponent<Animator>().enabled = true;
     }
+    public void RespawnPlayer(GameObject player)
+    {
+        if (!IsServer) return; // Solo el servidor maneja el respawn
 
+        // Desactivar temporalmente el jugador (opcional)
+        player.GetComponent<Player>().enabled = false;
+        player.GetComponent<Collider2D>().enabled = false;
+        player.GetComponent<SpriteRenderer>().enabled = false;
+
+        // Esperar un tiempo antes del respawn (opcional)
+        StartCoroutine(RespawnAfterDelay(player, 2f));
+    }
+
+    private IEnumerator RespawnAfterDelay(GameObject player, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        // Seleccionar punto de spawn aleatorio
+        Transform randomSpawn = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Count)];
+
+        // Mover el jugador (en el servidor)
+        player.transform.position = randomSpawn.position;
+        player.transform.rotation = randomSpawn.rotation;
+
+        // Reactivar componentes
+        player.GetComponent<Player>().enabled = true;
+        player.GetComponent<Collider2D>().enabled = true;
+        player.GetComponent<SpriteRenderer>().enabled = true;
+
+        // Sincronizar posición con clientes
+        if (player.TryGetComponent<NetworkObject>(out var netObj))
+        {
+            UpdatePlayerPositionClientRpc(netObj, randomSpawn.position, randomSpawn.rotation);
+        }
+    }
+
+    [ClientRpc]
+    private void UpdatePlayerPositionClientRpc(NetworkObjectReference playerRef, Vector3 position, Quaternion rotation)
+    {
+        if (playerRef.TryGet(out NetworkObject netObj))
+        {
+            netObj.transform.position = position;
+            netObj.transform.rotation = rotation;
+        }
+    }
     void OnDisable()
     {
         if(!NetworkManager)
