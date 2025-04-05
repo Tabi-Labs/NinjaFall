@@ -59,11 +59,13 @@ public class RangedAttack : NetworkBehaviour
             }
             RequestSpawnProjectileRPC();
         }
-        else
+        else if (!_player.IsWallSliding && !_player.IsWallSlideFalling)
         {
-            var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-            projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer,gravityDebuff);
+           var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
+            projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer, gravityDebuff);
         }
+            
+        
 
         //projectile.GetComponent<Projectile>().Init(_stats);
     }
