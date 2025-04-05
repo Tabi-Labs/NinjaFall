@@ -12,23 +12,24 @@ public class SceneLoader : MonoBehaviour
     [SerializeField]
     float transitionDuration = 0.5f;
 
-    // Singleton instance
+    // Signleton Pattern
+    // --------------------------------------------------------------------------------
     public static SceneLoader Instance { get; private set; }
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Instance != null)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Debug.Log("[Singleton] Trying to instantiate a second instance of a singleton class.");
         }
         else
         {
-            Destroy(gameObject);
+            Instance = this;
         }
     }
 
     // Method to change scene by name
+    // --------------------------------------------------------------------------------
     public void ChangeScene(string sceneName)
     {
         StartCoroutine(LoadSceneWithTransition(sceneName));
