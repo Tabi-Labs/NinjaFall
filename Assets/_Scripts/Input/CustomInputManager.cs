@@ -102,11 +102,15 @@ public class CustomInputManager : MonoBehaviour
         JumpWasReleased = _jumpAction.WasReleasedThisFrame();
         RunIsHeld = _runAction.IsPressed();
         MeleeAttackWasPressed = _meleeAttackAction.WasPressedThisFrame();
-        RangeAttackWasPressed = _rangeAttackAction.WasPressedThisFrame();
+
         DashWasPressed = _dashAction.WasPressedThisFrame();
         TestWasPressed = _testAction.WasPressedThisFrame();
     }
 
+    private void LateUpdate()
+    {
+        RangeAttackWasPressed = false;
+    }
     public void OnMeleeAttack(InputAction.CallbackContext context)
     {
         MeleeAttackEvent?.Invoke();
@@ -122,6 +126,7 @@ public class CustomInputManager : MonoBehaviour
             }
             else
             {
+                RangeAttackWasPressed = true;
                 RangedAttackEvent?.Invoke();
             }
         }
@@ -134,6 +139,7 @@ public class CustomInputManager : MonoBehaviour
                 {
                     _isAiming = false;
                     RangedAttackEvent?.Invoke();
+                    RangeAttackWasPressed = true;
                 } 
             }
         }
