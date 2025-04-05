@@ -100,7 +100,7 @@ public class Player : NetworkBehaviour
     public RaycastHit2D WallHit { get; private set; }
     private RaycastHit2D _lastWallHit;
 
-    private bool _isFacingRight = true;
+    public bool isFacingRight = true;
 
     public bool SpeedBuff { get; private set; }
 
@@ -272,32 +272,17 @@ public class Player : NetworkBehaviour
     #region ------ SPRITE HANDLING ------
     public void TurnCheck(Vector2 moveInput)
     {
-        if (_isFacingRight && moveInput.x < 0)
+        if(moveInput.x < 0 && isFacingRight)
         {
-            Turn(false);
+            transform.rotation = Quaternion.Euler(0, 180, 0);
+            isFacingRight = false;
         }
-
-        else if (!_isFacingRight && moveInput.x > 0)
+        else if(moveInput.x > 0 && !isFacingRight)
         {
-            Turn(true);
-        }
-    }
-
-    private void Turn(bool turnRight)
-    {
-        if (turnRight)
-        {
-            _isFacingRight = true;
-            transform.Rotate(0f, 180f, 0f);
-        }
-
-        else
-        {
-            _isFacingRight = false;
-            transform.Rotate(0f, -180f, 0f);
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+            isFacingRight = true;
         }
     }
-
 
     public void SetSpeedBuff(bool speedBuff)
     {
@@ -1027,7 +1012,7 @@ public class Player : NetworkBehaviour
         //handle direction if we have no input
         if (closestDirection == Vector2.zero)
         {
-            if (_isFacingRight)
+            if (isFacingRight)
             {
                 closestDirection = Vector2.right;
             }
@@ -1193,7 +1178,7 @@ public class Player : NetworkBehaviour
     private void CheckForTouchingWall()
     {
         float originEndPoint = 0f;
-        if (_isFacingRight)
+        if (isFacingRight)
         {
             originEndPoint = BodyColl.bounds.max.x;
         }
