@@ -35,8 +35,13 @@ public class Player : NetworkBehaviour
     [Header("Height Tracker")]
     public Transform HeightTracker;
 
+    [Header("Dont Destroy On Load")]
+    public bool dontDestroyOnLoadFlag = true;
+
     [Header("Debug")]
     public bool ShowEnteredStateDebugLog = false;
+
+    public bool isReady = false;
 
     //animation vars
     public const string IS_WALKING = "isWalking";
@@ -206,6 +211,7 @@ public class Player : NetworkBehaviour
         KillsCounter = FindObjectOfType<KillsCounter>();
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
+        if(dontDestroyOnLoadFlag) DontDestroyOnLoad(this.gameObject);
     }
     private void OnDisable()
     {
