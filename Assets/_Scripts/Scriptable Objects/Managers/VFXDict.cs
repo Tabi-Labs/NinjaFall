@@ -6,29 +6,27 @@ public class VFXDict : ScriptableObject
 {   
     [SerializeField] 
     VFX[] vfx;
-    Dictionary<string, GameObject> vfx_list;
-
+    Dictionary<string, PoolingManager> vfx_list;
+    PoolingManager poolingManager;
     public void InitializeList(){
-        vfx_list = new Dictionary<string, GameObject>();
+        vfx_list = new Dictionary<string, PoolingManager>();
 
         foreach(VFX item in vfx){
-            vfx_list.Add(item.GetId(), item.GetVFX());
+            var pool = new PoolingManager();
+            pool.InitializePool(item.GetVFX(), null, 5);
+            vfx_list.Add(item.GetId(), pool);
+
         }
     }
 
     public GameObject GetVFX(string id){
-        GameObject value;
+        PoolingManager value;
         if(vfx_list.TryGetValue(id, out value)){
-            return value;
+            return value.GetObject();
         }else{
             Debug.LogWarning("The requested VFX " + id + " does not exist or cannot be found");
             return null;
         }
-    }
-
-    void OnEnable()
-    {
-        InitializeList();
     }
 }
 
