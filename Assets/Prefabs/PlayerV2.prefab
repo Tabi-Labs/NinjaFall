@@ -5179,7 +5179,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8602396005169628399}
   - component: {fileID: 5227078153217827377}
-  - component: {fileID: 419467689843979511}
+  - component: {fileID: 1533841538458920446}
   - component: {fileID: 3356373829068391031}
   - component: {fileID: 7190624549323204343}
   - component: {fileID: 8362286837060557456}
@@ -5190,7 +5190,8 @@ GameObject:
   - component: {fileID: 6175670069529148351}
   - component: {fileID: 965640323693487313}
   - component: {fileID: 7804810165732104520}
-  - component: {fileID: 5861120358706129540}
+  - component: {fileID: 5690854481911063821}
+  - component: {fileID: 4667461585387520912}
   m_Layer: 0
   m_Name: PlayerV2
   m_TagString: Player
@@ -5239,7 +5240,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &419467689843979511
+--- !u!114 &1533841538458920446
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5251,8 +5252,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 112830355
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 337236508
+  InScenePlacedSourceGlobalObjectIdHash: 607330330
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -5278,7 +5279,7 @@ MonoBehaviour:
   BodyColl: {fileID: 1008354027835368250}
   JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
   SecondJumpParticles: {fileID: 7613757481095289963, guid: cd4faf7013b831b498a109c771a95e87, type: 3}
-  ToxicParticles: {fileID: 4476422978619088364, guid: bb09990889e6e3f46b90302eb6e12691, type: 3}
+  ToxicParticles: {fileID: 0}
   LandParticles: {fileID: 5835083849461746053, guid: 427c1d73877fed8479897748b827ba28, type: 3}
   ParticleSpawnTransform: {fileID: 8247011537788828137}
   TrailRenderer: {fileID: 265306988447210922}
@@ -5286,8 +5287,10 @@ MonoBehaviour:
   DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
   WallSlideParticles: {fileID: 2940781082615036196}
   HeightTracker: {fileID: 1280714515081318487}
+  dontDestroyOnLoadFlag: 1
   OnPlayerDeath: {fileID: 11400000, guid: 09b9bff2cbddd704693658c819239dbb, type: 2}
   ShowEnteredStateDebugLog: 1
+  isReady: 0
 --- !u!114 &7190624549323204343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5345,12 +5348,6 @@ MonoBehaviour:
   _isParrying: 0
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
-  spawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
 --- !u!212 &7882907021759217884
 SpriteRenderer:
@@ -5499,7 +5496,7 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &5861120358706129540
+--- !u!114 &5690854481911063821
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5508,9 +5505,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 3325903424131496227}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 245fae0f2a2e5d042907b06f1c0eed95, type: 3}
+  m_Script: {fileID: 11500000, guid: a698972ae6659ca47b29ce3d1aece29d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 5227078153217827377}
+--- !u!114 &4667461585387520912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3325903424131496227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cce6272bb3485f649a9df41ae9dfc863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  Interpolate: 0
+  SlerpPosition: 0
 --- !u!1 &3527660410745189901
 GameObject:
   m_ObjectHideFlags: 0

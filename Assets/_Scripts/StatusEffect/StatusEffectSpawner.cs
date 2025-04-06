@@ -1,23 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class StatusEffectSpawner : MonoBehaviour
 {
+    [Header("Animation Settings")]
+    public float moveFactor = 0.15f;
+    public float animationDuration = 2f;
+
     public GameObject[] buffPrefabs; // Lista de buffs prefabs
     public Transform[] spawnPoints; // Posiciones donde pueden aparecer los buffs
-    public float spawnInterval = 5f; // Intervalo de aparición en segundos
-
+    public float spawnInterval = 5f; // Intervalo de apariciï¿½n en segundos
 
     private GameObject[] activeBuffs; // Control de buffs activos en cada spot
 
+    private float globalFloatValue = 0f;
+    private Tweener globalFloatTween;
 
     // Start is called before the first frame update
     void Start()
     {
         activeBuffs = new GameObject[spawnPoints.Length];
-        StartCoroutine(SpawnBuffs());
 
+        globalFloatTween = DOTween.To(() => globalFloatValue, x => globalFloatValue = x, 1f, animationDuration)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
+
+        StartCoroutine(SpawnBuffs());
+    }
+
+    void Update(){
+        // Efecto de latido global
+        for (int i = 0; i < activeBuffs.Length; i++)
+        {
+            if (activeBuffs[i] != null)
+            {
+                Vector3 pos = spawnPoints[i].position + Vector3.up * globalFloatValue * moveFactor;
+                activeBuffs[i].transform.position = pos;
+            }
+        }
     }
 
     IEnumerator SpawnBuffs()
@@ -43,8 +65,13 @@ public class StatusEffectSpawner : MonoBehaviour
             Transform spawnPoint = spawnPoints[spawnPointIndex];
 
             // Instancia el buff
-            GameObject buff = Instantiate(buffPrefab, spawnPoint.position, Quaternion.identity);
+            GameObject buff = Instantiate(buffPrefab, spawnPoint.position - Vector3.up * 0.5f, Quaternion.identity);
             activeBuffs[spawnPointIndex] = buff;
+
+            // AnimaciÃ³n de entrada
+            SpriteRenderer spriteRenderer = buff.GetComponent<SpriteRenderer>();
+            buff.GetComponent<SpriteRenderer>().color = new Vector4(1, 1, 1, 0f);
+            spriteRenderer.DOFade(1f, 3f).SetEase(Ease.OutFlash);
         }
         
     }
