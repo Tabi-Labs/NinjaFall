@@ -15,7 +15,12 @@ public class PlayerDamageable : Damageable
         base.Awake();
         _player = GetComponent<Player>();
 
-        _player.Input().MeleeAttackEvent += Parry;
+        
+    }
+
+    void Start()
+    {
+       _player.Input().MeleeAttackEvent += Parry;
     }
     private void Update()
     {

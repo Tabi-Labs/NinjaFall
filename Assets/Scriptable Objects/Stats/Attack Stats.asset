@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AttackDamage: 10
   MeleeAttackRange: 0.77
+  MaxShurikens: 3
   RangedAttackRange: 0
   AttackHeight: 0.54
   AttackRate: 0

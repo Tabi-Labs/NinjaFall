@@ -13,12 +13,15 @@ public class PlayerDashState : PlayerState
         base.StateEnter();
 
         //_player.DisableSwordCollider();
-
+        _player.SetIsAttacking(true);
+        _player.Anim.Play("p_MeleeAttack_1");
         _player.InitiateDash();        
     }
 
     public override void StateExit()
     {
+        _player.SetIsAttacking(false);
+        _player.Anim.Play("p_Idle");
         base.StateExit();
     }
 
@@ -32,6 +35,13 @@ public class PlayerDashState : PlayerState
             _player.StateMachine.ChangeState(_player.WallSlideState);
             return;
         }
+
+          if (_player.InputManager.DashWasPressed && (_player.CanDash() || _player.CanAirDash()))
+        {
+            _player.StateMachine.ChangeState(_player.DashState);
+            return;
+        }
+
 
         if (!_player.IsDashing && !_player.IsGrounded && !_isExitingState)
         {

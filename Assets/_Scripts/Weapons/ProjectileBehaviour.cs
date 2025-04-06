@@ -5,7 +5,6 @@ using UnityEngine;
 public class ProjectileBehaviour : MonoBehaviour
 {
     [SerializeField] private ProjectileStats _stats;
-    [SerializeField] private string _gravityTag = "Gravity Area";
     private Movement _movement;
     private Vector2 _direction;
     private Animator _animator;
@@ -26,7 +25,7 @@ public class ProjectileBehaviour : MonoBehaviour
     private Vector2 tangentDirection;
     private float timerFollowingEdge = 5.0f;
 
-
+    public bool IsMoving => _isMoving;
     #region ---- UNITY CALLBACKS ----
     private void Awake()
     {
@@ -86,10 +85,7 @@ public class ProjectileBehaviour : MonoBehaviour
                 AutoAim(collision.transform, damageableComponent);
 
         }
-        else 
-        {
-            CheckForPlayerPickup(collision.transform);
-        }
+
        
     }
 
@@ -123,7 +119,7 @@ public class ProjectileBehaviour : MonoBehaviour
     private void OnObstacleHit(Vector3 hitPoint, Collider2D collision)
     {
         Debug.Log("Shuriken wall buff on hit: " + _shurikenWallBuff);
-
+        AudioManager.PlaySound("FX_ShurikenHit");
         if (_shurikenWallBuff)
         {
             isFollowingEdge = true;
@@ -147,20 +143,6 @@ public class ProjectileBehaviour : MonoBehaviour
         }
     }
 
-    private void CheckForPlayerPickup(Transform collider)
-    {
-        /* var playerPickupComponent = collider.GetComponentInParent<IPlayerPickup>();
-        if(playerPickupComponent != null)
-        {
-            playerPickupComponent.Pickup();
-            Destroy(gameObject);
-        } */
-        if(collider.CompareTag("Player"))
-        {
-            //Debug.Log("Reco");
-            Destroy(gameObject);
-        }
-    }
 
     private void AutoAim(Transform target, IDamageable damageableComponent)
     {
@@ -175,12 +157,12 @@ public class ProjectileBehaviour : MonoBehaviour
         currentObstacle = obstacle;
         isFollowingEdge = true;
 
-        // Calcular dirección tangencial inicial
+        // Calcular direcciï¿½n tangencial inicial
         Vector2 closestPoint = obstacle.ClosestPoint(transform.position);
         Vector2 surfaceNormal = ((Vector2)transform.position - closestPoint).normalized;
         tangentDirection = Vector2.Perpendicular(surfaceNormal);
 
-        // Determinar dirección basada en la velocidad inicial
+        // Determinar direcciï¿½n basada en la velocidad inicial
         float direction = Vector2.Dot(_direction.normalized, tangentDirection) > 0 ? 1 : -1;
         tangentDirection *= direction;
 
@@ -188,18 +170,18 @@ public class ProjectileBehaviour : MonoBehaviour
 
     private void FollowEdge()
     {
-        // Obtener punto más cercano en el obstáculo
+        // Obtener punto mï¿½s cercano en el obstï¿½culo
         Vector2 closestPoint = currentObstacle.ClosestPoint(transform.position);
 
         // Calcular nueva normal y tangente
         Vector2 surfaceNormal = ((Vector2)transform.position - closestPoint).normalized;
         Vector2 desiredTangent = Vector2.Perpendicular(surfaceNormal);
 
-        // Mantener la dirección original de rotación
+        // Mantener la direcciï¿½n original de rotaciï¿½n
         float rotationDirection = Vector2.Dot(tangentDirection, desiredTangent) > 0 ? 1 : -1;
         desiredTangent *= rotationDirection;
 
-        // Aplicar fuerza centrípeta
+        // Aplicar fuerza centrï¿½peta
         Vector2 steerForce = desiredTangent * _stats.MoveSpeed - _direction;
         _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, steerForce);
 
