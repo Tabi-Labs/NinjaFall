@@ -61,6 +61,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         }
 
         MonoBehaviour[] components = pi.GetComponents<MonoBehaviour>();
+        pi.transform.position= new Vector3(1000,1000,1000);
         foreach (MonoBehaviour component in components)
         {
             if (component is PlayerInput) continue;
