@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class ToxicParticlesTrigger : MonoBehaviour
 {
@@ -46,7 +45,7 @@ public class ToxicParticlesTrigger : MonoBehaviour
 
     public void ResetCollider()
     {
-        _currentWidth = 0.1f; // Mínimo tamaño inicial
+        _currentWidth = 0.1f; // Mï¿½nimo tamaï¿½o inicial
         _damageCollider.size = new Vector2(_currentWidth, _damageCollider.size.y);
         stopCollider = true;
         _damageCollider.enabled = false;
