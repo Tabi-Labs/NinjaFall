@@ -6,21 +6,50 @@ public class InvertControlDebuff : StatusEffect
 {
     public override void ApplyEffect(GameObject player)
     {
-        Player _player = player.GetComponent<Player>();
 
-        if (_player != null)
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject playerList in players)
         {
-            _player.SetInvertControlDebuff(true);
+
+            Debug.Log("Jugador enemigo: " + playerList);
+            Debug.Log("Juagdor actual" + player);
+
+            var damageableComponent = playerList.GetComponent<IDamageable>();
+
+            if (damageableComponent != null && playerList != player)
+            {
+                Player enemyPlayer = playerList.GetComponentInParent<Player>();
+                if (enemyPlayer != null)
+                {
+                    enemyPlayer.SetInvertControlDebuff(true);
+                }
+            }
         }
+
+
     }
 
     public override void RemoveEffect(GameObject player)
     {
-        Player _player = player.GetComponent<Player>();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        if (_player != null)
+        foreach (GameObject playerList in players)
         {
-            _player.SetInvertControlDebuff(false);
+
+            Debug.Log("Jugador enemigo: " + playerList);
+            Debug.Log("Juagdor actual" + player);
+
+            var damageableComponent = playerList.GetComponent<IDamageable>();
+
+            if (damageableComponent != null && playerList != player)
+            {
+                Player enemyPlayer = playerList.GetComponentInParent<Player>();
+                if (enemyPlayer != null)
+                {
+                    enemyPlayer.SetInvertControlDebuff(false);
+                }
+            }
         }
     }
 
