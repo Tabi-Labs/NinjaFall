@@ -5,7 +5,6 @@ using UnityEngine;
 public class ProjectileBehaviour : MonoBehaviour
 {
     [SerializeField] private ProjectileStats _stats;
-    [SerializeField] private string _gravityTag = "Gravity Area";
     private Movement _movement;
     private Vector2 _direction;
     private Animator _animator;

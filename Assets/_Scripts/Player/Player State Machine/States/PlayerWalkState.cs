@@ -82,12 +82,6 @@ public class PlayerWalkState : PlayerState
             return;
         }
 
-        if (_player.InputManager.MeleeAttackWasPressed)
-        {
-            _player.StateMachine.ChangeState(_player.MeleeAttackState);
-            return;
-        }
-
         if (_player.InputManager.RangeAttackWasPressed)
         {
             _player.StateMachine.ChangeState(_player.RangeAttackState);

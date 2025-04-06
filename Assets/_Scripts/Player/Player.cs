@@ -16,10 +16,9 @@ public class Player : NetworkBehaviour
     [SerializeField] private Collider2D FeetColl;
     [SerializeField] private Collider2D HeadColl;
     [SerializeField] private Collider2D BodyColl;
-    private KillsCounter KillsCounter;
+ 
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
-    public GhostTrail GhostTrail { get; private set; }
     private PlayerInput _playerInput;
 
     public StatusEffectManager EffectManager { get; private set; }
@@ -42,7 +41,7 @@ public class Player : NetworkBehaviour
     public Transform HeightTracker;
 
     [Header("Dont Destroy On Load")]
-    public bool dontDestroyOnLoadFlag = true;
+    public bool DontDestroyOnLoadFlag = true;
 
     [Header("Events")]
     public GameEvent OnPlayerDeath;
@@ -191,7 +190,7 @@ public class Player : NetworkBehaviour
     private void InitMovement() => _movement = GetComponent<Movement>();
     private void InitRigidbody() => RB = GetComponent<Rigidbody2D>();
     private void InitAnimator() =>  Anim = GetComponent<Animator>();
-    private void InitGhostTrail() => GhostTrail = GetComponent<GhostTrail>();
+    private void InitPlayerInput() => _playerInput = GetComponent<PlayerInput>();
 
     private void InitEffectManager() => EffectManager = GetComponent<StatusEffectManager>();
     #endregion
@@ -227,12 +226,11 @@ public class Player : NetworkBehaviour
         InitMovement();  
         InitAnimator();
         InitRigidbody();
-        InitGhostTrail();
-        KillsCounter = FindObjectOfType<KillsCounter>();
-        _playerInput = GetComponent<PlayerInput>();
+        InitPlayerInput();
+
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
-        if(dontDestroyOnLoadFlag) DontDestroyOnLoad(this.gameObject);
+        if(DontDestroyOnLoadFlag) DontDestroyOnLoad(transform.root);
     }
     private void OnDisable()
     {
@@ -370,11 +368,11 @@ public class Player : NetworkBehaviour
 
             if (IsDashFastFalling && IsGrounded)
             {
-                if (!Anim.GetBool(IS_AIR_DASH_FALLING))
+              /*   if (!Anim.GetBool(IS_AIR_DASH_FALLING))
                 {
                     ResetDashValues();
                     return true;
-                }
+                } */
             }
 
             ResetDashValues();
@@ -1030,9 +1028,6 @@ public class Player : NetworkBehaviour
         //FX
         Quaternion particleRot = Quaternion.FromToRotation(Vector2.right, -DashDirection);
         Instantiate(DashParticles, transform.position, particleRot);
-
-        //Anim.SetBool("isDashing", true);
-        GhostTrail.LeaveGhostTrail(MoveStats.DashTime * 1.75f);
 
         ResetJumpValues();
         ResetWallJumpValues();
