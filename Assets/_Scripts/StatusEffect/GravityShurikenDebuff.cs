@@ -8,27 +8,54 @@ public class GravityShurikenDebuff : StatusEffect
 {
     public override void ApplyEffect(GameObject player)
     {
-        RangedAttack rangedAttack = player.GetComponent<RangedAttack>();
 
-        Debug.Log("Se intenta aplicar gravedad");
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        if (rangedAttack != null)
+        foreach (GameObject playerList in players)
         {
-            Debug.Log("Se aplica gravedad");
-            rangedAttack.ApplyGravity(90.0f);
+            Debug.Log("Jugador enemigo: " + playerList);
+            Debug.Log("Juagdor actual" + player);
+
+            var damageableComponent = playerList.GetComponent<IDamageable>();
+
+            if (damageableComponent != null && playerList != player)
+            {
+                RangedAttack rangedAttack = playerList.GetComponent<RangedAttack>();
+
+                if (rangedAttack != null)
+                {
+                    Debug.Log("Se aplica gravedad");
+                    rangedAttack.ApplyGravity(90.0f);
+                }
+            }
         }
+
+        
     }
 
-    public override void RemoveEffect(GameObject obj)
+    public override void RemoveEffect(GameObject player)
     {
-        RangedAttack rangedAttack = obj.GetComponent<RangedAttack>();
 
-        Debug.Log("Se intenta eliminar debuff gravedad");
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
-        if (rangedAttack != null)
+        foreach (GameObject playerList in players)
         {
-            Debug.Log("Se elimmina debuff gravedad");
-            rangedAttack.ApplyGravity(1.0f);
+            Debug.Log("Jugador enemigo: " + playerList);
+
+            Debug.Log("Juagdor actual" + player);
+
+            var damageableComponent = playerList.GetComponent<IDamageable>();
+
+            if (damageableComponent != null && playerList != player)
+            {
+                RangedAttack rangedAttack = playerList.GetComponent<RangedAttack>();
+
+                if (rangedAttack != null)
+                {
+                    Debug.Log("Se aplica gravedad");
+                    rangedAttack.ApplyGravity(1.0f);
+                }
+            }
         }
     }
 

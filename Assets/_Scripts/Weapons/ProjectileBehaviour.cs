@@ -71,14 +71,20 @@ public class ProjectileBehaviour : MonoBehaviour
         if(_isMoving)
         {
             var damageableComponent = collision.GetComponentInParent<IDamageable>();
-            if(!collision.isTrigger)
+
+            if( collision.CompareTag("Shuriken"))
+            {
+                _direction = new Vector2(0.0f, -1.0f);
+            } 
+            else if (!collision.isTrigger)
             {
                 CheckForDamageHit(damageableComponent);
-                if(damageableComponent != null && damageableComponent == _owner) return;
+                if (damageableComponent != null && damageableComponent == _owner) return;
                 OnObstacleHit(collision.ClosestPoint(transform.position), collision);
             }
-            else if(damageableComponent != null)
+            else if (damageableComponent != null)
                 AutoAim(collision.transform, damageableComponent);
+
         }
         else 
         {
@@ -99,6 +105,18 @@ public class ProjectileBehaviour : MonoBehaviour
         _shurikenWallBuff = wallBuff;
         _gravityIgnoreTimer = _gravityTimer;
         _gravityDebuff = gravity;
+    }
+
+    public void ReflectShuriken(Vector2 newDirection)
+    {
+        if(newDirection == Vector2.zero)
+        {
+            newDirection.x = -_direction.x;
+            newDirection.y = 0.0f;
+        }
+
+        Debug.Log("Nueva direccion shuriken" + newDirection);
+        _direction = newDirection;
     }
 
 
