@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: SOVoiceReferenceList
   m_EditorClassIdentifier: 
   audio_references:
-  - id: VO_Placeholder
-    clip: {fileID: 8300000, guid: 3bec5a61a76161f4db57854239072ca4, type: 3}
+  - id: VO_Ready
+    clip: {fileID: 8300000, guid: a1bb6e8ee694c90478e56d8d02ca9b2e, type: 3}
+  - id: VO_Set
+    clip: {fileID: 8300000, guid: 9bea3b4700fb18d4aac1348ec216f3ad, type: 3}
+  - id: VO_Go
+    clip: {fileID: 8300000, guid: 38abeb338185e434f9789f66e6716d21, type: 3}
