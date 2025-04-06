@@ -63,13 +63,13 @@ public class AudioManager : MonoBehaviour
             Destroy(audio_source.gameObject);
     }
 
-    private void PlayAudio(int source, AudioClip clip, Vector3 position = new Vector3())
+    private void PlayAudio(int source, AudioClip clip, Vector3 position = new Vector3(), float volume = 1f)
     {
         switch (source)
         {
             case 0:
                 bool playing = music_source[0].isPlaying;
-                
+                music_source[0].volume = volume;
                 music_source[!playing ? 1 : 0].DOFade(0f, fade_duration).SetEase(Ease.OutCubic).OnComplete(() =>
                 {
                     music_source[!playing ? 1 : 0].Stop();
@@ -82,6 +82,7 @@ public class AudioManager : MonoBehaviour
                 });
                 break;
             case 1:
+                speech_source.volume = volume;
                 speech_source.Stop();
                 speech_source.pitch = Random.Range(0.8f, 1.2f);
                 speech_source.PlayOneShot(clip);
@@ -89,6 +90,7 @@ public class AudioManager : MonoBehaviour
             case 2:
                 GameObject audio_source = audio_pool.GetObject();
                 AudioSource source_component = audio_source.GetComponent<AudioSource>();
+                source_component.volume = volume;
                 if (source_component.isPlaying)
                 {
                     Debug.LogWarning("The requested audio source " + audio_source.name + " is busy. Consider expanding the pooling");
@@ -132,6 +134,14 @@ public class AudioManager : MonoBehaviour
         if (_instance == null || clip == null)
             return;
         _instance.PlayAudio(2, clip);
+    }
+
+    public static void PlaySound(string clip_id, float volume)
+    {
+        AudioClip clip = _instance.sound_list.GetAudioClip(clip_id);
+        if (_instance == null || clip == null)
+            return;
+        _instance.PlayAudio(2, clip, volume: volume);
     }
 
     public static void PlaySound(string clip_id, Transform transform = null)

@@ -18,7 +18,7 @@ public class PlayerDeathState : PlayerState
         _player.Input().Disable();
         _player.Movement.Stop();
 
-        AudioManager.PlaySound("FX_Death");
+        AudioManager.PlaySound("FX_Death", volume: 0.5f);
     }
 
     public override void StateExit()
