@@ -122,6 +122,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &71422131 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8452587827296709461, guid: b9695e04b59180e4fa1a13e47ae74481, type: 3}
+  m_PrefabInstance: {fileID: 785141964}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &71422132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71422131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 245fae0f2a2e5d042907b06f1c0eed95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &83599094
 GameObject:
   m_ObjectHideFlags: 0
@@ -2332,12 +2349,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8452587827296709461, guid: b9695e04b59180e4fa1a13e47ae74481, type: 3}
       propertyPath: m_Name
-      value: StatusEffectSpawner
+      value: StatusEffectManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8452587827296709461, guid: b9695e04b59180e4fa1a13e47ae74481, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 71422132}
   m_SourcePrefab: {fileID: 100100000, guid: b9695e04b59180e4fa1a13e47ae74481, type: 3}
 --- !u!1 &819196288
 GameObject:

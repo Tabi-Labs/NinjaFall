@@ -21,8 +21,6 @@ public class Player : NetworkBehaviour
     public Animator Anim { get; private set; }
     private PlayerInput _playerInput;
 
-    public StatusEffectManager EffectManager { get; private set; }
-
     [Header("FX")]
     public GameObject JumpParticles;
     public GameObject SecondJumpParticles;
@@ -192,7 +190,6 @@ public class Player : NetworkBehaviour
     private void InitAnimator() =>  Anim = GetComponent<Animator>();
     private void InitPlayerInput() => _playerInput = GetComponent<PlayerInput>();
 
-    private void InitEffectManager() => EffectManager = GetComponent<StatusEffectManager>();
     #endregion
 
     #region ---- GETTERS / SETTERS ----
@@ -251,7 +248,7 @@ public class Player : NetworkBehaviour
     public void ApplyEffect(StatusEffect effect)
     {
         Debug.Log("Effect manager aplica efecto " + effect.name + " al jugador: ", this.gameObject);
-        EffectManager.ApplyStatusEffect(effect, gameObject);
+        StatusEffectManager.instance.ApplyStatusEffect(effect, gameObject);
     }
 
 
