@@ -37,12 +37,6 @@ public class RangedAttack : NetworkBehaviour
         _player.Input().RangedAttackEvent += OnRangedAttack;
     }
 
-    void OnDisable()
-    {
-        _player.Input().RangedAttackEvent -= OnRangedAttack;
-
-    }
-
     void Update()
     {
         if(_attackStats.DebugAttackArea)

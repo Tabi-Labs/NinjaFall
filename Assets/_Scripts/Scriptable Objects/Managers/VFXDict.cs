@@ -21,12 +21,12 @@ public class VFXDict : ScriptableObject
 
     public GameObject GetVFX(string id){
         PoolingManager value;
-        if(vfx_list.TryGetValue(id, out value)){
-            return value.GetObject();
-        }else{
-            Debug.LogWarning("The requested VFX " + id + " does not exist or cannot be found");
-            return null;
+        try{
+            if(vfx_list.TryGetValue(id, out value)) return value.GetObject();
+        }catch(Exception e){
+            Debug.LogWarning("Error: " + e.Message);
         }
+        return null;
     }
 }
 

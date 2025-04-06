@@ -13,9 +13,9 @@ public class Player : NetworkBehaviour
   
     [Header("References")]
     public PlayerMovementStats MoveStats;
-    [SerializeField] private Collider2D FeetColl;
-    [SerializeField] private Collider2D HeadColl;
-    [SerializeField] private Collider2D BodyColl;
+    [SerializeField] public Collider2D FeetColl;
+    [SerializeField] public Collider2D HeadColl;
+    [SerializeField] public Collider2D BodyColl;
  
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
@@ -88,7 +88,7 @@ public class Player : NetworkBehaviour
 
 
     //collision vars
-    public bool IsDead { get; private set; }
+    public bool IsDead { get; set; }
     public bool IsGrounded { get; private set; }
     public bool BumpedHead { get; private set; }
     public bool IsTouchingWall { get; private set; }
@@ -229,10 +229,7 @@ public class Player : NetworkBehaviour
         WallSlideParticles.gameObject.SetActive(false);
         if(DontDestroyOnLoadFlag) DontDestroyOnLoad(transform.root);
     }
-    private void OnDisable()
-    {
-        
-    }
+
     private void Update()
     {
         if(NetworkManager && !IsOwner) return;
@@ -267,12 +264,12 @@ public class Player : NetworkBehaviour
     #region ------ SPRITE HANDLING ------
     public void TurnCheck(Vector2 moveInput)
     {
-        if(moveInput.x < 0 && isFacingRight)
+        if(moveInput.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
             isFacingRight = false;
         }
-        else if(moveInput.x > 0 && !isFacingRight)
+        else if(moveInput.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
             isFacingRight = true;
@@ -321,27 +318,38 @@ public class Player : NetworkBehaviour
     {
         Death();
     }
+
     public void Death()
     {
         //if (!IsOwner) return;
+        if(IsDead) return;
+        IsDead = true;
         StateMachine.ChangeState(DeathState);
-        Debug.Log("Player ID: "+ _playerInput.playerIndex);
-        KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
-        
+        Debug.Log("Player ID: "+ _playerInput.playerIndex);        
     }
 
     public void DeletePlayer()
     {
+        KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
         StateMachine.ChangeState(IdleState);
-        PlayerSpawner.Instance.RespawnPlayer(this.gameObject);
-        if (!NetworkManager)
-            this.gameObject.SetActive(false);
+        if (!NetworkManager){
+            MonoBehaviour[] components = this.gameObject.GetComponents<MonoBehaviour>();
+            foreach (MonoBehaviour component in components)
+            {
+                component.enabled = false;
+            }
+            this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            this.gameObject.GetComponent<Animator>().enabled = false;
+            transform.position = new Vector3(1000, 1000, 1000);
+        }
         else
         {
             if (IsOwner)
                 DeletePlayerRPC();
         }
+        PlayerSpawner.Instance.RespawnPlayer(this.gameObject);
     }
+    
     [Rpc(SendTo.Server)]
     void DeletePlayerRPC()
     {

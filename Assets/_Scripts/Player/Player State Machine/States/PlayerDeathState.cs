@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerDeathState : PlayerState
 {
@@ -14,8 +15,6 @@ public class PlayerDeathState : PlayerState
        
         _player.Anim.Play("p_Death");
         _player.OnPlayerDeath.Raise(_player, null);
-        
-        _player.Input().Disable();
         _player.Movement.Stop();
 
         AudioManager.PlaySound("FX_Death", volume: 0.5f);
@@ -23,27 +22,22 @@ public class PlayerDeathState : PlayerState
 
     public override void StateExit()
     {
-        base.StateExit();    
+        base.StateExit();
     }
 
     public override void StateFixedUpdate()
     {
         base.StateFixedUpdate();
-
     }
 
     public override void StateUpdate()
     {
-        // Transici�n a Idle si la animaci�n de ataque ha terminado
         if (_player.Anim.GetCurrentAnimatorStateInfo(0).IsName("p_Death") &&
             _player.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
         {
-
-            // TODO Destruir objeto player
+            Debug.Log("Player Death Animation Finished");
             _player.DeletePlayer();
             return;
         }
-
-
     }
 }

@@ -20,21 +20,11 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     private List<Transform> spawnPoints = new List<Transform>();
 
-    private SpriteRenderer[] _spriteRenderers;
-    private Material[] _materials;
+    private SpriteRenderer _spriteRenderer;
 
-    protected virtual void Awake()
+    protected void Awake() 
     {
-        _spriteRenderers  = GetComponentsInChildren<SpriteRenderer>();
-
-        _materials = new Material[_spriteRenderers.Length];
-        for(int i = 0; i < _spriteRenderers.Length; i++)
-        {  
-            _materials[i] = _spriteRenderers[i].material;
-        }
-
-        
-
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Start()
@@ -42,7 +32,7 @@ public class Damageable : NetworkBehaviour, IDamageable
         LoadSpots();
     }
 
-    void LoadSpots()
+    protected void LoadSpots()
     {
         GameObject[] foundSpots = GameObject.FindGameObjectsWithTag("Spot"); 
 
@@ -52,7 +42,6 @@ public class Damageable : NetworkBehaviour, IDamageable
             Debug.LogWarning("No se encontraron objetos con la etiqueta 'Spot'.");
             return; 
         }
-
 
         // Asignar los transform de los spots a spawnPoints
         for (int i = 0; i < foundSpots.Length; i++)
@@ -106,8 +95,6 @@ public class Damageable : NetworkBehaviour, IDamageable
         Vector3 newPosition = newSpot.position + new Vector3(GetRandomSign(), 0, 0);
 
         transform.position = newPosition;
-
-
     }
 
     private float GetRandomSign()
@@ -117,42 +104,10 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     private void HitAnimation()
     {
-        _lerpAmount = 0;
-        foreach(SpriteRenderer spriteRenderer in _spriteRenderers)
+        _spriteRenderer.DOColor(Color.red, _hitEffectDuration).OnComplete(() =>
         {
-            spriteRenderer.material = _hitEffectMaterial;
-        }
-        DOTween.To(GetLerpValue, SetLerpValue, 1f, _hitEffectDuration).SetEase(Ease.OutExpo).OnUpdate(OnLerpUpdate).OnComplete(OnLerpComplete);
-    }
-
-    private void OnLerpUpdate()
-    {
-        for(int i = 0; i < _materials.Length; i++)
-        {
-            _hitEffectMaterial.SetFloat(_hitEffectAmount, GetLerpValue());
-            //_materials[i].SetFloat(_hitEffectAmount, GetLerpValue());
-        }
-    }   
-
-    private void OnLerpComplete()
-    {
-        DOTween.To(GetLerpValue, SetLerpValue, 0f, _hitEffectDuration).OnUpdate(OnLerpUpdate).OnComplete(() => 
-        {
-            foreach(SpriteRenderer spriteRenderer in _spriteRenderers)
-            {
-                spriteRenderer.material = _materials[0];
-            }
+            _spriteRenderer.DOColor(Color.white, _hitEffectDuration);
         });
-    }
-    private float GetLerpValue()
-    {
-       
-        return _lerpAmount;
-    }
-
-    private void SetLerpValue(float newValue)
-    {
-        _lerpAmount = newValue;
     }
 
     public virtual bool CanParry()

@@ -10,32 +10,29 @@ public class PlayerDamageable : Damageable
     private float _parryTimer;
 
     #region ----- MONOBEHAVIOUR CALLBACKS -----
-    protected override void Awake()
+
+    protected void Awake()
     {
         base.Awake();
-        _player = GetComponent<Player>();
-
-        
+        _player = GetComponent<Player>();      
     }
 
     void Start()
     {
+       base.LoadSpots();
        _player.Input().MeleeAttackEvent += Parry;
     }
+
     private void Update()
     {
         HandleParryTimer();
-    }
-    void OnDisable()
-    {
-        _player.Input().MeleeAttackEvent -= Parry;   
     }
 
     #endregion
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
-        VFXManager.PlayVFX("VFX_Blood", VFXType.Animation, transform.position, Quaternion.identity, transform);
+        // VFXManager.PlayVFX("VFX_Blood", VFXType.Animation, transform.position, Quaternion.identity, transform);
         if (_player != null)
         {
             if(NetworkManager)
@@ -43,7 +40,6 @@ public class PlayerDamageable : Damageable
             else
                 _player.Death();
         }
-        
     }
 
     public override bool CanParry()

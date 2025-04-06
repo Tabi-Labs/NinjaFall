@@ -74,7 +74,11 @@ public class PlayerSpawner : NetworkBehaviour
         }
         player.GetComponent<SpriteRenderer>().enabled = true;
         player.GetComponent<Animator>().enabled = true;
+        player.GetComponent<Player>().FeetColl.enabled = true;
+        player.GetComponent<Player>().HeadColl.enabled = true;
+        player.GetComponent<Player>().BodyColl.enabled = true;
     }
+
     public void RespawnPlayer(GameObject player)
     {
         //if (!IsServer) return; // Solo el servidor maneja el respawn
@@ -98,12 +102,9 @@ public class PlayerSpawner : NetworkBehaviour
         player.transform.position = randomSpawn.position;
         player.transform.rotation = randomSpawn.rotation;
 
-        // Reactivar componentes
-        player.SetActive(true);
-        //player.GetComponent<Player>().enabled = true;
-        //player.GetComponent<Collider2D>().enabled = true;
-        //player.GetComponent<SpriteRenderer>().enabled = true;
-
+        enablePlayerFields(player);
+        player.GetComponent<Player>().IsDead = false;
+        
         // Sincronizar posicion con clientes (Net)
         if (IsServer)
         {
