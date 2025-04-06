@@ -330,11 +330,14 @@ public class Player : NetworkBehaviour
         StateMachine.ChangeState(DeathState);
         Debug.Log("Player ID: "+ _playerInput.playerIndex);
         KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
+        
     }
 
     public void DeletePlayer()
     {
-        if(!NetworkManager)
+        StateMachine.ChangeState(IdleState);
+        PlayerSpawner.Instance.RespawnPlayer(this.gameObject);
+        if (!NetworkManager)
             this.gameObject.SetActive(false);
         else
         {
