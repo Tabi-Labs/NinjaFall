@@ -43,6 +43,11 @@ public class PlayerJumpState : PlayerState
             return;
         }
 
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+            return;
+        }
 
         if (_player.InputManager.RangeAttackWasPressed)
         {

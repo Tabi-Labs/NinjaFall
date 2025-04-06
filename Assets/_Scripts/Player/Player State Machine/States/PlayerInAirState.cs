@@ -94,6 +94,16 @@ public class PlayerInAirState : PlayerState
             return;
         }
 
+        //ATTACK
+        if (_player.InputManager.MeleeAttackWasPressed)
+        {
+            _player.ResetJumpValues();
+            _player.ResetWallJumpValues();
+            _player.StopWallSliding();
+            _player.StateMachine.ChangeState(_player.MeleeAttackState);
+
+            return;
+        }
 
         if (_player.InputManager.RangeAttackWasPressed)
         {

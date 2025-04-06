@@ -61,6 +61,12 @@ public class PlayerRangeAttackState : PlayerState
                 return;
             }
 
+            // Si despues ataca a melee
+            if (_player.InputManager.MeleeAttackWasPressed)
+            {
+                _player.StateMachine.ChangeState(_player.MeleeAttackState);
+                return;
+            }
 
             // Si no se cumple ninguna de las anteriores condiciones volvemos a Idle
             _player.StateMachine.ChangeState(_player.IdleState);
