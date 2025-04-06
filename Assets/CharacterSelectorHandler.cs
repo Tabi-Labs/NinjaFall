@@ -7,7 +7,6 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System;
 using TMPro;
-using UnityEditor.SearchService;
 using UnityEngine.InputSystem;
 
 public class CharacterSelectorHandler : MonoBehaviour

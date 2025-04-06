@@ -5376,7 +5376,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3227815637
+  GlobalObjectIdHash: 607330330
   InScenePlacedSourceGlobalObjectIdHash: 607330330
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5403,7 +5403,7 @@ MonoBehaviour:
   BodyColl: {fileID: 1008354027835368250}
   JumpParticles: {fileID: 4476422978619088364, guid: 2d2cd98c8321d3c4da5505a3b8e1d25b, type: 3}
   SecondJumpParticles: {fileID: 7613757481095289963, guid: cd4faf7013b831b498a109c771a95e87, type: 3}
-  ToxicParticles: {fileID: 0}
+  ToxicParticles: {fileID: 4476422978619088364, guid: bb09990889e6e3f46b90302eb6e12691, type: 3}
   LandParticles: {fileID: 5835083849461746053, guid: 427c1d73877fed8479897748b827ba28, type: 3}
   ParticleSpawnTransform: {fileID: 8247011537788828137}
   TrailRenderer: {fileID: 265306988447210922}
@@ -5411,7 +5411,7 @@ MonoBehaviour:
   DashParticles: {fileID: 148112562335565161, guid: 114fe4303d3487042a4a851bdbede93e, type: 3}
   WallSlideParticles: {fileID: 2940781082615036196}
   HeightTracker: {fileID: 1280714515081318487}
-  dontDestroyOnLoadFlag: 1
+  DontDestroyOnLoadFlag: 1
   OnPlayerDeath: {fileID: 11400000, guid: 09b9bff2cbddd704693658c819239dbb, type: 2}
   ShowEnteredStateDebugLog: 1
   isReady: 0

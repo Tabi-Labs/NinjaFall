@@ -1,4 +1,3 @@
-using UnityEditor.Animations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewCharacterData", menuName= "ScriptableObjects/CharacterData")]
@@ -8,7 +7,7 @@ public class CharacterData : ScriptableObject
     // Set default value at 1.0f
     [Range(0.0f, 1.0f)]
     public float portraitLuminosity = 1.0f;      // Luminosidad del portrait
-    public AnimatorController portraitAnimator;  // Animator del portrait
+    public RuntimeAnimatorController portraitAnimator;  // Animator del portrait
     public Sprite text;                          // Imagen del texto
     public Color textOutlineColor;               // Color del borde del texto
     public Material mat;                         // Material personalizado

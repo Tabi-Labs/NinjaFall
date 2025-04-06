@@ -7,6 +7,23 @@ public class StatusEffectManager : MonoBehaviour
     private List<StatusEffect> activeEffects = new List<StatusEffect>();
     private Dictionary<StatusEffect, Coroutine> effectCoroutines = new Dictionary<StatusEffect, Coroutine>();
 
+
+    // Singleton Pattern
+    // --------------------------------------------------------------------------------
+    public static StatusEffectManager instance { get; private set; }
+    
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     public void ApplyStatusEffect(StatusEffect effect, GameObject player)
     {
         Debug.Log("Clase Effect Manager aplicando efecto");

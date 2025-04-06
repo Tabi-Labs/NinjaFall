@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Animations;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using System.Linq;
 
 public enum PauseMode
 {
@@ -20,29 +20,31 @@ public class PauseManager : MonoBehaviour
     [SerializeField] GameObject pause_canvas;
     [SerializeField] GameObject finish_canvas;
     [SerializeField] GameObject winner_portrait;
-    [SerializeField] private CharacterData[] character_data;
+    private CharacterData character_data;
 
     private bool is_paused = false;
+    private bool ignore_pause = false;
     private int last_winner = -1;
+
+    // Singleton Pattern
+    // --------------------------------------------------------------------------------
+    public static PauseManager instance { get; private set; }
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         StartGame();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //Placeholder, esto habra que llamarlo desde el input Manager
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            //PauseOfflineGame();
-            PauseGame();
-        }
-        else if (Input.GetKeyDown(KeyCode.P)) {
-            EndGame(3);
-        }
-
     }
 
     public void PauseFunctionality(bool pause, PauseMode mode)
@@ -55,7 +57,6 @@ public class PauseManager : MonoBehaviour
             {
                 player.GetComponent<CustomInputManager>().enabled = !pause;
             }
-
         }
 
         switch (mode) {
@@ -91,10 +92,9 @@ public class PauseManager : MonoBehaviour
                 break;
             case PauseMode.post_game:
                 Time.timeScale = 1.0f;
-
-                winner_portrait.GetComponent<Image>().sprite = character_data[last_winner].portrait;
-                winner_portrait.GetComponent<Animator>().runtimeAnimatorController = character_data[last_winner].portraitAnimator;
-                winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data[last_winner].text;
+                winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
+                winner_portrait.GetComponent<Animator>().runtimeAnimatorController = character_data.portraitAnimator;
+                winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
 
                 finish_canvas.SetActive(true);
                 break;
@@ -108,12 +108,32 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
+        if (ignore_pause) return;
+        ignore_pause = true;
+        StartCoroutine(allow_pause());
         PauseFunctionality(!is_paused, PauseMode.mid_game);
     }
-    public void EndGame(int winner)
+    
+    IEnumerator allow_pause()
     {
-        last_winner = winner;
+        yield return new WaitForSeconds(0.5f);
+        ignore_pause = false;
+    }
+
+    public void EndGame(CharacterData winnerData)
+    {
+        character_data = winnerData;
         PauseFunctionality(true, PauseMode.post_game);
+    }
+
+    public void ClearPlayers()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+        }
     }
 
     public void PauseOfflineGame()

@@ -33,13 +33,6 @@ public class MeleeAttack : MonoBehaviour
         //_meleeAttackAction.action.performed += Melee;
     }
 
-    void OnDisable()
-    {
-        _player.Input().MeleeAttackEvent -= Melee;
-        //_meleeAttackAction.action.performed -= Melee;
-        //_meleeAttackAction.action.Disable();
-    }
-
     void Update()
     {
         if(_stats.DebugAttackArea)

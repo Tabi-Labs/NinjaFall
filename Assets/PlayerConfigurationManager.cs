@@ -61,6 +61,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         }
 
         MonoBehaviour[] components = pi.GetComponents<MonoBehaviour>();
+        pi.transform.position= new Vector3(1000,1000,1000);
         foreach (MonoBehaviour component in components)
         {
             if (component is PlayerInput) continue;
@@ -109,6 +110,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         readyCount++;
 
         pi.GetComponent<SpriteRenderer>().material = characterDatas[charIdx].mat;
+        pi.GetComponent<Player>().CharacterData = characterDatas[charIdx];
         pi.GetComponent<Player>().isReady = true;
 
         if(readyCount >= 2) GameStartBanner.SetActive(true);

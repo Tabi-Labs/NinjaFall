@@ -23,7 +23,6 @@ public class RangedAttack : NetworkBehaviour
     private Color _debugColor = Color.red;
 
     Vector2 aimDirection = default;
-    private Camera _camera;
 
     #region ----- UNITY CALLBACKS -------
 
@@ -31,18 +30,11 @@ public class RangedAttack : NetworkBehaviour
     {
         _player = GetComponent<Player>();
         _selfDamageable = GetComponent<IDamageable>();
-        _camera = Camera.main;
     }
 
     void Start()
     {
         _player.Input().RangedAttackEvent += OnRangedAttack;
-    }
-
-    void OnDisable()
-    {
-        _player.Input().RangedAttackEvent -= OnRangedAttack;
-
     }
 
     void Update()
@@ -71,7 +63,7 @@ public class RangedAttack : NetworkBehaviour
 
         if(aimDirection.SqrMagnitude() > 3f)
         {
-            aimDirection = _camera.ScreenToWorldPoint(aimDirection) - _projectileSpawnPoint.position;
+            aimDirection = Camera.main.ScreenToWorldPoint(aimDirection) - _projectileSpawnPoint.position;
             aimDirection.Normalize();
         }
     }

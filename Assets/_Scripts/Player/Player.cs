@@ -13,15 +13,13 @@ public class Player : NetworkBehaviour
   
     [Header("References")]
     public PlayerMovementStats MoveStats;
-    [SerializeField] private Collider2D FeetColl;
-    [SerializeField] private Collider2D HeadColl;
-    [SerializeField] private Collider2D BodyColl;
+    [SerializeField] public Collider2D FeetColl;
+    [SerializeField] public Collider2D HeadColl;
+    [SerializeField] public Collider2D BodyColl;
  
     public Rigidbody2D RB { get; private set; }
     public Animator Anim { get; private set; }
     private PlayerInput _playerInput;
-
-    public StatusEffectManager EffectManager { get; private set; }
 
     [Header("FX")]
     public GameObject JumpParticles;
@@ -33,9 +31,6 @@ public class Player : NetworkBehaviour
     public ParticleSystem SpeedParticles;
     public GameObject DashParticles;
     public ParticleSystem WallSlideParticles;
-    //public GameObject Shuriken;
-    //public Transform FirePoint;
-    //public GameObject Sword;
 
     [Header("Height Tracker")]
     public Transform HeightTracker;
@@ -48,7 +43,6 @@ public class Player : NetworkBehaviour
 
     [Header("Debug")]
     public bool ShowEnteredStateDebugLog = false;
-
     public bool isReady = false;
 
     //animation vars
@@ -63,7 +57,6 @@ public class Player : NetworkBehaviour
     public const string IS_ATTACKING = "isAttacking";
     public const string IS_DEATH = "isDeath";
 
-      
     #region ----- COMPONENT VARS -------
     private CustomInputManager _input;
     public CustomInputManager InputManager => _input;
@@ -90,7 +83,7 @@ public class Player : NetworkBehaviour
 
 
     //collision vars
-    public bool IsDead { get; private set; }
+    public bool IsDead { get; set; }
     public bool IsGrounded { get; private set; }
     public bool BumpedHead { get; private set; }
     public bool IsTouchingWall { get; private set; }
@@ -165,6 +158,8 @@ public class Player : NetworkBehaviour
     public float HighestPoint { get; private set; }
     public float HeightTrackerStartingPoint { get; private set; }
 
+    public CharacterData CharacterData { get; set; }
+
     #endregion
 
     #region ---- INITIALIZERS ----
@@ -192,7 +187,6 @@ public class Player : NetworkBehaviour
     private void InitAnimator() =>  Anim = GetComponent<Animator>();
     private void InitPlayerInput() => _playerInput = GetComponent<PlayerInput>();
 
-    private void InitEffectManager() => EffectManager = GetComponent<StatusEffectManager>();
     #endregion
 
     #region ---- GETTERS / SETTERS ----
@@ -232,10 +226,7 @@ public class Player : NetworkBehaviour
         WallSlideParticles.gameObject.SetActive(false);
         if(DontDestroyOnLoadFlag) DontDestroyOnLoad(transform.root);
     }
-    private void OnDisable()
-    {
-        
-    }
+
     private void Update()
     {
         if(NetworkManager && !IsOwner) return;
@@ -251,7 +242,7 @@ public class Player : NetworkBehaviour
     public void ApplyEffect(StatusEffect effect)
     {
         Debug.Log("Effect manager aplica efecto " + effect.name + " al jugador: ", this.gameObject);
-        EffectManager.ApplyStatusEffect(effect, gameObject);
+        StatusEffectManager.instance.ApplyStatusEffect(effect, gameObject);
     }
 
 
@@ -270,12 +261,12 @@ public class Player : NetworkBehaviour
     #region ------ SPRITE HANDLING ------
     public void TurnCheck(Vector2 moveInput)
     {
-        if(moveInput.x < 0 && isFacingRight)
+        if(moveInput.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, 180, 0);
             isFacingRight = false;
         }
-        else if(moveInput.x > 0 && !isFacingRight)
+        else if(moveInput.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
             isFacingRight = true;
@@ -324,27 +315,39 @@ public class Player : NetworkBehaviour
     {
         Death();
     }
+
     public void Death()
     {
         //if (!IsOwner) return;
+        if(IsDead) return;
+        IsDead = true;
         StateMachine.ChangeState(DeathState);
-        Debug.Log("Player ID: "+ _playerInput.playerIndex);
-        KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
-        
+        Debug.Log("Player ID: "+ _playerInput.playerIndex);        
     }
 
     public void DeletePlayer()
     {
+        int playerIndex = _playerInput.playerIndex;
+        KillsCounter.Instance.PlayerKilled(playerIndex);
         StateMachine.ChangeState(IdleState);
-        PlayerSpawner.Instance.RespawnPlayer(this.gameObject);
-        if (!NetworkManager)
-            this.gameObject.SetActive(false);
+        if (!NetworkManager){
+            MonoBehaviour[] components = this.gameObject.GetComponents<MonoBehaviour>();
+            foreach (MonoBehaviour component in components)
+            {
+                component.enabled = false;
+            }
+            this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            this.gameObject.GetComponent<Animator>().enabled = false;
+            transform.position = new Vector3(1000, 1000, 1000);
+        }
         else
         {
             if (IsOwner)
                 DeletePlayerRPC();
         }
+        PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
     }
+    
     [Rpc(SendTo.Server)]
     void DeletePlayerRPC()
     {
@@ -409,6 +412,13 @@ public class Player : NetworkBehaviour
     #region Jump
 
     #region Jump Inputs
+
+    public void PauseChecks(){
+        if (InputManager.PauseWasPressed)
+        {
+            PauseManager.instance.PauseGame();
+        }
+    }
 
     public void JumpInputChecks()
     {
