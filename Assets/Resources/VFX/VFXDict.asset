@@ -17,3 +17,5 @@ MonoBehaviour:
     vfxPrefab: {fileID: 2095593349219421325, guid: 4fadea61a23ae9443834abb1af3c96e3, type: 3}
   - id: VFX_OutOfAmmo
     vfxPrefab: {fileID: 148112562335565161, guid: c84a0e88f6eebfc4da96957ed1d78353, type: 3}
+  - id: VFX_Blood
+    vfxPrefab: {fileID: 5904571468842360201, guid: ad513d659f79a6d47aabefab348d39b5, type: 3}
