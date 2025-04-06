@@ -8,6 +8,7 @@ using DG.Tweening;
 using System;
 using TMPro;
 using UnityEditor.SearchService;
+using UnityEngine.InputSystem;
 
 public class CharacterSelectorHandler : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class CharacterSelectorHandler : MonoBehaviour
     public bool isAvailable {get; private set;} = true;
     public bool isSelected {get; private set;} = false;
     public int playerIndex {get; private set;} = -1;
+    public PlayerInput pi {get; private set;} = null;
 
     // Private Variables
     private int currCharacterIdx = 0;
@@ -81,12 +83,13 @@ public class CharacterSelectorHandler : MonoBehaviour
         Deactivate();
     }
 
-    public void Activate(int playerIndex)
+    public void Activate(PlayerInput pi)
     {
         StartCoroutine(SetAvailabilityNextFrame(false));
         portraitPanel.gameObject.SetActive(true);
         emptyPanel.gameObject.SetActive(false);
-        this.playerIndex = playerIndex;
+        this.playerIndex = pi.playerIndex;
+        this.pi = pi;
     }
 
     private IEnumerator SetAvailabilityNextFrame(bool available)
@@ -187,7 +190,7 @@ public class CharacterSelectorHandler : MonoBehaviour
         }
         if (isAvailable) return;
         portraitPanel.DOKill(true);
-        pcm.UnlockCharacter(currCharacterIdx);
+        pcm.UnlockCharacter(currCharacterIdx, pi);
         isSelected = false;
         portraitPanel.DOPunchScale(new Vector3(-scaleFactor, -scaleFactor, -scaleFactor), 0.2f, 5, 1);
         portraitOutline.enabled = false;
@@ -209,7 +212,7 @@ public class CharacterSelectorHandler : MonoBehaviour
             portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.2f, 5, 1);
             AudioManager.PlaySound(denySoundID);
         } else {
-            bool selectionOk = pcm.LockCharacter(currCharacterIdx);
+            bool selectionOk = pcm.LockCharacter(currCharacterIdx, pi);
             isSelected = selectionOk;
             AudioManager.PlaySound(selectionSoundID);
             portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.5f, 10, 1);
@@ -262,9 +265,7 @@ public class CharacterSelectorHandler : MonoBehaviour
         portraitImage.color = new Color(data.portraitLuminosity, data.portraitLuminosity, data.portraitLuminosity, 1.0f);
         portraitImage.sprite = data.portrait;
         portraitImage.GetComponent<Animator>().runtimeAnimatorController = data.portraitAnimator;
-        // portraitImage.material = data.mat;
         nameImage.sprite = data.text;
-        nameImage.material = data.mat;
         nameImage.GetComponent<Outline>().effectColor = data.textOutlineColor;
     }
 
