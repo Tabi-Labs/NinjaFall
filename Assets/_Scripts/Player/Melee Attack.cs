@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -71,7 +72,7 @@ public class MeleeAttack : MonoBehaviour
                     _debugColor = Color.yellow;
                     continue;
                 }
-                Sequence sequence = DOTween.Sequence();
+                DG.Tweening.Sequence sequence = DOTween.Sequence();
                 sequence.AppendInterval(_stats.ParryWindow);
                 sequence.AppendCallback(() =>
                 {
@@ -86,6 +87,16 @@ public class MeleeAttack : MonoBehaviour
                 }
                 });
             
+            }
+
+            if (collider.CompareTag("Shuriken"))
+            {
+                ProjectileBehaviour projectileBehaviour = collider.GetComponentInParent<ProjectileBehaviour>();
+
+                if (projectileBehaviour != null)
+                {
+                    projectileBehaviour.ReflectShuriken(_player.GetMovement());
+                }
             }
         }
     }

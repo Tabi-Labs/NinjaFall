@@ -83,7 +83,7 @@ public class RangedAttack : NetworkBehaviour
             RequestSpawnProjectileRPC();
             return;
         }
-
+     
         RequestShuriken(aimDirection);
     }
 
@@ -122,6 +122,7 @@ public class RangedAttack : NetworkBehaviour
 
     void RequestShuriken(Vector3 direction = default)
     {
+        if (!_player.IsWallSliding && !_player.IsWallSlideFalling) return;
         if (ShurikensCount >= _attackStats.MaxShurikens) 
         {
             NoAmmoFX();
