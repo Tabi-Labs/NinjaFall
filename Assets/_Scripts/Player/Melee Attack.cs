@@ -113,7 +113,7 @@ public class MeleeAttack : MonoBehaviour
     void ClashEffects()
     {
         if(AudioManager.Instance) AudioManager.PlaySound("FX_SwordClash");
-        VFXManager.PlayVFX("VFX_Impact", hitPoint, Quaternion.identity);
+        VFXManager.PlayVFX("VFX_Impact",VFXType.Animation, hitPoint, Quaternion.identity);
     }
     #endregion
 

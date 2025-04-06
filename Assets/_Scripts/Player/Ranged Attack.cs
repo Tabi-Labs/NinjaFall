@@ -67,7 +67,7 @@ public class RangedAttack : NetworkBehaviour
     {
         aimDirection = _player.Input().AimMovement;
 
-        if(aimDirection.SqrMagnitude() > 1f)
+        if(aimDirection.SqrMagnitude() > 3f)
         {
             aimDirection = Camera.main.ScreenToWorldPoint(aimDirection) - _projectileSpawnPoint.position;
             aimDirection.Normalize();
@@ -120,7 +120,7 @@ public class RangedAttack : NetworkBehaviour
 
     void RequestShuriken(Vector3 direction = default)
     {
-        if (!_player.IsWallSliding && !_player.IsWallSlideFalling) return;
+        if (_player.IsWallSliding && _player.IsWallSlideFalling) return;
         if (ShurikensCount >= _attackStats.MaxShurikens) 
         {
             NoAmmoFX();
@@ -170,7 +170,7 @@ public class RangedAttack : NetworkBehaviour
     void NoAmmoFX()
     {
         AudioManager.PlaySound("FX_NoShurikens");
-        VFXManager.PlayVFX("VFX_OutOfAmmo", _projectileSpawnPoint.position, Quaternion.LookRotation(transform.up, transform.right), transform);
+        VFXManager.PlayVFX("VFX_OutOfAmmo", VFXType.ParticleSystem, _projectileSpawnPoint.position, Quaternion.LookRotation(transform.up, transform.right), _projectileSpawnPoint.transform);
     }
 
     void ShurikenFX()

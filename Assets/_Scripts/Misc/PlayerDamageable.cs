@@ -35,7 +35,7 @@ public class PlayerDamageable : Damageable
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
-
+        VFXManager.PlayVFX("VFX_Blood", VFXType.Animation, transform.position, Quaternion.identity, transform);
         if (_player != null)
         {
             if(NetworkManager)
