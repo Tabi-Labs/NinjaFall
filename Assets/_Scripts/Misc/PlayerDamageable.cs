@@ -15,7 +15,12 @@ public class PlayerDamageable : Damageable
         base.Awake();
         _player = GetComponent<Player>();
 
-        _player.Input().MeleeAttackEvent += Parry;
+        
+    }
+
+    void Start()
+    {
+       _player.Input().MeleeAttackEvent += Parry;
     }
     private void Update()
     {
@@ -30,7 +35,7 @@ public class PlayerDamageable : Damageable
     protected override void OnDamageTaken()
     {
         base.OnDamageTaken();
-
+        VFXManager.PlayVFX("VFX_Blood", VFXType.Animation, transform.position, Quaternion.identity, transform);
         if (_player != null)
         {
             if(NetworkManager)

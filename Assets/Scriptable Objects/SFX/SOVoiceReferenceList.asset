@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e587b580e8c9e064f93a232cbb1f808d, type: 3}
+  m_Name: SOVoiceReferenceList
+  m_EditorClassIdentifier: 
+  audio_references:
+  - id: VO_Ready
+    clip: {fileID: 8300000, guid: a1bb6e8ee694c90478e56d8d02ca9b2e, type: 3}
+  - id: VO_Set
+    clip: {fileID: 8300000, guid: 9bea3b4700fb18d4aac1348ec216f3ad, type: 3}
+  - id: VO_Go
+    clip: {fileID: 8300000, guid: 38abeb338185e434f9789f66e6716d21, type: 3}

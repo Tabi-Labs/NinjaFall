@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class PoolingManager : MonoBehaviour
+public class PoolingManager
 {
     private int size = 15;
     public List<GameObject> pool;
@@ -16,7 +15,7 @@ public class PoolingManager : MonoBehaviour
 
 
         for (int i = 0; i < this.size; i++) {
-            pool.Add(Instantiate(element, parent));
+            pool.Add(GameObject.Instantiate(element, parent));
 
             pool[i].SetActive(false);
         }

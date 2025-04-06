@@ -145,7 +145,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void UnSceceLoaded(ulong clientId, string sceneName, AsyncOperation asyncOperation)
     {
-        if (IsServer && sceneName == sceneName)
+        if (IsServer && this.sceneName == sceneName)
         {
             //lateJoinsBehaviour.aprovedConection = true;
             foreach (ulong id in NetworkManager.ConnectedClientsIds)
@@ -162,7 +162,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     private void SceneLoaded(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        if (IsServer && sceneName == sceneName)
+        if (IsServer && this.sceneName == sceneName)
         {
             Debug.Log("SceneLoaded");   
             LateJoinsBehaviour.aprovedConection = false;
