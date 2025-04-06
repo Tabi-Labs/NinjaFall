@@ -31,9 +31,6 @@ public class Player : NetworkBehaviour
     public ParticleSystem SpeedParticles;
     public GameObject DashParticles;
     public ParticleSystem WallSlideParticles;
-    //public GameObject Shuriken;
-    //public Transform FirePoint;
-    //public GameObject Sword;
 
     [Header("Height Tracker")]
     public Transform HeightTracker;
@@ -46,7 +43,6 @@ public class Player : NetworkBehaviour
 
     [Header("Debug")]
     public bool ShowEnteredStateDebugLog = false;
-
     public bool isReady = false;
 
     //animation vars
@@ -61,7 +57,6 @@ public class Player : NetworkBehaviour
     public const string IS_ATTACKING = "isAttacking";
     public const string IS_DEATH = "isDeath";
 
-      
     #region ----- COMPONENT VARS -------
     private CustomInputManager _input;
     public CustomInputManager InputManager => _input;
@@ -162,6 +157,8 @@ public class Player : NetworkBehaviour
     //high point trackers
     public float HighestPoint { get; private set; }
     public float HeightTrackerStartingPoint { get; private set; }
+
+    public CharacterData CharacterData { get; set; }
 
     #endregion
 
@@ -330,7 +327,8 @@ public class Player : NetworkBehaviour
 
     public void DeletePlayer()
     {
-        KillsCounter.Instance.PlayerKilled(_playerInput.playerIndex);
+        int playerIndex = _playerInput.playerIndex;
+        KillsCounter.Instance.PlayerKilled(playerIndex);
         StateMachine.ChangeState(IdleState);
         if (!NetworkManager){
             MonoBehaviour[] components = this.gameObject.GetComponents<MonoBehaviour>();
@@ -347,7 +345,7 @@ public class Player : NetworkBehaviour
             if (IsOwner)
                 DeletePlayerRPC();
         }
-        PlayerSpawner.Instance.RespawnPlayer(this.gameObject);
+        PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
     }
     
     [Rpc(SendTo.Server)]
@@ -414,6 +412,13 @@ public class Player : NetworkBehaviour
     #region Jump
 
     #region Jump Inputs
+
+    public void PauseChecks(){
+        if (InputManager.PauseWasPressed)
+        {
+            PauseManager.instance.PauseGame();
+        }
+    }
 
     public void JumpInputChecks()
     {

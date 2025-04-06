@@ -79,15 +79,9 @@ public class PlayerSpawner : NetworkBehaviour
         player.GetComponent<Player>().BodyColl.enabled = true;
     }
 
-    public void RespawnPlayer(GameObject player)
+    public void RespawnPlayer(GameObject player, int playerID)
     {
-        //if (!IsServer) return; // Solo el servidor maneja el respawn
-        // Desactivar temporalmente el jugador 
-        //player.GetComponent<Player>().enabled = false;
-        //player.GetComponent<Collider2D>().enabled = false;
-        //player.GetComponent<SpriteRenderer>().enabled = false;
-
-        // Esperar un tiempo antes del respawn 
+        if(!KillsCounter.Instance.alivePlayers[playerID]) return;
         StartCoroutine(RespawnAfterDelay(player, respawnDelay));
     }
 

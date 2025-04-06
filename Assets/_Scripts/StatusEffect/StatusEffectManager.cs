@@ -21,7 +21,6 @@ public class StatusEffectManager : MonoBehaviour
         else
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
     }
 

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class CustomInputManager : MonoBehaviour
 {
-    private PlayerInput PlayerInput;
+    public PlayerInput PlayerInput;
 
     #region --- INPUT EVENTS ----
     public event Action MeleeAttackEvent;
@@ -25,6 +25,7 @@ public class CustomInputManager : MonoBehaviour
     public  bool TestWasPressed{get; private set; }
     public bool MeleeAttackWasPressed{get; private set; }
     public bool RangeAttackWasPressed{get; private set; }
+    public bool PauseWasPressed{get; private set; }
 
     private bool _isAiming;
     public bool IsAiming => _isAiming;
@@ -37,6 +38,7 @@ public class CustomInputManager : MonoBehaviour
     private InputAction _testAction;
     private InputAction _meleeAttackAction;
     private InputAction _rangeAttackAction;
+    private InputAction _pauseAction;
 
     
 
@@ -52,6 +54,7 @@ public class CustomInputManager : MonoBehaviour
         _meleeAttackAction = PlayerInput.actions["MeleeAttack"];
         _rangeAttackAction = PlayerInput.actions["RangeAttack"];
         _testAction = PlayerInput.actions["Test"];
+        _pauseAction = PlayerInput.actions["Pause"];
 
         _meleeAttackAction.performed += OnMeleeAttack;
     }
@@ -66,7 +69,7 @@ public class CustomInputManager : MonoBehaviour
         _meleeAttackAction.Enable();
         _rangeAttackAction.Enable();
         _testAction.Enable();
-
+        _pauseAction.Enable();
        
         _meleeAttackAction.performed += OnMeleeAttack;
     }
@@ -80,6 +83,7 @@ public class CustomInputManager : MonoBehaviour
         _meleeAttackAction.Disable();
         _rangeAttackAction.Disable();
         _testAction.Disable();
+        _pauseAction.Disable();
 
         _rangeAttackAction.performed -= OnRangeAttack;
          _rangeAttackAction.canceled -= OnRangeAttack;
@@ -102,6 +106,7 @@ public class CustomInputManager : MonoBehaviour
         JumpWasReleased = _jumpAction.WasReleasedThisFrame();
         RunIsHeld = _runAction.IsPressed();
         MeleeAttackWasPressed = _meleeAttackAction.WasPressedThisFrame();
+        PauseWasPressed = _pauseAction.WasPressedThisFrame();
 
         DashWasPressed = _dashAction.WasPressedThisFrame();
         TestWasPressed = _testAction.WasPressedThisFrame();

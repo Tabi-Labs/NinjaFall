@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
+using System.Linq;
 
 public class KillsCounter : NetworkBehaviour
 {
@@ -18,9 +19,10 @@ public class KillsCounter : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI P4TextMesh;
 
     private TextMeshProUGUI[] playerTextMeshes;  // Arreglo de TextMeshProUGUI generados
-    private int[] localLives = new int[4] { 5, 5, 5, 5 };
+    private int[] localLives = new int[4] { 1, 1, 1, 1 };
+    public bool[] alivePlayers;
 
-    // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tamaño del array de players
+    // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tamaï¿½o del array de players
     private int localPlayerCount;
     public override void OnNetworkSpawn()
     {
@@ -40,16 +42,20 @@ public class KillsCounter : NetworkBehaviour
             localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
             Initialize();
         }
-            
+        alivePlayers = new bool[localPlayerCount];
+        for (int i = 0; i < alivePlayers.Length; i++)
+        {
+            alivePlayers[i] = true;
+        }
     }
     private void Initialize()
     {
         Instance = this;
         GeneratePlayerTextMeshes();  // Generamos los TextMeshPro en la UI
-        UpdateUI();  // Actualizamos la UI según las vidas iniciales de los jugadores
+        UpdateUI();  // Actualizamos la UI segï¿½n las vidas iniciales de los jugadores
     }
 
-    // Método para ser llamado cuando un jugador mata a otro
+    // Mï¿½todo para ser llamado cuando un jugador mata a otro
     public void PlayerKilled(int playerID)
     {
             if(NetworkManager)
@@ -59,7 +65,7 @@ public class KillsCounter : NetworkBehaviour
 
     }
 
-    // Restamos una vida al jugador que murió
+    // Restamos una vida al jugador que muriï¿½
     private void DecreaseLives(int playerID)
     {
         Debug.Log($"Jugador {playerID + 1} ha sido eliminado. Vidas restantes: {GetLives(playerID) - 1}");
@@ -70,42 +76,44 @@ public class KillsCounter : NetworkBehaviour
             localLives[playerID]--;
 
 
-        // Comprobamos si el jugador se quedó sin vidas
+        // Comprobamos si el jugador se quedï¿½ sin vidas
         if (GetLives(playerID) <= 0)
         {
-            // Aquí podrías llamar a un método que reinicie al jugador o termine la partida.
-            // Por ejemplo, podrías reiniciar al jugador o marcarlo como eliminado.
-            PlayerEliminated(playerID);
+            alivePlayers[playerID] = false;
+
+            int aliveCount = 0;
+            for(int i = 0; i < alivePlayers.Length; i++)
+            {
+                if (alivePlayers[i] == true) aliveCount++;
+            }
+            if(aliveCount == 1)
+            {
+                int winnerID = alivePlayers.ToList().IndexOf(true);
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(x => x.GetComponent<Player>()).ToArray();
+                PauseManager.instance.EndGame(players[winnerID].GetComponent<Player>().CharacterData);
+            }
         }
 
         // Actualizamos la UI
         UpdateUI();
     }
 
-    // Método para obtener las vidas de un jugador (basado en su ID)
+    // Mï¿½todo para obtener las vidas de un jugador (basado en su ID)
     private int GetLives(int playerID)
     {
         return (NetworkManager) ? playerLives[playerID].Value : localLives[playerID];
     }
 
-    // Método que maneja lo que pasa cuando un jugador se queda sin vidas
-    private void PlayerEliminated(int playerID)
-    {
-        // Aquí podrías reiniciar al jugador o terminar el juego, dependiendo de tu diseño de juego.
-        // Por ejemplo, ocultar al jugador, ponerlo en un estado de espectador, o terminar el juego si todos los jugadores se han eliminado.
-        Debug.Log($"Jugador {playerID + 1} eliminado. ¡Juego terminado!");
-    }
-
-    // Asocia los TextMeshPro existentes y activa/desactiva según los jugadores activos
+    // Asocia los TextMeshPro existentes y activa/desactiva segï¿½n los jugadores activos
     private void GeneratePlayerTextMeshes()
     {
         playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
-        // Si estamos en modo multijugador, usamos el número de clientes conectados
+        // Si estamos en modo multijugador, usamos el nï¿½mero de clientes conectados
         int numberOfPlayers = (IsServer || IsHost) ?
             NetworkManager.Singleton.ConnectedClients.Count : localPlayerCount;
 
-        // Aquí activamos/desactivamos los TextMeshPro según el número de jugadores
+        // Aquï¿½ activamos/desactivamos los TextMeshPro segï¿½n el nï¿½mero de jugadores
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
             if (i < numberOfPlayers)

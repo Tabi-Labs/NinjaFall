@@ -110,6 +110,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         readyCount++;
 
         pi.GetComponent<SpriteRenderer>().material = characterDatas[charIdx].mat;
+        pi.GetComponent<Player>().CharacterData = characterDatas[charIdx];
         pi.GetComponent<Player>().isReady = true;
 
         if(readyCount >= 2) GameStartBanner.SetActive(true);
