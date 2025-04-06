@@ -51,6 +51,7 @@ public class MeleeAttack : MonoBehaviour
 
     void Melee()
     {
+        MeleeEffects();
         hitPoint = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
         var boxSize = new Vector2(_stats.MeleeAttackRange, _stats.AttackHeight);
         Collider2D[] colliders = Physics2D.OverlapBoxAll(hitPoint, boxSize, 0f);
@@ -112,8 +113,15 @@ public class MeleeAttack : MonoBehaviour
     
     void ClashEffects()
     {
-        if(AudioManager.Instance) AudioManager.PlaySound("FX_SwordClash");
+        AudioManager.PlaySound("FX_SwordClash");
         VFXManager.PlayVFX("VFX_Impact",VFXType.Animation, hitPoint, Quaternion.identity);
+    }
+
+    void MeleeEffects()
+    {
+        AudioManager.PlaySound("FX_SwordSlash");
+        //AudioManager.PlaySound("FX_SwordCry");
+
     }
     #endregion
 

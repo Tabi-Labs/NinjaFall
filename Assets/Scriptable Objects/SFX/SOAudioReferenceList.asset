@@ -41,3 +41,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 627c89dad471de3449e08c7d79e2013a, type: 3}
   - id: FX_NoShurikens
     clip: {fileID: 8300000, guid: 648c754771a7eea4ab64fc4d5f1889b5, type: 3}
+  - id: FX_SwordSlash
+    clip: {fileID: 8300000, guid: 5b636daa5bdcf4a44b8e934ff63b1116, type: 3}
+  - id: FX_SwordCry
+    clip: {fileID: 8300000, guid: 600b28811b3de594d97cf1b0e6d8ad39, type: 3}
