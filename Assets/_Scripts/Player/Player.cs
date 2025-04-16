@@ -334,6 +334,7 @@ public class Player : NetworkBehaviour
             MonoBehaviour[] components = this.gameObject.GetComponents<MonoBehaviour>();
             foreach (MonoBehaviour component in components)
             {
+                if(component is PlayerInput) continue;
                 component.enabled = false;
             }
             this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
