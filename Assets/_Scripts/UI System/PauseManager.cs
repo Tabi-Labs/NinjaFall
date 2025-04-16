@@ -91,9 +91,11 @@ public class PauseManager : MonoBehaviour
                 is_paused = pause;
                 break;
             case PauseMode.post_game:
-                Time.timeScale = 1.0f;
+                Time.timeScale = 0.0f;
                 winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
-                winner_portrait.GetComponent<Animator>().runtimeAnimatorController = character_data.portraitAnimator;
+                Animator anim = winner_portrait.GetComponent<Animator>();
+                anim.runtimeAnimatorController = character_data.portraitAnimator;
+                anim.updateMode = AnimatorUpdateMode.UnscaledTime;
                 winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
 
                 finish_canvas.SetActive(true);
