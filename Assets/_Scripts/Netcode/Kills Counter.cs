@@ -18,8 +18,8 @@ public class KillsCounter : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI P3TextMesh;
     [SerializeField] private TextMeshProUGUI P4TextMesh;
 
-    private TextMeshProUGUI[] playerTextMeshes;  // Arreglo de TextMeshProUGUI generados
-    private int[] localLives = new int[4] { 1, 1, 1, 1 };
+    private TextMeshProUGUI[] playerTextMeshes;
+    private int[] localLives = new int[4] { 3, 3, 3, 3 };
     public bool[] alivePlayers;
 
     // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tama�o del array de players
