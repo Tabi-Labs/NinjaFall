@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private string sceneName;
+    private string sceneName;
     private LateJoinsBehaviour lateJoinsBehaviour;
     private List<Transform> spawnPoints;
     [SerializeField] private float respawnDelay = 1f;
@@ -20,6 +20,7 @@ public class PlayerSpawner : NetworkBehaviour
     public static PlayerSpawner Instance { get; private set; }
     private void Awake()
     {
+        sceneName = SceneManager.GetActiveScene().name;
         if (Instance != null)
         {
             Debug.Log("[Singleton] Trying to instantiate a seccond instance of a singleton class.");
@@ -128,9 +129,10 @@ public class PlayerSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-
+        Debug.Log("HOLAAA");
         if (IsServer)
         {
+            sceneName = SceneManager.GetActiveScene().name;
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
             NetworkManager.Singleton.SceneManager.OnUnload += UnSceceLoaded;
             lateJoinsBehaviour = FindObjectOfType<LateJoinsBehaviour>();

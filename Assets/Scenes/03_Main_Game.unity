@@ -288,6 +288,7 @@ MonoBehaviour:
   P2TextMesh: {fileID: 480564127}
   P3TextMesh: {fileID: 947261342}
   P4TextMesh: {fileID: 1235509410}
+  alivePlayers: 
 --- !u!4 &179800387
 Transform:
   m_ObjectHideFlags: 0
@@ -7116,7 +7117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
-  sceneName: 
+  sceneName: 03_Main_Game
   respawnDelay: 3
 --- !u!4 &1974859296
 Transform:
