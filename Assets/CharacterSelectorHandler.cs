@@ -40,10 +40,10 @@ public class CharacterSelectorHandler : NetworkBehaviour
     private PlayerConfigurationManager pcm;
 
     // Propiedades
-    public bool isAvailable { get; set; } = true; // Cambiado a público modificable
-    public bool isSelected { get; set; } = false; // Cambiado a público modificable
-    public int playerIndex { get; set; } = -1; // Cambiado a público modificable
-    public PlayerInput pi { get; set; } = null; // Cambiado a público modificable
+    public bool isAvailable { get; set; } = true;
+    public bool isSelected { get; set; } = false;
+    public int playerIndex { get; set; } = -1;
+    public PlayerInput pi { get; set; } = null;
     public int CurrentCharacterIndex => currCharacterIdx;
 
     // Variables privadas
@@ -109,8 +109,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        Debug.Log($"Panel {transform.GetSiblingIndex()}: OnNetworkSpawn. IsServer={IsServer}, IsClient={IsClient}, IsAvailable={isAvailable}");
-
         // Si somos el servidor, anunciamos información actualizada a todos
         if (IsServer && !isAvailable)
         {
@@ -131,14 +129,11 @@ public class CharacterSelectorHandler : NetworkBehaviour
 
         // Solicitar información de paneles al servidor
         RequestPanelInfoServerRpc(NetworkManager.Singleton.LocalClientId);
-        Debug.Log($"Cliente {NetworkManager.Singleton.LocalClientId}: Solicitando información de todos los paneles");
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void RequestPanelInfoServerRpc(ulong clientId)
     {
-        Debug.Log($"Servidor: Recibida solicitud de información de paneles del cliente {clientId}");
-
         // Encontrar todos los paneles no disponibles
         CharacterSelectorHandler[] allHandlers = FindObjectsOfType<CharacterSelectorHandler>();
         foreach (var handler in allHandlers)
@@ -147,7 +142,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
             {
                 // Enviar información al cliente sobre este panel ocupado
                 BroadcastPanelInfoRpc(clientId, handler.transform.GetSiblingIndex(), handler.playerIndex, handler.CurrentCharacterIndex, handler.isSelected);
-                Debug.Log($"Servidor: Enviando información del panel {handler.transform.GetSiblingIndex()} al cliente {clientId}");
             }
         }
     }
@@ -155,22 +149,17 @@ public class CharacterSelectorHandler : NetworkBehaviour
     // Se llama cuando un cliente se conecta al juego
     private void OnClientConnected(ulong clientId)
     {
-        Debug.Log($"Panel {transform.GetSiblingIndex()}: Cliente conectado con ID {clientId}");
-
         // Si somos el servidor y este panel ya está asignado, informar al cliente
         if (IsServer && !isAvailable)
         {
             // Notificar al nuevo cliente sobre el estado actual del panel
             BroadcastPanelInfoRpc(clientId, transform.GetSiblingIndex(), playerIndex, currCharacterIdx, isSelected);
-            Debug.Log($"Servidor: Notificando al cliente {clientId} sobre el panel {transform.GetSiblingIndex()}");
         }
     }
 
     [ClientRpc]
     private void BroadcastPanelInfoToAllClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx, bool selected)
     {
-        Debug.Log($"Recibida info global del panel {panelSiblingIndex}, jugador {playerIdx}, personaje {characterIdx}");
-
         // No procesar si este es nuestro panel controlado localmente
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
@@ -189,17 +178,11 @@ public class CharacterSelectorHandler : NetworkBehaviour
         }
 
         if (targetPanel == null)
-        {
-            Debug.LogWarning($"No se encontró panel con índice {panelSiblingIndex}");
             return;
-        }
 
         // Si el panel pertenece a un jugador local, no modificarlo
         if (targetPanel.canControl)
-        {
-            Debug.Log($"Panel {panelSiblingIndex} pertenece al jugador local, no se modifica");
             return;
-        }
 
         // Configurar el panel como ocupado
         targetPanel.isAvailable = false;
@@ -227,8 +210,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
             targetPanel.rightArrow.gameObject.SetActive(true);
             targetPanel.portraitOutline.enabled = false;
         }
-
-        Debug.Log($"Panel {panelSiblingIndex} actualizado con personaje {characterIdx}");
     }
 
     [Rpc(SendTo.Everyone)]
@@ -237,8 +218,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
         // Solo el cliente objetivo debe procesar esta notificación
         if (NetworkManager.Singleton.LocalClientId != targetClientId)
             return;
-
-        Debug.Log($"Cliente {targetClientId}: Recibida info del panel {panelSiblingIndex}");
 
         // Buscar el panel correspondiente al índice en la jerarquía
         CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
@@ -254,17 +233,11 @@ public class CharacterSelectorHandler : NetworkBehaviour
         }
 
         if (targetPanel == null)
-        {
-            Debug.LogWarning($"Cliente {targetClientId}: No se encontró panel con índice {panelSiblingIndex}");
             return;
-        }
 
         // Si el panel pertenece a un jugador local, no modificarlo
         if (targetPanel.pi != null && targetPanel.pi.GetComponent<Player>().IsLocalPlayer)
-        {
-            Debug.Log($"Cliente {targetClientId}: Panel {panelSiblingIndex} pertenece al jugador local, no se modifica");
             return;
-        }
 
         // Configurar el panel como ocupado
         targetPanel.isAvailable = false;
@@ -292,8 +265,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
             targetPanel.rightArrow.gameObject.SetActive(true);
             targetPanel.portraitOutline.enabled = false;
         }
-
-        Debug.Log($"Cliente {targetClientId}: Panel {panelSiblingIndex} actualizado con personaje {characterIdx}");
     }
 
     public void Activate(PlayerInput pi)
@@ -315,8 +286,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
 
                 // Enviar RPC para activar el panel en todos los clientes
                 ActivateRpc(transform.GetSiblingIndex(), pi.playerIndex, 0);
-
-                Debug.Log($"Panel {transform.GetSiblingIndex()}: activado para jugador {pi.playerIndex}, canControl={canControl}");
             }
             else
             {
@@ -337,10 +306,8 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [Rpc(SendTo.ClientsAndHost)]
     void ActivateRpc(int panelSiblingIndex, int playerIndex, int initialCharacterIdx)
     {
-        Debug.Log($"Recibida activación para panel {panelSiblingIndex}, jugador {playerIndex}");
-
-        // No procesar si este es nuestro panel
-        if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
+        // No procesar si este es nuestro panel o si ya estamos controlando este panel localmente
+        if (canControl)
             return;
 
         // Buscar el panel correspondiente
@@ -357,22 +324,24 @@ public class CharacterSelectorHandler : NetworkBehaviour
         }
 
         if (targetPanel == null)
-        {
-            Debug.LogWarning($"No se encontró panel con índice {panelSiblingIndex}");
             return;
-        }
 
-        // Si el panel ya está siendo controlado localmente, ignorar
+        // Si el panel ya está controlado por este cliente, no hacer nada
         if (targetPanel.canControl)
+            return;
+
+        // Verificar si este panel está reservado para otro jugador
+        if (!targetPanel.isAvailable && targetPanel.playerIndex != playerIndex)
         {
-            Debug.Log($"Panel {panelSiblingIndex} ya está controlado localmente");
+            // Este panel ya está reservado para otro jugador
+            Debug.LogWarning($"El panel {panelSiblingIndex} ya está reservado para el jugador {targetPanel.playerIndex}, no se puede activar para el jugador {playerIndex}");
             return;
         }
 
         // Configurar el panel para un jugador remoto
         targetPanel.isAvailable = false;
         targetPanel.playerIndex = playerIndex;
-        targetPanel.canControl = false;
+        targetPanel.canControl = false; // Es un panel remoto para este cliente
 
         // Activar visualmente el panel
         targetPanel.portraitPanel.gameObject.SetActive(true);
@@ -380,9 +349,8 @@ public class CharacterSelectorHandler : NetworkBehaviour
 
         // Actualizar visualización
         targetPanel.UpdateCharacterData(0, initialCharacterIdx);
-
-        Debug.Log($"Panel {panelSiblingIndex} activado para jugador remoto {playerIndex}");
     }
+
 
     public void Deactivate()
     {
@@ -500,8 +468,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [ClientRpc]
     private void NotifyCharacterSelectionChangedClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
     {
-        Debug.Log($"Cambio de selección en panel {panelSiblingIndex}, personaje {characterIdx}");
-
         // No modificar si este es nuestro panel controlado localmente
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
@@ -567,8 +533,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [ClientRpc]
     private void NotifyCharacterUnlockedClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
     {
-        Debug.Log($"Desbloqueo en panel {panelSiblingIndex}, personaje {characterIdx}");
-
         // No modificar si este es nuestro panel controlado localmente
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
@@ -645,8 +609,6 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [ClientRpc]
     private void NotifyCharacterLockedClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
     {
-        Debug.Log($"Bloqueo en panel {panelSiblingIndex}, personaje {characterIdx}");
-
         // No modificar si este es nuestro panel controlado localmente
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;

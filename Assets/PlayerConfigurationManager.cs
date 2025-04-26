@@ -11,15 +11,18 @@ using UnityEngine.SceneManagement;
 public class PlayerConfigurationManager : NetworkBehaviour
 {
     [SerializeField] public InputSystemUIInputModule inputModule;
-    [SerializeField] private CharacterSelectorHandler[] characterSelectorHandlers;
+    [SerializeField] public CharacterSelectorHandler[] characterSelectorHandlers; // Cambiado a público
     [SerializeField] private CharacterData[] characterDatas;
     [SerializeField] private string previousScene = "MainMenuScene";
     [SerializeField] private string gameScene = "GameScene";
     [SerializeField] private GameObject GameStartBanner;
     private PlayerInputManager playerInputManager;
-    public bool[] lockedCharacterData{ get; private set; }
-    public int MaxPlayers {get; private set;}
-    public int readyCount {get; private set;} = 0;
+    public bool[] lockedCharacterData { get; private set; }
+    public int MaxPlayers { get; private set; }
+    public int readyCount { get; private set; } = 0;
+
+    // Variable para trackear qué paneles han sido asignados a cada cliente
+    private Dictionary<ulong, int> clientPanelAssignments = new Dictionary<ulong, int>();
 
     // Singleton Pattern
     // --------------------------------------------------------------------------------
@@ -28,7 +31,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
     private void Awake()
     {
-        if(Instance != null)
+        if (Instance != null)
         {
             Debug.Log("[Singleton] Trying to instantiate a seccond instance of a singleton class.");
         }
@@ -42,15 +45,53 @@ public class PlayerConfigurationManager : NetworkBehaviour
             lockedCharacterData[i] = false;
         }
         MaxPlayers = characterSelectorHandlers.Length;
-
     }
+
     private void Start()
     {
-        if(NetworkManager)
+        if (NetworkManager)
         {
             playerInputManager = GetComponent<PlayerInputManager>();
             playerInputManager.enabled = false;
             StartCoroutine(FindAndAssignPlayerToPanel());
+
+            // Suscribirse al evento de conexión de clientes
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Desuscribirse del evento al destruir el objeto
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+    }
+
+    // Se llama cuando un cliente se conecta
+    private void OnClientConnected(ulong clientId)
+    {
+        if (IsServer)
+        {
+            // Sincronizar asignaciones de paneles actuales con el nuevo cliente
+            foreach (var kvp in clientPanelAssignments)
+            {
+                SyncPanelAssignmentToClientRpc(kvp.Key, kvp.Value);
+            }
+        }
+    }
+
+    [ClientRpc]
+    private void SyncPanelAssignmentToClientRpc(ulong ownerId, int panelIndex)
+    {
+        // Actualizar nuestra tabla local de asignaciones
+        if (!clientPanelAssignments.ContainsKey(ownerId))
+        {
+            clientPanelAssignments[ownerId] = panelIndex;
         }
     }
 
@@ -76,11 +117,14 @@ public class PlayerConfigurationManager : NetworkBehaviour
             Debug.LogWarning("No se encontró un Player local en la escena.");
             yield break;
         }
+
+        ulong localClientId = NetworkManager.Singleton.LocalClientId;
+
         // Buscar un panel disponible
         CharacterSelectorHandler csh = null;
         int panelIndex = -1;
 
-        // Si es el host, intentar asignar el primer panel
+        // Si es el host, siempre asignar el primer panel
         if (NetworkManager.Singleton.IsHost)
         {
             csh = characterSelectorHandlers[0];
@@ -92,27 +136,43 @@ public class PlayerConfigurationManager : NetworkBehaviour
                 Debug.Log("El panel P1 ya está ocupado, pero está reservado para el host. Liberando...");
                 csh.Deactivate();
             }
+
+            // Registrar esta asignación
+            clientPanelAssignments[localClientId] = panelIndex;
+
+            // Informar a otros clientes sobre nuestra asignación
+            if (IsServer)
+            {
+                RegisterPanelAssignmentServerRpc(localClientId, panelIndex);
+            }
         }
         else
         {
-            // Para clientes, buscar un panel libre a partir del segundo panel (índice 1)
-            for (int i = 1; i < characterSelectorHandlers.Length; i++)
+            // Para clientes, solicitar un panel al servidor
+            RequestPanelAssignmentServerRpc(localClientId);
+
+            // Esperar hasta que recibamos la asignación
+            float timeout = 5.0f; // 5 segundos máximo de espera
+            float elapsed = 0f;
+
+            while (!clientPanelAssignments.ContainsKey(localClientId) && elapsed < timeout)
             {
-                if (characterSelectorHandlers[i].isAvailable)
-                {
-                    csh = characterSelectorHandlers[i];
-                    panelIndex = i;
-                    break;
-                }
+                yield return new WaitForSeconds(0.1f);
+                elapsed += 0.1f;
             }
+
+            if (!clientPanelAssignments.ContainsKey(localClientId))
+            {
+                Debug.LogError("No se recibió asignación de panel del servidor en el tiempo esperado.");
+                yield break;
+            }
+
+            panelIndex = clientPanelAssignments[localClientId];
+            csh = characterSelectorHandlers[panelIndex];
         }
-        // Si no se encontró un panel disponible
-        if (csh == null)
-        {
-            Debug.LogWarning("No se encontró un panel disponible para el jugador local.");
-            yield break;
-        }
+
         Debug.Log($"Asignando Player local al panel {panelIndex}");
+
         // Obtener el PlayerInput del jugador
         PlayerInput playerInput = localPlayer.GetComponent<PlayerInput>();
         if (playerInput == null)
@@ -138,6 +198,43 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
         Debug.Log($"Player local asignado exitosamente al panel {panelIndex}");
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestPanelAssignmentServerRpc(ulong clientId)
+    {
+        // Buscar el primer panel disponible a partir del índice 1
+        int assignedPanel = -1;
+
+        for (int i = 1; i < characterSelectorHandlers.Length; i++)
+        {
+            // Verificar si este panel ya está asignado a algún cliente
+            if (!clientPanelAssignments.ContainsValue(i) && characterSelectorHandlers[i].isAvailable)
+            {
+                assignedPanel = i;
+                break;
+            }
+        }
+
+        if (assignedPanel == -1)
+        {
+            Debug.LogError($"No hay paneles disponibles para el cliente {clientId}");
+            return;
+        }
+
+        // Registrar esta asignación
+        RegisterPanelAssignmentServerRpc(clientId, assignedPanel);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RegisterPanelAssignmentServerRpc(ulong clientId, int panelIndex)
+    {
+        // Registrar la asignación en el servidor
+        clientPanelAssignments[clientId] = panelIndex;
+
+        // Informar a todos los clientes sobre esta asignación
+        SyncPanelAssignmentToClientRpc(clientId, panelIndex);
+    }
+
     // Brief: Handle player join, called from PlayerInputManager
     // --------------------------------------------------------------------------------
 
@@ -148,9 +245,9 @@ public class PlayerConfigurationManager : NetworkBehaviour
         CharacterSelectorHandler csh = null;
 
         // Get free CharacterSelectorHandler
-        for(i = 0; i < characterSelectorHandlers.Length; i++)
+        for (i = 0; i < characterSelectorHandlers.Length; i++)
         {
-            if(characterSelectorHandlers[i].isAvailable)
+            if (characterSelectorHandlers[i].isAvailable)
             {
                 csh = characterSelectorHandlers[i];
                 break;
@@ -158,7 +255,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         }
 
         MonoBehaviour[] components = pi.GetComponents<MonoBehaviour>();
-        pi.transform.position= new Vector3(1000,1000,1000);
+        pi.transform.position = new Vector3(1000, 1000, 1000);
         foreach (MonoBehaviour component in components)
         {
             if (component is PlayerInput || component is NetworkObject || component is Player) continue;
@@ -168,7 +265,8 @@ public class PlayerConfigurationManager : NetworkBehaviour
         pi.GetComponent<Animator>().enabled = false;
 
         // Assign PlayerInput to CharacterSelectorHandler
-        if(csh){
+        if (csh)
+        {
             pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
             csh.Activate(pi);
         }
@@ -210,7 +308,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         pi.GetComponent<Player>().CharacterData = characterDatas[charIdx];
         pi.GetComponent<Player>().isReady = true;
 
-        if(readyCount >= 2) GameStartBanner.SetActive(true);
+        if (readyCount >= 2) GameStartBanner.SetActive(true);
         return true;
     }
 
@@ -225,14 +323,15 @@ public class PlayerConfigurationManager : NetworkBehaviour
         pi.GetComponent<Player>().isReady = false;
 
         readyCount--;
-        if(readyCount <= 1) GameStartBanner.SetActive(false);
+        if (readyCount <= 1) GameStartBanner.SetActive(false);
         lockedCharacterData[charIdx] = false;
         return true;
     }
 
     public void StartGame()
     {
-        if (readyCount < 2){
+        if (readyCount < 2)
+        {
             Debug.LogError("Not enough players to start the game.");
             return;
         }
