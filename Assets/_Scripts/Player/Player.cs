@@ -1369,6 +1369,10 @@ public class Player : NetworkBehaviour
         }
     }
     #endregion
+    public NetworkObject GetNetworkObject()
+    {
+        return NetworkObject;
+    }
 
 }
 

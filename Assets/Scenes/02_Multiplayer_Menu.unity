@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6960e84d07fb87f47956e7a81d71c4e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ProtocolType: 0
+  m_ProtocolType: 1
   m_UseWebSockets: 0
   m_UseEncryption: 0
   m_MaxPacketQueueSize: 128
@@ -184,7 +184,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 131446589}
-    PlayerPrefab: {fileID: 6383364044758184573, guid: bc99ab9d32c8a3547a82a7d7fff9ac95, type: 3}
+    PlayerPrefab: {fileID: 3325903424131496227, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 8714ece53a9166c49b39688144686b0e, type: 2}
@@ -1270,7 +1270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   code: {fileID: 2000523082}
   showCode: {fileID: 0}
-  targetScene: 04_Multiplayer_Lobby
+  targetScene: 06_Multiplayer_Character_Select
 --- !u!1 &1477291301
 GameObject:
   m_ObjectHideFlags: 0
