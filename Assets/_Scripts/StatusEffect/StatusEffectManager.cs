@@ -30,12 +30,14 @@ public class StatusEffectManager : MonoBehaviour
 
         if (effectCoroutines.ContainsKey(effect))
         {
+            effect.StopVisualEffect(player);
             StopCoroutine(effectCoroutines[effect]);
             effectCoroutines.Remove(effect);
             activeEffects.Remove(effect);
         }
 
         effect.ApplyEffect(player);
+        effect.StartVisualEffect(player);
         activeEffects.Add(effect);
         Coroutine coroutine = StartCoroutine(RemoveEffectAfterDuration(effect, player));
         effectCoroutines.Add(effect, coroutine);
@@ -47,6 +49,7 @@ public class StatusEffectManager : MonoBehaviour
         yield return new WaitForSeconds(effect.Duration);
         Debug.Log("Clase Effect Manager eliminando efecto");
         effect.RemoveEffect(player);
+        effect.StopVisualEffect(player);
         effectCoroutines.Remove(effect);
         activeEffects.Remove(effect);
     }
