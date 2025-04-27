@@ -57,6 +57,9 @@ public class GravityShurikenDebuff : StatusEffect
                 }
             }
         }
+
+        Debug.Log("Eliminando efecto NUEVO");
+        Destroy(gameObject);
     }
 
 }

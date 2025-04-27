@@ -8,6 +8,7 @@ public abstract class StatusEffect : MonoBehaviour
 {
     public string EffectName;
     public float Duration;
+    private bool active = true;
 
     [Header("Visual Effect")]
     public GameObject orbitingOrbPrefab;
@@ -19,6 +20,17 @@ public abstract class StatusEffect : MonoBehaviour
     private GameObject activeOrb;
     private Tween orbitTween;
 
+
+    private SpriteRenderer spriteRenderer;
+    private BoxCollider2D boxCollider;
+
+    private void Awake()
+    {
+        // Obtén las referencias a los componentes
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        boxCollider = GetComponent<BoxCollider2D>();
+    }
+
     public abstract void ApplyEffect(GameObject player);
     public abstract void RemoveEffect(GameObject player);
 
@@ -29,7 +41,9 @@ public abstract class StatusEffect : MonoBehaviour
         {
             Debug.Log("Aplicando efecto");
             player.ApplyEffect(this);
-            Destroy(gameObject);
+
+            spriteRenderer.enabled = false;
+            boxCollider.enabled = false;
         }
     }
 
@@ -61,7 +75,7 @@ public abstract class StatusEffect : MonoBehaviour
         .SetLoops(-1, LoopType.Restart);
     }
 
-    public void StopVisualEffect(GameObject player)
+    public void StopVisualEffect()
     {
         if (orbitTween != null && orbitTween.IsActive())
         {
@@ -70,9 +84,24 @@ public abstract class StatusEffect : MonoBehaviour
         if (activeOrb != null)
         {
             Destroy(activeOrb);
+            
+        }
+
+        if(orbContainer != null)
+        {
             Destroy(orbContainer);
         }
 
+    }
+
+    public void SetActive(bool active)
+    {
+        this.active = active;
+    }
+
+    public bool IsActive()
+    {
+        return active;
     }
 
 

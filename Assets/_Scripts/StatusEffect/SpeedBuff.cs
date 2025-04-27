@@ -24,5 +24,7 @@ public class SpeedBuff : StatusEffect
             _player.SetSpeedBuff(false);
             _player.SpeedParticles.Stop();
         }
+        Debug.Log("Eliminando efecto NUEVO");
+        Destroy(gameObject);
     }
 }
