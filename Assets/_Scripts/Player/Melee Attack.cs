@@ -11,6 +11,8 @@ public class MeleeAttack : MonoBehaviour
     private Player _player;
     [Header("STATS")]
     [SerializeField] AttackStats _stats;
+    [Header("EFFECTS")]
+    [SerializeField] Transform _vfx;
     [Header("CHECKS")]
     [Tooltip("If set to True it will search for its IDamageable Component to exclude it from self-harming"), SerializeField] 
     bool _isDamageable;
@@ -44,9 +46,30 @@ public class MeleeAttack : MonoBehaviour
 
     void Melee()
     {
-        hitPoint = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
+        Vector2 mov = _player.GetMovement();
+
+        //hitPoint = transform.position + transform.right * _stats.MeleeAttackRange / 2f;
+        hitPoint = transform.position + (Vector3)mov.normalized * _stats.MeleeAttackRange / 2f;
         var boxSize = new Vector2(_stats.MeleeAttackRange, _stats.AttackHeight);
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(hitPoint, boxSize, 0f);
+        float angle = Mathf.Atan2(mov.y, mov.x) * Mathf.Rad2Deg;
+
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(hitPoint, boxSize, angle);
+
+        if(mov.magnitude == 0)
+        {
+            _vfx.rotation = transform.rotation;
+        }
+        else
+        {
+            _vfx.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+        
+        //_vfx.rotation = Quaternion.identity;
+        //_vfx.Rotate(0f, 0f, angle);
+
+        Debug.DrawLine(transform.position, hitPoint, Color.blue, 1f);
+        DrawDebugBox(hitPoint, boxSize, angle, Color.magenta, 1f);
+        Debug.Log("Movimiento: " + mov.x + ", " + mov.y);
 
         if(colliders.Length == 0) 
         {
@@ -122,6 +145,33 @@ public class MeleeAttack : MonoBehaviour
         Debug.DrawLine(boxLowerLeftCorner, boxUpperLeftCorner, debugColor);
         Debug.DrawLine(boxLowerRightCorner, boxUpperRightCorner, debugColor);
     }
+
+    void DrawDebugBox(Vector2 center, Vector2 size, float angle, Color color, float duration)
+    {
+        // Create a rotation matrix
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        Vector2[] corners = new Vector2[4];
+
+        // Calculate local corners
+        Vector2 halfSize = size / 2f;
+        corners[0] = new Vector2(-halfSize.x, -halfSize.y);
+        corners[1] = new Vector2(halfSize.x, -halfSize.y);
+        corners[2] = new Vector2(halfSize.x, halfSize.y);
+        corners[3] = new Vector2(-halfSize.x, halfSize.y);
+
+        // Rotate and position the corners
+        for (int i = 0; i < 4; i++)
+        {
+            corners[i] = rotation * corners[i];
+            corners[i] += center;
+        }
+
+        // Draw the box
+        Debug.DrawLine(corners[0], corners[1], color, duration);
+        Debug.DrawLine(corners[1], corners[2], color, duration);
+        Debug.DrawLine(corners[2], corners[3], color, duration);
+        Debug.DrawLine(corners[3], corners[0], color, duration);
+    }
     #endregion
-    
+
 }
