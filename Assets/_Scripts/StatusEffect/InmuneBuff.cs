@@ -43,11 +43,6 @@ public class InmuneBuff : StatusEffect
             damageable.SetInmune(false);
         }
         Debug.Log("Eliminando efecto NUEVO");
-
-        if(gameObject != null)
-        {
-            Destroy(gameObject);
-        }
         
     }
 }

@@ -52,7 +52,6 @@ public class InvertControlDebuff : StatusEffect
             }
         }
         Debug.Log("Eliminando efecto NUEVO");
-        Destroy(gameObject);
     }
 
 }

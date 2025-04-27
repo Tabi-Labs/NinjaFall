@@ -28,18 +28,22 @@ public class StatusEffectManager : MonoBehaviour
     {
         Debug.Log("Clase Effect Manager aplicando efecto");
 
-        if (!effectCoroutines.ContainsKey(effect.EffectName))
+        if (effectCoroutines.ContainsKey(effect.EffectName))
         {
+            
+            StopCoroutine(effectCoroutines[effect.EffectName]);
 
-            effect.ApplyEffect(player);
-            effect.StartVisualEffect(player);
-            Coroutine coroutine = StartCoroutine(RemoveEffectAfterDuration(effect, player));
-            effectCoroutines.Add(effect.EffectName, coroutine);
-            activeEffects.Add(effect.EffectName, effect);
-            Debug.Log("Manager: " + effectCoroutines);
+
+            StatusEffect previousEffect = activeEffects[effect.EffectName];
+            RemoveEffect(previousEffect, player);
         }
 
-        
+        effect.ApplyEffect(player);
+        effect.StartVisualEffect(player);
+        Coroutine coroutine = StartCoroutine(RemoveEffectAfterDuration(effect, player));
+        effectCoroutines.Add(effect.EffectName, coroutine);
+        activeEffects.Add(effect.EffectName, effect);
+        Debug.Log("Manager: " + effectCoroutines);
     }
     
 
@@ -52,11 +56,11 @@ public class StatusEffectManager : MonoBehaviour
 
     private void RemoveEffect(StatusEffect effect, GameObject player)
     {
-
         effect.StopVisualEffect();
         effectCoroutines.Remove(effect.EffectName);
         activeEffects.Remove(effect.EffectName);
         effect.RemoveEffect(player);
 
+        Destroy(effect);
     }
 }
