@@ -54,7 +54,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
     {
         if (Instance != null)
         {
-            Debug.Log("[Singleton] Trying to instantiate a second instance of a singleton class.");
+            Debug.LogWarning("[Singleton] Trying to instantiate a second instance of a singleton class.");
         }
         else
         {
@@ -84,8 +84,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
         {
             NetworkReadyCount.OnValueChanged += OnNetworkReadyCountChanged;
         }
-
-        Debug.Log($"NetworkSpawn - IsServer: {IsServer}, IsClient: {IsClient}, Ready Count: {NetworkReadyCount.Value}");
     }
 
     private void Start()
@@ -107,8 +105,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
     // Callback para cuando la variable de red cambia
     private void OnNetworkReadyCountChanged(int previousValue, int newValue)
     {
-        Debug.Log($"ReadyCount changed from {previousValue} to {newValue}");
-
         // Actualizar el contador local para mantener sincronizado
         _localReadyCount = newValue;
 
@@ -151,21 +147,17 @@ public class PlayerConfigurationManager : NetworkBehaviour
     // Método público para actualizar el contador de jugadores listos desde el exterior
     public void UpdateReadyCount(int delta)
     {
-        Debug.Log($"UpdateReadyCount called with delta: {delta}, IsServer: {IsServer}");
-
         if (NetworkManager)
         {
             if (IsServer)
             {
                 // Solo el servidor puede modificar directamente la variable de red
                 NetworkReadyCount.Value += delta;
-                Debug.Log($"Server updated NetworkReadyCount to {NetworkReadyCount.Value}");
             }
             else
             {
                 // Si no somos servidor, enviar RPC al servidor
                 UpdateReadyCountServerRpc(delta);
-                Debug.Log($"Client sent UpdateReadyCountServerRpc with delta: {delta}");
             }
         }
         else
@@ -173,7 +165,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
             // Modo local
             _localReadyCount += delta;
             UpdateGameStartBanner(_localReadyCount);
-            Debug.Log($"Local mode updated _localReadyCount to {_localReadyCount}");
         }
     }
 
@@ -185,14 +176,11 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
         // Actualizar la variable de red
         NetworkReadyCount.Value += delta;
-        Debug.Log($"Server received UpdateReadyCountServerRpc, updated to {NetworkReadyCount.Value}");
     }
 
     // Se llama cuando un cliente se conecta
     private void OnClientConnected(ulong clientId)
     {
-        Debug.Log($"Client connected: {clientId}, IsServer: {IsServer}");
-
         if (IsServer)
         {
             // Sincronizar asignaciones de paneles actuales con el nuevo cliente
@@ -212,16 +200,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         // Solo el cliente destinatario procesa esta RPC
         if (NetworkManager.Singleton.LocalClientId != clientId) return;
 
-        Debug.Log($"Received SyncLockedCharactersToClientRpc for client {clientId}");
-
-        // Actualizar el estado local de los personajes bloqueados
-        for (int i = 0; i < lockedCharacterData.Length; i++)
-        {
-            if (lockedCharacterData[i])
-            {
-                Debug.Log($"Character {i} is already locked");
-            }
-        }
+        // No es necesario mostrar logs aquí
     }
 
     [ClientRpc]
@@ -231,7 +210,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
         if (!clientPanelAssignments.ContainsKey(ownerId))
         {
             clientPanelAssignments[ownerId] = panelIndex;
-            Debug.Log($"Received panel assignment for owner {ownerId} to panel {panelIndex}");
         }
     }
 
@@ -273,7 +251,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
             // Si ya está ocupado, liberarlo primero
             if (!csh.isAvailable)
             {
-                Debug.Log("El panel P1 ya está ocupado, pero está reservado para el host. Liberando...");
                 csh.Deactivate();
             }
 
@@ -311,8 +288,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
             csh = characterSelectorHandlers[panelIndex];
         }
 
-        Debug.Log($"Asignando Player local al panel {panelIndex}");
-
         // Obtener el PlayerInput del jugador
         PlayerInput playerInput = localPlayer.GetComponent<PlayerInput>();
         if (playerInput == null)
@@ -335,15 +310,11 @@ public class PlayerConfigurationManager : NetworkBehaviour
         // Asignar el panel al jugador
         playerInput.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
         csh.Activate(playerInput);
-
-        Debug.Log($"Player local asignado exitosamente al panel {panelIndex}");
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void RequestPanelAssignmentServerRpc(ulong clientId)
     {
-        Debug.Log($"Received RequestPanelAssignmentServerRpc from client {clientId}");
-
         // Buscar el primer panel disponible a partir del índice 1
         int assignedPanel = -1;
 
@@ -370,8 +341,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void RegisterPanelAssignmentServerRpc(ulong clientId, int panelIndex)
     {
-        Debug.Log($"Received RegisterPanelAssignmentServerRpc from client {clientId} for panel {panelIndex}");
-
         // Registrar la asignación en el servidor
         clientPanelAssignments[clientId] = panelIndex;
 
@@ -445,8 +414,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
             return false;
         }
 
-        Debug.Log($"LockCharacter called for character {charIdx}");
-
         lockedCharacterData[charIdx] = true;
         UpdateReadyCount(1); // Usar el método que manejará la red
 
@@ -465,8 +432,6 @@ public class PlayerConfigurationManager : NetworkBehaviour
             return false;
         }
 
-        Debug.Log($"UnlockCharacter called for character {charIdx}");
-
         pi.GetComponent<Player>().isReady = false;
 
         UpdateReadyCount(-1); // Usar el método que manejará la red
@@ -481,7 +446,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
             Debug.LogError("Not enough players to start the game.");
             return;
         }
-        if(NetworkManager)
+        if (NetworkManager)
             NetworkManager.Singleton.SceneManager.LoadScene(gameScene, LoadSceneMode.Single);
         else
             SceneLoader.Instance.ChangeScene(gameScene);
@@ -494,7 +459,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         {
             Destroy(player);
         }
-        if(NetworkManager)
+        if (NetworkManager)
             NetworkManager.Singleton.SceneManager.LoadScene(previousScene, LoadSceneMode.Single);
         else
             SceneLoader.Instance.ChangeScene(previousScene);

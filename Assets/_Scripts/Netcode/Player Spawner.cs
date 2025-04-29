@@ -4,40 +4,39 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject playerPrefab;
-    private string sceneName;
+    [SerializeField] private string sceneName;
     private LateJoinsBehaviour lateJoinsBehaviour;
     private List<Transform> spawnPoints;
     [SerializeField] private float respawnDelay = 1f;
-    // Singleton Pattern
-    // --------------------------------------------------------------------------------
 
+    // Singleton Pattern
     public static PlayerSpawner Instance { get; private set; }
+
     private void Awake()
     {
-        sceneName = SceneManager.GetActiveScene().name;
         if (Instance != null)
         {
-            Debug.Log("[Singleton] Trying to instantiate a seccond instance of a singleton class.");
+            Debug.Log("[Singleton] Trying to instantiate a second instance of a singleton class.");
         }
         else
         {
             Instance = this;
-            DontDestroyOnLoad(Instance);
         }
 
+        // Inicializar puntos de spawn
         spawnPoints = new List<Transform>();
         foreach (Transform child in transform)
         {
             spawnPoints.Add(child);
         }
 
-        if(!NetworkManager)
+        // Suscribirse al evento de carga de escenas
+        if (!NetworkManager)
         {
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -51,18 +50,36 @@ public class PlayerSpawner : NetworkBehaviour
     public void SpawnPlayers()
     {
         GameObject[] tagPlayer = GameObject.FindGameObjectsWithTag("Player");
-        GameObject[] players = tagPlayer.Where(x => {
-                                            Player player = x.GetComponent<Player>();
-                                            return player != null && player.isReady;
-                                        }).ToArray();
+        GameObject[] players = tagPlayer.Where(x =>
+        {
+            Player player = x.GetComponent<Player>();
+            return player != null;
+        }).ToArray();
 
-        for(int i = 0; players.Length > i; i++)
+        for (int i = 0; i < players.Length; i++)
         {
             Transform spawnPoint = spawnPoints[i];
             players[i].transform.position = spawnPoint.position;
             players[i].transform.rotation = spawnPoint.rotation;
-            if(i%2 == 0) players[i].GetComponent<Player>().isFacingRight = false;
+
+            if (i % 2 == 0)
+            {
+                players[i].GetComponent<Player>().isFacingRight = false;
+            }
+
+            // Habilitar campos del jugador
             enablePlayerFields(players[i]);
+
+            // Sincronizar con los clientes si estamos en red
+            if (NetworkManager)
+            {
+                if (players[i].TryGetComponent<NetworkObject>(out var netObj))
+                {
+                    Debug.Log("Spawn");
+                    UpdatePlayerPositionClientRpc(netObj, spawnPoint.position, spawnPoint.rotation);
+                    EnablePlayerFieldsClientRpc(netObj);
+                }
+            }
         }
     }
 
@@ -82,7 +99,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     public void RespawnPlayer(GameObject player, int playerID)
     {
-        if(!KillsCounter.Instance.alivePlayers[playerID]) return;
+        if (!KillsCounter.Instance.alivePlayers[playerID]) return;
         StartCoroutine(RespawnAfterDelay(player, respawnDelay));
     }
 
@@ -93,22 +110,22 @@ public class PlayerSpawner : NetworkBehaviour
         // Seleccionar punto de spawn aleatorio
         Transform randomSpawn = spawnPoints[UnityEngine.Random.Range(0, spawnPoints.Count)];
 
-        // Mover el jugador vidor)
+        // Mover el jugador
         player.transform.position = randomSpawn.position;
         player.transform.rotation = randomSpawn.rotation;
 
         enablePlayerFields(player);
         player.GetComponent<Player>().IsDead = false;
-        
-        // Sincronizar posicion con clientes (Net)
+
+        // Sincronizar posición y habilitación de campos con clientes (Net)
         if (IsServer)
         {
             if (player.TryGetComponent<NetworkObject>(out var netObj))
             {
                 UpdatePlayerPositionClientRpc(netObj, randomSpawn.position, randomSpawn.rotation);
+                EnablePlayerFieldsClientRpc(netObj);
             }
-        }// Solo el servidor maneja el respawn
-
+        }
     }
 
     [ClientRpc]
@@ -119,85 +136,71 @@ public class PlayerSpawner : NetworkBehaviour
             netObj.transform.position = position;
             netObj.transform.rotation = rotation;
         }
+        Debug.Log("Actualizado: " + playerRef.NetworkObjectId);
     }
-    void OnDisable()
+
+    [ClientRpc]
+    private void EnablePlayerFieldsClientRpc(NetworkObjectReference playerRef)
     {
-        if(!NetworkManager)
+        if (playerRef.TryGet(out NetworkObject netObj))
+        {
+            GameObject player = netObj.gameObject;
+
+            MonoBehaviour[] components = player.GetComponents<MonoBehaviour>();
+            foreach (MonoBehaviour component in components)
+            {
+                component.enabled = true;
+            }
+            player.GetComponent<SpriteRenderer>().enabled = true;
+            player.GetComponent<Animator>().enabled = true;
+            player.GetComponent<Player>().FeetColl.enabled = true;
+            player.GetComponent<Player>().HeadColl.enabled = true;
+            player.GetComponent<Player>().BodyColl.enabled = true;
+
+            Debug.Log("Campos habilitados para el jugador: " + player.name);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (!NetworkManager)
             SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        Debug.Log("HOLAAA");
         if (IsServer)
         {
-            sceneName = SceneManager.GetActiveScene().name;
+            Debug.Log("OnNetworkSpawn: Spawneando jugadores...");
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
             NetworkManager.Singleton.SceneManager.OnUnload += UnSceceLoaded;
             lateJoinsBehaviour = FindObjectOfType<LateJoinsBehaviour>();
         }
-
     }
 
     private void UnSceceLoaded(ulong clientId, string sceneName, AsyncOperation asyncOperation)
     {
-        if (IsServer && this.sceneName == sceneName)
+        foreach (ulong id in NetworkManager.ConnectedClientsIds)
         {
-            //lateJoinsBehaviour.aprovedConection = true;
-            foreach (ulong id in NetworkManager.ConnectedClientsIds)
+            if (id != OwnerClientId)
             {
-                if (id != OwnerClientId)
-                {
-                    NetworkObject playerNetworkObject = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.transform.GetChild(0).GetComponent<NetworkObject>();
-                    playerNetworkObject.Despawn(true);
-                }
-
+                NetworkObject playerNetworkObject = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.transform.GetChild(0).GetComponent<NetworkObject>();
+                playerNetworkObject.Despawn(true);
             }
         }
     }
 
     private void SceneLoaded(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
-        if (IsServer && this.sceneName == sceneName)
-        {
-            Debug.Log("SceneLoaded");   
-            LateJoinsBehaviour.aprovedConection = false;
-            foreach (ulong id in clientsCompleted)
-            {
-                //if (id != OwnerClientId)
-                //{
-                    Debug.Log("PlayerSpawner: " + id);
-                    //Pongos los fighters como hijos del player
-                    //arrayPlayers[id].GetComponent<PlayerNetworkConfig>().InstantiateCharacterServerRpc(id);
-                    GameObject playerGameObject = Instantiate(playerPrefab);
-                    playerGameObject.GetComponent<NetworkObject>().SpawnWithOwnership(id);
-                    playerGameObject.transform.SetParent(NetworkManager.Singleton.ConnectedClients[id].PlayerObject.transform, false);
-                    playerGameObject.transform.parent.position = Vector2.zero;
-                playerGameObject.transform.localPosition = Vector2.zero;
-                //DesactivateMovementClientRPC(playerGameObject.GetComponent<NetworkObject>());
-                    //NetworkManager.Singleton.ConnectedClients[id].PlayerObject;
-                    //PlayerNetworkConfig.Instance.InstantiateCharacterServerRpc(id);
-                    //player.transform.SetParent(transform, false);
-                //}
-
-            }
-        }
+        SpawnPlayers();
     }
-    [ClientRpc]
-    private void DesactivateMovementClientRPC(NetworkObjectReference playerNetworkObjectReference)
-    {
-        playerNetworkObjectReference.TryGet(out NetworkObject playerNetworkObject);
-        //PlayerController playerController = playerNetworkObject.GetComponent<PlayerController>();
 
-        //playerController.enabled = false;
-    }
     public override void OnNetworkDespawn()
     {
         base.OnNetworkDespawn();
         if (!IsServer) return;
         NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
         NetworkManager.Singleton.SceneManager.OnUnload -= UnSceceLoaded;
-
     }
 }
