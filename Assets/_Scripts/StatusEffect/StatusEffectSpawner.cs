@@ -59,7 +59,8 @@ public class StatusEffectSpawner : MonoBehaviour
         // Selecciona un prefab y un punto de spawn aleatorio
         int spawnPointIndex = Random.Range(0, spawnPoints.Length);
 
-        if (activeBuffs[spawnPointIndex] == null)
+        if (activeBuffs[spawnPointIndex] == null || 
+            (activeBuffs[spawnPointIndex].GetComponent<SpriteRenderer>() != null && !activeBuffs[spawnPointIndex].GetComponent<SpriteRenderer>().enabled))
         {
             GameObject buffPrefab = buffPrefabs[Random.Range(0, buffPrefabs.Length)];
             Transform spawnPoint = spawnPoints[spawnPointIndex];

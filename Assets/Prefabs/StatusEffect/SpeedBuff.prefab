@@ -100,6 +100,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EffectName: Speed buff
   Duration: 5
+  orbitingOrbPrefab: {fileID: 630929111922368433, guid: 666b2c6d17f3ff34fb61295f64183d1e, type: 3}
+  orbitRadius: 0.25
+  orbitDuration: 2
 --- !u!61 &123665257808896092
 BoxCollider2D:
   m_ObjectHideFlags: 0
