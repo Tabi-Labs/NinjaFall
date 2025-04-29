@@ -106,10 +106,27 @@ public class RangedAttack : NetworkBehaviour
     [Rpc(SendTo.Server)]
     void RequestSpawnProjectileRPC()
     {
+        if (_player.IsWallSliding && _player.IsWallSlideFalling) return;
+        if (ShurikensCount >= _attackStats.MaxShurikens)
+        {
+            NoAmmoFX();
+            return;
+        }
+
+        Vector3 direction = aimDirection == default ? transform.right : aimDirection;
         var projectile = Instantiate(_projectilePrefab, _projectileSpawnPoint.position, Quaternion.identity);
-        projectile.GetComponent<ProjectileBehaviour>().Init(transform.right, _selfDamageable, true, wallBuff, gravityIgnoreTimer, gravityDebuff);
+        projectile.GetComponent<ProjectileBehaviour>().Init(direction, _selfDamageable, true, wallBuff, gravityIgnoreTimer, gravityDebuff);
         NetworkObject networkObject = projectile.GetComponent<NetworkObject>();
         networkObject.Spawn();
+
+        ShurikensCount++;
+        if (ShurikensCount > _attackStats.MaxShurikens) ShurikensCount = _attackStats.MaxShurikens;
+
+        shurikenAmmoEvent.Raise(_player, ShurikensCount);
+
+        ShurikenFX();
+
+        aimDirection = default;
     }
 
     void RequestShuriken(Vector3 direction = default)

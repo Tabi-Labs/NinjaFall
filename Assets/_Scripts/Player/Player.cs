@@ -313,12 +313,13 @@ public class Player : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void DeathRPC()
     {
+        if (!IsOwner) return;
         Death();
     }
 
     public void Death()
     {
-        //if (!IsOwner) return;
+        
         if(IsDead) return;
         IsDead = true;
         StateMachine.ChangeState(DeathState);
@@ -330,31 +331,39 @@ public class Player : NetworkBehaviour
         int playerIndex = _playerInput.playerIndex;
         KillsCounter.Instance.PlayerKilled(playerIndex);
         StateMachine.ChangeState(IdleState);
-        if (!NetworkManager){
-            MonoBehaviour[] components = this.gameObject.GetComponents<MonoBehaviour>();
-            foreach (MonoBehaviour component in components)
-            {
-                if(component is PlayerInput) continue;
-                component.enabled = false;
-            }
-            this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-            this.gameObject.GetComponent<Animator>().enabled = false;
-            transform.position = new Vector3(1000, 1000, 1000);
+
+        if (!NetworkManager)
+        {
+            // Comportamiento local
+            DisablePlayerLocally();
         }
         else
         {
-            if (IsOwner)
-                DeletePlayerRPC();
+            // Sincronizar con todos los clientes
+            DeletePlayerClientRpc();
         }
+
         PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
     }
-    
-    [Rpc(SendTo.Server)]
-    void DeletePlayerRPC()
-    {
-        NetworkObject.Despawn(true); 
 
-        Destroy(gameObject); 
+    private void DisablePlayerLocally()
+    {
+        MonoBehaviour[] components = this.gameObject.GetComponents<MonoBehaviour>();
+        foreach (MonoBehaviour component in components)
+        {
+            if (component is PlayerInput) continue;
+            component.enabled = false;
+        }
+        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        this.gameObject.GetComponent<Animator>().enabled = false;
+        transform.position = new Vector3(1000, 1000, 1000); // Mover fuera de la vista
+    }
+
+    [ClientRpc]
+    private void DeletePlayerClientRpc()
+    {
+        // Deshabilitar el jugador en todos los clientes
+        DisablePlayerLocally();
     }
     #endregion
     #region Landed

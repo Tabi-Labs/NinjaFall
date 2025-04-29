@@ -99,7 +99,7 @@ public class PlayerSpawner : NetworkBehaviour
 
     public void RespawnPlayer(GameObject player, int playerID)
     {
-        if (!KillsCounter.Instance.alivePlayers[playerID]) return;
+        //if (!KillsCounter.Instance.alivePlayers[playerID]) return;
         StartCoroutine(RespawnAfterDelay(player, respawnDelay));
     }
 
