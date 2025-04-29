@@ -74,6 +74,11 @@ public class Damageable : NetworkBehaviour, IDamageable
         this.inmune = inmune;
     }
 
+    public bool IsInmune()
+    {
+        return inmune;
+    }
+
     protected virtual void OnDamageTaken()
     {
         //override this function to add more functionality

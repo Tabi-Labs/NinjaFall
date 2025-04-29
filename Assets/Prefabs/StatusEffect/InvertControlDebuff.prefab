@@ -48,6 +48,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EffectName: Invert control
   Duration: 5
+  orbitingOrbPrefab: {fileID: 4640466154978481307, guid: 63ff008b15f64f942b1376a1c878f717, type: 3}
+  orbitRadius: 0.25
+  orbitDuration: 2
 --- !u!61 &-2764315623642495257
 BoxCollider2D:
   m_ObjectHideFlags: 0

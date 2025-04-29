@@ -145,3 +145,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EffectName: Inmune buff
   Duration: 60
+  orbitingOrbPrefab: {fileID: 7478012582819528573, guid: 675b64d94915b5e4a932c665a368a6d8, type: 3}
+  orbitRadius: 0.25
+  orbitDuration: 2
