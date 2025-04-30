@@ -37,7 +37,7 @@ public class KillsCounter : NetworkBehaviour
         {
             // Usar FindObjectsOfType para determinar el número de jugadores activos
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            localPlayerCount = players.Length;
+            localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
 
             // Si no hay jugadores detectados, intentar desde PlayerConfigurationManager
             if (localPlayerCount == 0 && PlayerConfigurationManager.Instance != null)
