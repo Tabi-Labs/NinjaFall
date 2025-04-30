@@ -275,38 +275,85 @@ public class KillsCounter : NetworkBehaviour
         playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
         // Número de jugadores en modo multijugador o local
-        int numberOfPlayers = NetworkManager && NetworkManager.IsListening ?
-            NetworkManager.ConnectedClientsIds.Count : localPlayerCount;
+        int numberOfPlayers = 0;
+
+        if (NetworkManager && NetworkManager.IsListening)
+        {
+            // En modo red, usamos la cantidad de clientes conectados
+            numberOfPlayers = NetworkManager.ConnectedClientsIds.Count;
+            Debug.Log($"Modo de red: {numberOfPlayers} clientes conectados");
+        }
+        else
+        {
+            // En modo local, contamos los jugadores activos o usamos PlayerConfigurationManager
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            numberOfPlayers = players.Length;
+
+            // Si no encontramos jugadores, intentamos con PlayerConfigurationManager
+            if (numberOfPlayers == 0 && PlayerConfigurationManager.Instance != null)
+            {
+                numberOfPlayers = PlayerConfigurationManager.Instance.readyCount;
+                Debug.Log($"Usando PlayerConfigurationManager para contar jugadores: {numberOfPlayers}");
+            }
+
+            // Asegurarnos de que al menos hay un jugador
+            if (numberOfPlayers == 0)
+            {
+                numberOfPlayers = 1;
+                Debug.LogWarning("No se detectaron jugadores, utilizando 1 como valor por defecto");
+            }
+
+            // Actualizar la variable localPlayerCount
+            localPlayerCount = numberOfPlayers;
+        }
+
+        Debug.Log($"Generando UI para {numberOfPlayers} jugadores");
 
         // Activar/desactivar los TextMeshPro según el número de jugadores
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
             if (playerTextMeshes[i] != null)
             {
-                if (i < numberOfPlayers)
+                bool shouldBeActive = i < numberOfPlayers;
+                playerTextMeshes[i].gameObject.SetActive(shouldBeActive);
+
+                if (shouldBeActive)
                 {
-                    playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
+                    Debug.Log($"Activando UI para jugador {i + 1}");
                 }
                 else
                 {
-                    playerTextMeshes[i].gameObject.SetActive(false); // Desactivamos los TextMeshPro de jugadores inactivos
+                    Debug.Log($"Desactivando UI para jugador {i + 1}");
                 }
             }
+            else
+            {
+                Debug.LogError($"TextMeshPro en índice {i} es nulo");
+            }
         }
-
-        Debug.Log($"TextMeshPro generados para {numberOfPlayers} jugadores");
     }
 
     // Actualizamos la UI en todos los clientes
     private void UpdateUI()
     {
+        int playerCount = NetworkManager && NetworkManager.IsListening ?
+            NetworkManager.ConnectedClientsIds.Count : localPlayerCount;
+
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (playerTextMeshes[i] != null && playerTextMeshes[i].gameObject.activeSelf)
+            if (playerTextMeshes[i] != null)
             {
-                int lives = GetLives(i);
-                playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
-                Debug.Log($"Actualizado UI para jugador {i}: {lives} vidas");
+                if (i < playerCount)
+                {
+                    int lives = GetLives(i);
+                    playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
+                    playerTextMeshes[i].gameObject.SetActive(true);
+                    Debug.Log($"Actualizado UI para jugador {i + 1}: {lives} vidas");
+                }
+                else
+                {
+                    playerTextMeshes[i].gameObject.SetActive(false);
+                }
             }
         }
     }
