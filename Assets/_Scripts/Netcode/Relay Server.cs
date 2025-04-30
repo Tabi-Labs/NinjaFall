@@ -105,4 +105,9 @@ public class RelayServer : MonoBehaviour
             Debug.Log("Error: " + e);
         }
     }
+
+    public void ReturnMainMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
