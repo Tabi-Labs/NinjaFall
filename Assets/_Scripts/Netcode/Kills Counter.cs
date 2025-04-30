@@ -28,11 +28,36 @@ public class KillsCounter : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
+    }
 
+    private void Start()
+    {
+        // Inicializar para modo local o red
         if (!NetworkManager)
         {
-            localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
+            // Usar FindObjectsOfType para determinar el número de jugadores activos
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            localPlayerCount = players.Length;
+
+            // Si no hay jugadores detectados, intentar desde PlayerConfigurationManager
+            if (localPlayerCount == 0 && PlayerConfigurationManager.Instance != null)
+            {
+                localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
+            }
+
+            // Asegurar que tenemos al menos un jugador para evitar errores
+            if (localPlayerCount == 0)
+            {
+                localPlayerCount = 1;
+                Debug.LogWarning("No se detectaron jugadores, estableciendo localPlayerCount a 1");
+            }
+
+            Debug.Log($"KillsCounter: Inicializando en modo local con {localPlayerCount} jugadores");
             InitializeLocalMode();
+
+            // Generar los TextMeshPro en la UI y actualizar UI
+            GeneratePlayerTextMeshes();
+            UpdateUI();
         }
     }
 
@@ -97,6 +122,13 @@ public class KillsCounter : NetworkBehaviour
 
     private void InitializeLocalMode()
     {
+        // Inicializar arreglo de vidas locales
+        localLives = new int[localPlayerCount];
+        for (int i = 0; i < localPlayerCount; i++)
+        {
+            localLives[i] = MAX_LIVES;
+        }
+
         // Inicializar alivePlayers para modo local
         alivePlayers = new bool[localPlayerCount];
         for (int i = 0; i < alivePlayers.Length; i++)
@@ -104,7 +136,7 @@ public class KillsCounter : NetworkBehaviour
             alivePlayers[i] = true;
         }
 
-        Debug.Log($"Inicializado en modo local con {localPlayerCount} jugadores");
+        Debug.Log($"Inicializado en modo local con {localPlayerCount} jugadores. LocalLives: {string.Join(", ", localLives)}");
     }
 
     // Método para ser llamado cuando un jugador mata a otro
@@ -112,7 +144,7 @@ public class KillsCounter : NetworkBehaviour
     {
         Debug.Log($"PlayerKilled llamado para jugador {playerID}");
 
-        if (NetworkManager)
+        if (NetworkManager && NetworkManager.IsListening)
         {
             if (IsServer)
             {
@@ -127,8 +159,15 @@ public class KillsCounter : NetworkBehaviour
         }
         else
         {
-            // Modo local
-            DecreaseLives(playerID);
+            // Modo local - verificar límites del array
+            if (playerID >= 0 && playerID < localLives.Length)
+            {
+                DecreaseLives(playerID);
+            }
+            else
+            {
+                Debug.LogError($"ID de jugador inválido en modo local: {playerID}. Rango válido: 0-{localLives.Length - 1}");
+            }
         }
     }
 
@@ -145,7 +184,7 @@ public class KillsCounter : NetworkBehaviour
         }
 
         // Decrementar las vidas del jugador
-        if (NetworkManager)
+        if (NetworkManager && NetworkManager.IsListening)
         {
             if (IsServer && playerLives[playerID] != null)
             {
@@ -158,41 +197,68 @@ public class KillsCounter : NetworkBehaviour
         }
         else
         {
-            localLives[playerID]--;
-            Debug.Log($"Vidas restantes para jugador {playerID}: {localLives[playerID]}");
+            // Verificar límites del array en modo local
+            if (playerID < localLives.Length)
+            {
+                localLives[playerID]--;
+                Debug.Log($"Vidas restantes para jugador {playerID} en modo local: {localLives[playerID]}");
+
+                // En modo local, actualizamos la UI directamente
+                UpdateUI();
+            }
         }
 
         // Comprobar si el jugador se quedó sin vidas
         if (GetLives(playerID) <= 0)
         {
-            alivePlayers[playerID] = false;
-
-            int aliveCount = 0;
-            for (int i = 0; i < alivePlayers.Length; i++)
+            if (playerID < alivePlayers.Length)
             {
-                if (alivePlayers[i] == true) aliveCount++;
-            }
+                alivePlayers[playerID] = false;
 
-            if (aliveCount == 1)
-            {
-                int winnerID = alivePlayers.ToList().IndexOf(true);
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(x => x.GetComponent<Player>()).ToArray();
-
-                if (winnerID >= 0 && winnerID < players.Length && players[winnerID] != null)
+                int aliveCount = 0;
+                for (int i = 0; i < alivePlayers.Length; i++)
                 {
-                    PauseManager.instance.EndGame(players[winnerID].GetComponent<Player>().CharacterData);
+                    if (alivePlayers[i] == true) aliveCount++;
+                }
+
+                if (aliveCount == 1)
+                {
+                    int winnerID = -1;
+                    for (int i = 0; i < alivePlayers.Length; i++)
+                    {
+                        if (alivePlayers[i])
+                        {
+                            winnerID = i;
+                            break;
+                        }
+                    }
+
+                    if (winnerID >= 0)
+                    {
+                        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(x => x.GetComponent<Player>()).ToArray();
+
+                        // Verificar que el winnerID está dentro del rango de jugadores disponibles
+                        if (winnerID < players.Length && players[winnerID] != null)
+                        {
+                            if (PauseManager.instance != null)
+                            {
+                                PauseManager.instance.EndGame(players[winnerID].GetComponent<Player>().CharacterData);
+                            }
+                            else
+                            {
+                                Debug.LogError("PauseManager.instance es null, no se puede finalizar el juego");
+                            }
+                        }
+                    }
                 }
             }
         }
-
-        // Actualizar la UI
-        UpdateUI();
     }
 
     // Método para obtener las vidas de un jugador (basado en su ID)
     private int GetLives(int playerID)
     {
-        if (NetworkManager)
+        if (NetworkManager && NetworkManager.IsListening)
         {
             return (playerID >= 0 && playerID < playerLives.Length && playerLives[playerID] != null) ?
                 playerLives[playerID].Value : 0;
@@ -209,18 +275,22 @@ public class KillsCounter : NetworkBehaviour
         playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
         // Número de jugadores en modo multijugador o local
-        int numberOfPlayers = NetworkManager ? NetworkManager.ConnectedClientsIds.Count : localPlayerCount;
+        int numberOfPlayers = NetworkManager && NetworkManager.IsListening ?
+            NetworkManager.ConnectedClientsIds.Count : localPlayerCount;
 
         // Activar/desactivar los TextMeshPro según el número de jugadores
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (i < numberOfPlayers)
+            if (playerTextMeshes[i] != null)
             {
-                playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
-            }
-            else
-            {
-                playerTextMeshes[i].gameObject.SetActive(false); // Desactivamos los TextMeshPro de jugadores inactivos
+                if (i < numberOfPlayers)
+                {
+                    playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
+                }
+                else
+                {
+                    playerTextMeshes[i].gameObject.SetActive(false); // Desactivamos los TextMeshPro de jugadores inactivos
+                }
             }
         }
 
@@ -236,6 +306,7 @@ public class KillsCounter : NetworkBehaviour
             {
                 int lives = GetLives(i);
                 playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
+                Debug.Log($"Actualizado UI para jugador {i}: {lives} vidas");
             }
         }
     }
