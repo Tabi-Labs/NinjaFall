@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -26,9 +27,8 @@ public class PlayerConfigurationManager : MonoBehaviour
     public PlayerInput hostPlayerInput  {get; private set;} = null;
     private int newBotId = -1;
     public bool isAddingBot {get; private set;} = false;
-    public bool preventBotAddition {get; private set;} = false;
-    private InputSystemUIInputModule hostInputModule;
-    private CharacterSelectorHandler hostCharacterSelectorHandler;
+    public bool preventBotAddition {get; private set;} = true;
+    private InputSystemUIInputModule hostInputModule = null;
     private InputAction addBotAction;
 
     // Singleton Pattern
@@ -87,12 +87,10 @@ public class PlayerConfigurationManager : MonoBehaviour
 
         // Handle case when player is host
         if(pi.playerIndex == 0){
-            addBotAction = pi.actions.FindAction("AddBot");
-            addBotAction.performed += HandleBotJoin;
-            addBotAction.Enable();
+            StartCoroutine(DelayAddBotAction(pi));
             hostPlayerInput = pi;
             hostInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
-            hostCharacterSelectorHandler = csh;
+            preventBotAddition = false;
         }
 
         // Disable components except PlayerInput on player prefab
@@ -108,7 +106,6 @@ public class PlayerConfigurationManager : MonoBehaviour
 
         // Assign PlayerInput to CharacterSelectorHandler
         if(isAddingBot){
-            Debug.Log("Just added bot, assigning to hostCharacterSelectorHandler.");
             hostPlayerInput.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
         } else {
             pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
@@ -265,5 +262,16 @@ public class PlayerConfigurationManager : MonoBehaviour
         playerInput.uiInputModule = newModuleInstance;
         playerInput.uiInputModule.enabled = true;
         playerInput.uiInputModule.UpdateModule();
+    }
+
+    // Auxiliary Functions
+    // --------------------------------------------------------------------------------
+
+    private IEnumerator DelayAddBotAction(PlayerInput pi)
+    {
+        yield return null;
+        addBotAction = pi.actions.FindAction("AddBot");
+        addBotAction.performed += HandleBotJoin;
+        addBotAction.Enable();
     }
 }

@@ -92,6 +92,13 @@ public class BotManager : MonoBehaviour
         bots.Clear();
     }
 
+    public void StopBots(){
+        foreach (BotController bot in bots.Values)
+        {
+            bot.ResetInputs();
+        }
+    }
+
     public void RemoveBotById(int botId)
     {
         if (bots.ContainsKey(botId))

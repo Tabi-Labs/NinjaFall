@@ -9,10 +9,12 @@ public class BotBrain : MonoBehaviour
 {
     public int botId;
     private BotController botController;
-    public float decisionInterval = 0.5f; // Intervalo para tomar decisiones
-    public float wallCheckInterval = 0.25f; // Intervalo para tomar decisiones
-    public float obstacleCheckDistance = 1.5f; // Distancia para revisar obstaculos
-    public float targetDistanceThreshold = 1.0f; // Distancia para perseguir al jugador
+    public float decisionInterval        = 0.50f;  // Intervalo para tomar decisiones
+    public float wallCheckInterval       = 0.25f;  // Intervalo para tomar decisiones
+    public float obstacleCheckDistance   = 1.50f;  // Distancia para revisar obstaculos
+    public float targetDistanceThreshold = 1.00f;  // Distancia para perseguir al jugador
+
+    public int inputFrameDelay = 5;  // Intervalo para aplicar inputs
 
     private GameObject closestPlayer;
 
@@ -36,13 +38,17 @@ public class BotBrain : MonoBehaviour
         
         StartCoroutine(MakeDecisions());
         StartCoroutine(CheckWallsAndJump());
+        StartCoroutine(SendInputs());
     }
+
+    // Decision Making
+    // --------------------------------------------------------------------------------
 
     private IEnumerator MakeDecisions()
     {
         while (true)
         {
-            botController.ResetInputs(); // Resetear entradas antes de tomar decisiones
+            botController.ReleaseJoystick("leftStick");
             FindClosestPlayer();
             if (closestPlayer != null)
             {
@@ -52,13 +58,14 @@ public class BotBrain : MonoBehaviour
                 if (distanceToPlayer <= targetDistanceThreshold)
                 {
                     Attack();
+                } else {
+                    if(Random.Range(0f, 1f) < 0.1f)
+                    {
+                        ThrowShurikenToTarget(closestPlayer.transform.position);
+                    }
                 }
             }
-            else
-            {
-                // No hay jugadores cercanos, realizar una accion por defecto
-                //WanderAround();
-            }
+
             yield return new WaitForSeconds(decisionInterval);
         }
     }
@@ -74,6 +81,21 @@ public class BotBrain : MonoBehaviour
             yield return new WaitForSeconds(wallCheckInterval);
         }
     }
+
+    private IEnumerator SendInputs()
+    {
+        while (true)
+        {
+            botController.ApplyInputs();
+            for(int i = 0; i < inputFrameDelay; i++)
+            {
+                yield return null;
+            }
+        }
+    }
+
+    // Sensors
+    // --------------------------------------------------------------------------------
 
     private void FindClosestPlayer()
     {
@@ -119,20 +141,24 @@ public class BotBrain : MonoBehaviour
         _ = botController.PressAndReleaseButton(GamepadButton.East, 0.1f);
     }
 
-
     private void MoveTowardsTarget(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
-        Vector2 targetDir = new Vector2(direction.x, direction.z);
+        Vector2 targetDir = new Vector2(direction.x, direction.y);
         botController.MoveJoystick(targetDir, "leftStick");
     }
 
     private void ThrowShurikenToTarget(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
-        Vector2 targetDir = new Vector2(direction.x, direction.z);
-        botController.MoveJoystick(Vector2.zero, "rightStick");
+        Vector2 targetDir = new Vector2(direction.x, direction.y);
         _ = botController.PressAndReleaseButton(GamepadButton.East, 0.5f);
-        
+        botController.MoveJoystick(targetDir, "rightStick");
+    }
+
+    private void WanderAround()
+    {
+        Vector2 randomDirection = Random.insideUnitCircle.normalized;
+        botController.MoveJoystick(randomDirection, "leftStick");
     }
 }
