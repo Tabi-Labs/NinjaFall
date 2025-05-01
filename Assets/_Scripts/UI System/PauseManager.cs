@@ -91,6 +91,7 @@ public class PauseManager : MonoBehaviour
                 is_paused = pause;
                 break;
             case PauseMode.post_game:
+                BotManager.Instance.StopBots();
                 Time.timeScale = 0.0f;
                 winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
                 Animator anim = winner_portrait.GetComponent<Animator>();
