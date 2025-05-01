@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,9 +12,10 @@ public class BotManager : MonoBehaviour
 {
     public static BotManager Instance { get; private set; }
 
-    public List<BotController> bots = new List<BotController>();
+    public Dictionary<int, BotController> bots = new Dictionary<int, BotController>();
     public GameObject playerPrefab; // Prefab del jugador
     public InputActionAsset playerActions; // Las acciones input comunes
+    private int botId = 0;
 
     static BotManager()
     {
@@ -34,6 +36,9 @@ public class BotManager : MonoBehaviour
         }
     }
 
+    // Callbacks
+    // --------------------------------------------------------------------------------
+
 #if UNITY_EDITOR
     private static void OnPlayModeStateChanged(PlayModeStateChange state)
     {
@@ -48,41 +53,51 @@ public class BotManager : MonoBehaviour
     }
 #endif
 
-    void Update()
+    private void OnDestroy()
     {
-        // Cada x frames, puedes hacer algo con los bots
-        // Por ejemplo, hacer que salten
-        if (Time.frameCount % 180 == 0) // Cada 60 frames
+        CleanupBots();
+    }
+
+    // Bot Management
+    // --------------------------------------------------------------------------------
+
+    public int CreateBot()
+    {
+        PlayerInput pi = PlayerInputManager.instance.JoinPlayer(controlScheme: "Gamepad", pairWithDevice: InputSystem.AddDevice<Gamepad>());
+        Gamepad virtualGamepad = pi.GetDevice<Gamepad>();
+        BotController botController = new BotController(pi, virtualGamepad);
+        bots.Add(++botId, botController);
+        BotBrain botBrain = pi.AddComponent<BotBrain>();
+        botBrain.botId = botId;
+        botBrain.enabled = false;
+
+        return botId;
+    }
+
+    public BotController GetBotById(int botId)
+    {
+        if (bots.TryGetValue(botId, out var bot))
         {
-            foreach (var bot in bots)
-            {
-                _ = bot.PressAndReleaseButton(GamepadButton.South, 0.5f); // Botón A
-            }
+            return bot;
         }
-    }
-
-    public BotController CreateBot()
-    {
-        PlayerInput pi = PlayerInputManager.instance.JoinPlayer(controlScheme: "Gamepad", pairWithDevice: InputSystem.AddDevice<Gamepad>());
-        Gamepad virtualGamepad = pi.GetDevice<Gamepad>();
-        BotController botController = new BotController(pi, virtualGamepad);
-        bots.Add(botController);
-        return botController;
-    }
-
-    public void CreateBot2(){
-        PlayerInput pi = PlayerInputManager.instance.JoinPlayer(controlScheme: "Gamepad", pairWithDevice: InputSystem.AddDevice<Gamepad>());
-        Gamepad virtualGamepad = pi.GetDevice<Gamepad>();
-        BotController botController = new BotController(pi, virtualGamepad);
-        bots.Add(botController);
+        return null;
     }
 
     public void CleanupBots()
     {
-        foreach (var bot in bots)
+        foreach (BotController bot in bots.Values)
         {
             InputSystem.RemoveDevice(bot.virtualGamepad);
         }
         bots.Clear();
+    }
+
+    public void RemoveBotById(int botId)
+    {
+        if (bots.ContainsKey(botId))
+        {
+            InputSystem.RemoveDevice(bots[botId].virtualGamepad);
+            bots.Remove(botId);
+        }
     }
 }

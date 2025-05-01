@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.TextCore.Text;
@@ -23,7 +24,9 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     // Variables for handling bot addition
     public PlayerInput hostPlayerInput  {get; private set;} = null;
+    private int newBotId = -1;
     public bool isAddingBot {get; private set;} = false;
+    public bool preventBotAddition {get; private set;} = false;
     private InputSystemUIInputModule hostInputModule;
     private CharacterSelectorHandler hostCharacterSelectorHandler;
     private InputAction addBotAction;
@@ -73,6 +76,11 @@ public class PlayerConfigurationManager : MonoBehaviour
         if(csh == null)
         {
             Debug.Log("No free CharacterSelectorHandler available.");
+            if(isAddingBot)
+            {
+                isAddingBot = false;
+                BotManager.Instance.RemoveBotById(newBotId);
+            }
             Destroy(pi.gameObject);
             return;
         }
@@ -99,68 +107,28 @@ public class PlayerConfigurationManager : MonoBehaviour
         pi.GetComponent<Animator>().enabled = false;
 
         // Assign PlayerInput to CharacterSelectorHandler
-        pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
-        csh.Activate(pi);
+        if(isAddingBot){
+            Debug.Log("Just added bot, assigning to hostCharacterSelectorHandler.");
+            hostPlayerInput.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+        } else {
+            pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+        }
+
+        csh.Activate(pi, isAddingBot);
     }
 
     public void HandleBotJoin(InputAction.CallbackContext context)
     {
-        if (isAddingBot) return;
-
-        int i;
-        CharacterSelectorHandler csh = null;
-
-        // Buscar un CharacterSelectorHandler libre
-        for (i = 0; i < characterSelectorHandlers.Length; i++)
-        {
-            if (characterSelectorHandlers[i].isAvailable)
-            {
-                csh = characterSelectorHandlers[i];
-                break;
-            }
-        }
-
-        if (csh == null)
-        {
-            Debug.Log("No hay CharacterSelectorHandler libre.");
-            return;
-        }
-
-        // Crear un dispositivo virtual (Gamepad)
-        var virtualGamepad = InputSystem.AddDevice<Gamepad>();
-
-        // // Crear un nuevo PlayerInput manualmente
-        // var botPlayerInput = Instantiate(hostPlayerInput.gameObject, Vector3.zero, Quaternion.identity).GetComponent<PlayerInput>();
-
-        // // Configurar el nuevo PlayerInput
-        // botPlayerInput.SwitchCurrentControlScheme(virtualGamepad);
-        // botPlayerInput.neverAutoSwitchControlSchemes = true;
-        // botPlayerInput.transform.position = new Vector3(1000, 1000, 1000);
-
-        // // Desactivar componentes extra igual que antes
-        // MonoBehaviour[] components = botPlayerInput.GetComponents<MonoBehaviour>();
-        // foreach (MonoBehaviour component in components)
-        // {
-        //     if (component is PlayerInput) continue;
-        //     component.enabled = false;
-        // }
-        // botPlayerInput.GetComponent<SpriteRenderer>().enabled = false;
-        // botPlayerInput.GetComponent<Animator>().enabled = false;
-
-        // Asignar el nuevo InputModule
-        SwitchPlayerUI(hostPlayerInput, csh.GetComponentInChildren<InputSystemUIInputModule>());
-
-        // Activar en el CharacterSelectorHandler
-        csh.Activate(hostPlayerInput, isBot: true);
-
+        if (preventBotAddition) return;
         isAddingBot = true;
-        Debug.Log("Bot unido: " + csh);
+        preventBotAddition = true;
+        newBotId = BotManager.Instance.CreateBot();
     }
 
     public void RestoreHostInput(){
         SwitchPlayerUI(hostPlayerInput, hostInputModule);
         hostInputModule = hostPlayerInput.uiInputModule;
-        isAddingBot = false;
+        preventBotAddition = false;
     }
 
     // Getters and Setters
