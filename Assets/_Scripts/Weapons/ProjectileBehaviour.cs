@@ -73,7 +73,7 @@ public class ProjectileBehaviour : MonoBehaviour
 
             if( collision.CompareTag("Shuriken"))
             {
-                _direction = new Vector2(0.0f, -1.0f);
+                _direction *= -1f; // Reflect the shuriken
             } 
             else if (!collision.isTrigger)
             {
