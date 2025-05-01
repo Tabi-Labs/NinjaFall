@@ -18,7 +18,7 @@ public class RangedAttack : NetworkBehaviour
     private bool wallBuff = false;
     private float gravityDebuff = 1.0f;
     private float gravityIgnoreTimer = 0.4f;
-    public int ShurikensCount{get;private set;}
+    public int ShurikensThrown{get;private set;}
     public GameEvent shurikenAmmoEvent;
     private Color _debugColor = Color.red;
 
@@ -115,7 +115,7 @@ public class RangedAttack : NetworkBehaviour
     void RequestShuriken(Vector3 direction = default)
     {
         if (_player.IsWallSliding && _player.IsWallSlideFalling) return;
-        if (ShurikensCount >= _attackStats.MaxShurikens) 
+        if (ShurikensThrown >= _attackStats.MaxShurikens) 
         {
             NoAmmoFX();
             return;
@@ -126,10 +126,10 @@ public class RangedAttack : NetworkBehaviour
         projectile.GetComponent<ProjectileBehaviour>().Init(direction, _selfDamageable, true, wallBuff, gravityIgnoreTimer,gravityDebuff);
         aimDirection = default;
 
-        ShurikensCount++;
-        if(ShurikensCount > _attackStats.MaxShurikens) ShurikensCount = _attackStats.MaxShurikens;
+        ShurikensThrown++;
+        if(ShurikensThrown > _attackStats.MaxShurikens) ShurikensThrown = _attackStats.MaxShurikens;
         
-        shurikenAmmoEvent.Raise(_player, ShurikensCount);
+        shurikenAmmoEvent.Raise(_player, ShurikensThrown);
         
         ShurikenFX();
        
@@ -139,12 +139,13 @@ public class RangedAttack : NetworkBehaviour
         Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _attackStats.RangedAttackRange, color);
     }
 
-    public void OnShurikenPickedUp()
+    public bool OnShurikenPickedUp()
     {   
-        ShurikensCount--;
-        if (ShurikensCount < 0) ShurikensCount = 0;
-    
-        shurikenAmmoEvent.Raise(_player, ShurikensCount);
+        if(ShurikensThrown <= 0) return false;
+        ShurikensThrown--;
+        if (ShurikensThrown < 0) ShurikensThrown = 0;
+        shurikenAmmoEvent.Raise(_player, ShurikensThrown);
+        return true;    
     }
 
     public void OnTriggerEnter2D(Collider2D collision)
@@ -153,8 +154,9 @@ public class RangedAttack : NetworkBehaviour
         {
             var shuriken = collision.GetComponent<ProjectileBehaviour>();
             if(shuriken.IsMoving) return;
-            Destroy(shuriken.gameObject);
-            OnShurikenPickedUp();
+            if(OnShurikenPickedUp())
+                Destroy(shuriken.gameObject);
+            
         }
     }
     #endregion

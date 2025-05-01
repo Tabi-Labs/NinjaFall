@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class ProjectileBehaviour : MonoBehaviour
@@ -19,7 +20,8 @@ public class ProjectileBehaviour : MonoBehaviour
     private float _invulnerabilityTimer;
     private float _gravityIgnoreTimer;
     private bool _isAffectedByGravity = false;
-
+    private bool _canDamage = true;
+    private Vector3 _hitSurfaceNormal;
     private Collider2D currentObstacle;
     private bool isFollowingEdge = false;
     private Vector2 tangentDirection;
@@ -37,9 +39,11 @@ public class ProjectileBehaviour : MonoBehaviour
     }
 
     private void Update()
-    {
+    {   
+        if(!_isMoving) return;
         OwnerInvulnerabilityTimer();   
         GravityIgnoreTimer();
+        RotateShuriken();
     }
     private void FixedUpdate()
     {
@@ -56,10 +60,10 @@ public class ProjectileBehaviour : MonoBehaviour
         }
         else
         {
+             if (_isAffectedByGravity)
+                _movement.ApplyGravity(_stats.Gravity * _gravityDebuff, _stats.MaxFallSpeed);
             if (!_isMoving) return;
             _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
-            if (_isAffectedByGravity)
-                _movement.ApplyGravity(_stats.Gravity * _gravityDebuff, _stats.MaxFallSpeed);
             _movement.VerticalMove(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
         }
         
@@ -67,26 +71,31 @@ public class ProjectileBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(_isMoving)
+
+         if( collision.CompareTag("Shuriken"))
         {
-            var damageableComponent = collision.GetComponentInParent<IDamageable>();
-
-            if( collision.CompareTag("Shuriken"))
+            if(_isMoving)
             {
-                _direction *= -1f; // Reflect the shuriken
-            } 
-            else if (!collision.isTrigger)
-            {
-                CheckForDamageHit(damageableComponent);
-                if (damageableComponent != null && damageableComponent == _owner) return;
-                OnObstacleHit(collision.ClosestPoint(transform.position), collision);
+                RaycastHit2D hit = Physics2D.Raycast(transform.position, _direction, _stats.MoveSpeed);
+                if(hit)
+                    _hitSurfaceNormal = hit.normal;
+                _direction = Vector2.Reflect(_direction, _hitSurfaceNormal); // Reflect the shuriken
+                _movement.Impulse(_direction * _stats.MoveSpeed,  0.5f);
             }
-            else if (damageableComponent != null)
-                AutoAim(collision.transform, damageableComponent);
+        } 
 
-        }
-
+        var damageableComponent = collision.GetComponentInParent<IDamageable>();
+        
+        
+        if(!collision.isTrigger && !CheckForDamageHit(damageableComponent))
+            OnObstacleHit(collision.ClosestPoint(transform.position), collision);
+        if(collision.isTrigger)
+            AutoAim(collision.transform, damageableComponent);
+        
+        
        
+
+        
     }
 
     #endregion
@@ -101,6 +110,7 @@ public class ProjectileBehaviour : MonoBehaviour
         _shurikenWallBuff = wallBuff;
         _gravityIgnoreTimer = _gravityTimer;
         _gravityDebuff = gravity;
+        _canDamage = true;
     }
 
     public void ReflectShuriken(Vector2 newDirection)
@@ -115,11 +125,17 @@ public class ProjectileBehaviour : MonoBehaviour
         _direction = newDirection;
     }
 
-
+    private void RotateShuriken()
+    {
+        float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90));
+    }
     private void OnObstacleHit(Vector3 hitPoint, Collider2D collision)
     {
+         if(!_isMoving) return;
         Debug.Log("Shuriken wall buff on hit: " + _shurikenWallBuff);
         AudioManager.PlaySound("FX_ShurikenHit");
+        
         if (_shurikenWallBuff)
         {
             isFollowingEdge = true;
@@ -127,20 +143,28 @@ public class ProjectileBehaviour : MonoBehaviour
 
         } else
         {
+           
             transform.position = hitPoint;
             StopShuriken();
         }
     }
 
-    private void CheckForDamageHit(IDamageable damageableComponent)
+    private bool CheckForDamageHit(IDamageable damageableComponent)
     {
         if(damageableComponent != null)
         {
-            if(_owner != null && damageableComponent == _owner && !_shouldDamageOwner) return;
-            damageableComponent.TakeDamage(_stats.Damage);
-            Destroy(gameObject);
-      
+            if(_owner != null && damageableComponent == _owner && !_shouldDamageOwner) return true;
+            if(_canDamage && _isMoving)
+            {
+                damageableComponent.TakeDamage(_stats.Damage);
+                DisableDamage();
+                _isMoving = false;
+                _isAffectedByGravity = true;
+                _movement.StopX();  
+                return true;
+            }
         }
+        return false;
     }
 
 
@@ -189,9 +213,11 @@ public class ProjectileBehaviour : MonoBehaviour
 
     }
 
+    private void DisableDamage() => _canDamage = false;
     private void StopShuriken()
     {
         _isMoving = false;
+        _isAffectedByGravity = false;
         isFollowingEdge = false;
         _movement.Stop();
         _animator.enabled = false;
