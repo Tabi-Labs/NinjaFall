@@ -84,8 +84,11 @@ public class CharacterSelectorHandler : MonoBehaviour
         Deactivate();
     }
 
-    public void Activate(PlayerInput pi, bool isBot = false)
+    public void Activate(PlayerInput pi, bool isBot = false, string playerName = null)
     {
+        if(playerName != null){
+            topText.text = playerName;
+        }
         StartCoroutine(SetAvailabilityNextFrame(false));
         portraitPanel.gameObject.SetActive(true);
         emptyPanel.gameObject.SetActive(false);
@@ -188,6 +191,7 @@ public class CharacterSelectorHandler : MonoBehaviour
         if  (isBot) {
             pcm.RestoreHostInput();
             Destroy(pi.gameObject);
+            pcm.DecreaseBotCount();
             Deactivate();
         }
         if (!isSelected){
