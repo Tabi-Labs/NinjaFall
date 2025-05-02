@@ -69,7 +69,6 @@ public class MeleeAttack : MonoBehaviour
 
         Debug.DrawLine(transform.position, hitPoint, Color.blue, 1f);
         DrawDebugBox(hitPoint, boxSize, angle, Color.magenta, 1f);
-        Debug.Log("Movimiento: " + mov.x + ", " + mov.y);
 
         if(colliders.Length == 0) 
         {

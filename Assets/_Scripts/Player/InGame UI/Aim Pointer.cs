@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Unity.Netcode;
 using UnityEngine;
 
-public class AimPointer : MonoBehaviour
+public class AimPointer : NetworkBehaviour
 {
     [SerializeField] private CustomInputManager _inputManager;
     [SerializeField] private SpriteRenderer _aimPointer;
@@ -17,6 +18,8 @@ public class AimPointer : MonoBehaviour
 
     void Update()
     {
+        if((NetworkManager))
+            if (!IsOwner) return;
         if(_inputManager.IsAiming )
         {
             if (!_tweenActive)
