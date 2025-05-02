@@ -65,8 +65,6 @@ public abstract class StatusEffect : MonoBehaviour
             float x = Mathf.Cos(angle) * orbitRadius;
             float z = Mathf.Sin(angle) * orbitRadius;
 
-            Debug.Log("Valor DOTWEEN X: " + x);
-            Debug.Log("Valor DOTWEEN Z: " + z);
 
             activeOrb.transform.localPosition = new Vector3(x * 2.0f, 0f, z * 2.0f);
 

@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +7,7 @@ using UnityEngine;
 public class ProjectileBehaviour : MonoBehaviour
 {
     [SerializeField] private ProjectileStats _stats;
+    
     private Movement _movement;
     private Vector2 _direction;
     private Animator _animator;
@@ -22,8 +25,7 @@ public class ProjectileBehaviour : MonoBehaviour
 
     private Collider2D currentObstacle;
     private bool isFollowingEdge = false;
-    private Vector2 tangentDirection;
-    private float timerFollowingEdge = 5.0f;
+    private Transform[] pathPoints;
 
     public bool IsMoving => _isMoving;
     #region ---- UNITY CALLBACKS ----
@@ -31,6 +33,7 @@ public class ProjectileBehaviour : MonoBehaviour
     {
         _movement = GetComponent<Movement>();
         _animator = GetComponent<Animator>();
+
 
         _gravityIgnoreTimer = _stats.GravityIgnoreTime;
         _invulnerabilityTimer = _stats.OwnerInvulnerabilityTime;
@@ -43,50 +46,70 @@ public class ProjectileBehaviour : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (!_isMoving || isFollowingEdge) return;
 
-        if (isFollowingEdge && currentObstacle != null)
-        {
-            Debug.Log("Obstaculo: " + currentObstacle.name);
-            FollowEdge();
+        _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
 
-            if (timerFollowingEdge <= 0.0f)
-            {
-                StopShuriken();
-            }
-        }
-        else
-        {
-            if (!_isMoving) return;
-            _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
-            if (_isAffectedByGravity)
-                _movement.ApplyGravity(_stats.Gravity * _gravityDebuff, _stats.MaxFallSpeed);
-            _movement.VerticalMove(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
-        }
-        
+        if (_isAffectedByGravity)
+            _movement.ApplyGravity(_stats.Gravity * _gravityDebuff, _stats.MaxFallSpeed);
+
+        _movement.VerticalMove(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
+
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(_isMoving)
+        
+        if (_isMoving)
         {
+            Debug.Log("Shuriken moviendose");
             var damageableComponent = collision.GetComponentInParent<IDamageable>();
 
-            if( collision.CompareTag("Shuriken"))
+
+
+
+            if ( collision.CompareTag("Shuriken"))
             {
+                Debug.Log("Impacto en shuriken");
                 _direction = new Vector2(0.0f, -1.0f);
+                return;
             } 
-            else if (!collision.isTrigger)
+            
+            if (!collision.isTrigger)
             {
+                Debug.Log("Impacto en un objeto que no tiene trigger activado");
+
                 CheckForDamageHit(damageableComponent);
-                if (damageableComponent != null && damageableComponent == _owner) return;
+
                 OnObstacleHit(collision.ClosestPoint(transform.position), collision);
+
+                return;
             }
-            else if (damageableComponent != null)
-                AutoAim(collision.transform, damageableComponent);
+            
+            if (collision.isTrigger)
+            {
+                Debug.Log("Impacto en un objeto que tiene trigger activado");
 
+                if (damageableComponent != null )
+                {
+                    Debug.Log("Intenta auto aim");
+                    AutoAim(collision.transform, damageableComponent);
+                }
+
+                else if (pathPoints == null || pathPoints.Length == 0)
+                {
+                    pathPoints = GetPathPointsFromCollider(collision);
+
+                    if(pathPoints.Length > 0)
+                    {
+                        OnObstacleHit(collision.ClosestPoint(transform.position), collision);
+                    }
+                   
+                }
+                return;
+            }        
         }
-
-       
     }
 
     #endregion
@@ -122,7 +145,6 @@ public class ProjectileBehaviour : MonoBehaviour
         AudioManager.PlaySound("FX_ShurikenHit");
         if (_shurikenWallBuff)
         {
-            isFollowingEdge = true;
             StartFollowingEdge(collision);
 
         } else
@@ -152,42 +174,98 @@ public class ProjectileBehaviour : MonoBehaviour
             _direction = Vector2.Lerp(_direction, directionToTarget, _stats.RedirectionAcceleration * Time.deltaTime);
     }
 
+
+
+    private void FollowPath()
+    {
+        isFollowingEdge = true;
+        _movement.Stop();
+        _animator.enabled = true;
+
+        Vector3[] path = new Vector3[pathPoints.Length];
+        for (int i = 0; i < pathPoints.Length; i++)
+            path[i] = pathPoints[i].position;
+
+        transform.DOPath(path, _stats.MoveSpeed, PathType.CatmullRom, PathMode.TopDown2D)
+                 .SetEase(Ease.Linear)
+                 .OnComplete(() => StopShuriken());
+    }
+
+    private Transform[] GetPathPointsFromCollider(Collider2D collision)
+    {
+        int layer = LayerMask.NameToLayer("Path Point");
+        List<Transform> pathPoints = new List<Transform>();
+
+        foreach (Transform child in collision.transform)
+        {
+            Debug.Log("Child layer: " + child.gameObject.layer);
+            Debug.Log("Layer: " + layer);
+            if (child.gameObject.layer == layer)
+            {
+                pathPoints.Add(child);
+            }
+        }
+
+        // Si no hay puntos en el camino, retornamos un array vacío
+        if (pathPoints.Count == 0) return new Transform[0];
+
+        // Empezamos por el punto más cercano al shuriken
+        List<Transform> orderedPathPoints = new List<Transform>();
+        Transform currentPoint = FindNearestPoint(this.transform, pathPoints);
+        orderedPathPoints.Add(currentPoint);
+
+        // Ordenar los puntos por proximidad, buscando el más cercano al último punto agregado
+        while (pathPoints.Count > 0)
+        {
+            // Encontramos el punto más cercano al último punto agregado
+            Transform nearestPoint = FindNearestPoint(currentPoint, pathPoints);
+            orderedPathPoints.Add(nearestPoint);
+            pathPoints.Remove(nearestPoint);
+            currentPoint = nearestPoint;
+        }
+
+        return orderedPathPoints.ToArray();
+    }
+
+    private Transform FindNearestPoint(Transform fromPoint, List<Transform> points)
+    {
+        Transform nearest = points[0];
+        float shortestDistance = Vector2.Distance(fromPoint.position, nearest.position);
+
+        // Recorremos todos los puntos para encontrar el más cercano
+        foreach (Transform point in points)
+        {
+            float distance = Vector2.Distance(fromPoint.position, point.position);
+            if (distance < shortestDistance)
+            {
+                nearest = point;
+                shortestDistance = distance;
+            }
+        }
+
+        return nearest;
+    }
+
     private void StartFollowingEdge(Collider2D obstacle)
     {
-        currentObstacle = obstacle;
-        isFollowingEdge = true;
-
-        // Calcular direcci�n tangencial inicial
-        Vector2 closestPoint = obstacle.ClosestPoint(transform.position);
-        Vector2 surfaceNormal = ((Vector2)transform.position - closestPoint).normalized;
-        tangentDirection = Vector2.Perpendicular(surfaceNormal);
-
-        // Determinar direcci�n basada en la velocidad inicial
-        float direction = Vector2.Dot(_direction.normalized, tangentDirection) > 0 ? 1 : -1;
-        tangentDirection *= direction;
-
+        if (pathPoints != null && pathPoints.Length > 0)
+        {
+            if (isFollowingEdge)
+            {
+                return;
+            }
+            
+            FollowPath();
+        }
+        else
+        {
+            Debug.LogWarning("No se asignó un path al shuriken.");
+            transform.position = obstacle.ClosestPoint(transform.position);
+            StopShuriken();
+        }
     }
 
-    private void FollowEdge()
-    {
-        // Obtener punto m�s cercano en el obst�culo
-        Vector2 closestPoint = currentObstacle.ClosestPoint(transform.position);
 
-        // Calcular nueva normal y tangente
-        Vector2 surfaceNormal = ((Vector2)transform.position - closestPoint).normalized;
-        Vector2 desiredTangent = Vector2.Perpendicular(surfaceNormal);
-
-        // Mantener la direcci�n original de rotaci�n
-        float rotationDirection = Vector2.Dot(tangentDirection, desiredTangent) > 0 ? 1 : -1;
-        desiredTangent *= rotationDirection;
-
-        // Aplicar fuerza centr�peta
-        Vector2 steerForce = desiredTangent * _stats.MoveSpeed - _direction;
-        _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, steerForce);
-
-        timerFollowingEdge -= Time.deltaTime;
-
-    }
 
     private void StopShuriken()
     {

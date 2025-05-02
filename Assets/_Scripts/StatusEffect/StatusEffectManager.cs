@@ -61,6 +61,6 @@ public class StatusEffectManager : MonoBehaviour
         activeEffects.Remove(effect.EffectName);
         effect.RemoveEffect(player);
 
-        //Destroy(effect);
+        Destroy(effect);
     }
 }
