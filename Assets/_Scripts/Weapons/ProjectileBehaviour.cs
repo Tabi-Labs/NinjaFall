@@ -219,6 +219,7 @@ public class ProjectileBehaviour : MonoBehaviour
     {
         _isMoving = false;
         _isAffectedByGravity = false;
+        _collided = true;
         isFollowingEdge = false;
         _movement.Stop();
         _animator.enabled = false;
