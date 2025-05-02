@@ -26,7 +26,7 @@ public class ProjectileBehaviour : MonoBehaviour
     private bool isFollowingEdge = false;
     private Vector2 tangentDirection;
     private float timerFollowingEdge = 5.0f;
-
+    private bool _collided = false;
     public bool IsMoving => _isMoving;
     #region ---- UNITY CALLBACKS ----
     private void Awake()
@@ -62,7 +62,7 @@ public class ProjectileBehaviour : MonoBehaviour
         {
              if (_isAffectedByGravity)
                 _movement.ApplyGravity(_stats.Gravity * _gravityDebuff, _stats.MaxFallSpeed);
-            if (!_isMoving) return;
+            if (!_isMoving || _collided) return;
             _movement.Move(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
             _movement.VerticalMove(_stats.MoveSpeed, _stats.AirAcceleration, _direction);
         }
@@ -111,6 +111,7 @@ public class ProjectileBehaviour : MonoBehaviour
         _gravityIgnoreTimer = _gravityTimer;
         _gravityDebuff = gravity;
         _canDamage = true;
+        _collided = false;
     }
 
     public void ReflectShuriken(Vector2 newDirection)
@@ -154,11 +155,11 @@ public class ProjectileBehaviour : MonoBehaviour
         if(damageableComponent != null)
         {
             if(_owner != null && damageableComponent == _owner && !_shouldDamageOwner) return true;
-            if(_canDamage && _isMoving)
+            if(_canDamage && !_collided)
             {
                 damageableComponent.TakeDamage(_stats.Damage);
                 DisableDamage();
-                _isMoving = false;
+                _collided = true;
                 _isAffectedByGravity = true;
                 _movement.StopX();  
                 return true;
