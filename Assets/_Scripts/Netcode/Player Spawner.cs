@@ -137,7 +137,6 @@ public class PlayerSpawner : NetworkBehaviour
             netObj.transform.position = position;
             netObj.transform.rotation = rotation;
         }
-        Debug.Log("Actualizado: " + playerRef.NetworkObjectId);
     }
 
     [ClientRpc]
@@ -158,7 +157,6 @@ public class PlayerSpawner : NetworkBehaviour
             player.GetComponent<Player>().HeadColl.enabled = true;
             player.GetComponent<Player>().BodyColl.enabled = true;
 
-            Debug.Log("Campos habilitados para el jugador: " + player.name);
         }
     }
 

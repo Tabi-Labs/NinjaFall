@@ -101,6 +101,8 @@ MonoBehaviour:
   EffectName: Gravity Debuff
   Duration: 5
   orbitingOrbPrefab: {fileID: 5994731709906016828, guid: 5d84de8a79cd37b47b3f2587937237f2, type: 3}
+  orbitRadius: 0.25
+  orbitDuration: 2
 --- !u!61 &3402151259521641444
 BoxCollider2D:
   m_ObjectHideFlags: 0

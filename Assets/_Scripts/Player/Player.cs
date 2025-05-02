@@ -329,8 +329,9 @@ public class Player : NetworkBehaviour
     public void DeletePlayer()
     {
         int playerIndex = _playerInput.playerIndex;
-        KillsCounter.Instance.PlayerKilled(playerIndex);
         StateMachine.ChangeState(IdleState);
+        KillsCounter.Instance.PlayerKilled(playerIndex, this);
+
 
         if (!NetworkManager)
         {
@@ -342,8 +343,8 @@ public class Player : NetworkBehaviour
             // Sincronizar con todos los clientes
             DeletePlayerClientRpc();
         }
-
-        PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
+        
+        //PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
     }
 
     private void DisablePlayerLocally()

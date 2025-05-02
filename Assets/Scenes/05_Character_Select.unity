@@ -332,6 +332,8 @@ MonoBehaviour:
   previousScene: 01_Start_Menu
   gameScene: 03_Main_Game
   GameStartBanner: {fileID: 2062076157}
+  NetworkReadyCount:
+    m_InternalValue: 0
 --- !u!114 &132585211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2433,6 +2435,7 @@ RectTransform:
   - {fileID: 1424305150}
   - {fileID: 182487477}
   - {fileID: 533178444}
+  - {fileID: 1033746743}
   m_Father: {fileID: 1549742355}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4795,6 +4798,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+--- !u!224 &1033746743 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2759295267311433277, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+  m_PrefabInstance: {fileID: 1922330788}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1169637897
 GameObject:
   m_ObjectHideFlags: 0
@@ -5262,6 +5270,14 @@ PrefabInstance:
     - target: {fileID: 174117907704595649, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: selectionSoundID
       value: FX_ChooseCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 263187551248255100, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2805351453
+      objectReference: {fileID: 0}
+    - target: {fileID: 263187551248255100, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 1634725716
       objectReference: {fileID: 0}
     - target: {fileID: 417949369989144092, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_Name
