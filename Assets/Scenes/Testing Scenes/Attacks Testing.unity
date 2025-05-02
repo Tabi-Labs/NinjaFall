@@ -932,6 +932,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7742737050970574539, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
+      propertyPath: _startPaused
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7742737050970574539, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
+      propertyPath: _initialPauseMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7758015434586893314, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
