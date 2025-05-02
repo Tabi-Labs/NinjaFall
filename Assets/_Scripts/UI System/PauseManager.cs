@@ -134,6 +134,9 @@ public class PauseManager : MonoBehaviour
     public void ClearPlayers()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (BotManager.Instance != null && BotManager.Instance.bots != null) {
+            BotManager.Instance.CleanupBots();
+        }
 
         foreach (GameObject player in players)
         {
