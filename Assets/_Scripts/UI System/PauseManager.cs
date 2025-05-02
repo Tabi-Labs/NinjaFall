@@ -173,4 +173,16 @@ public class PauseManager : MonoBehaviour
         pause_canvas.SetActive(false);
         Time.timeScale = 1.0f;
     }
+
+    //TODO! - Put this function in a better place
+    public void ErasePlayers()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+        }
+    }
+
 }
