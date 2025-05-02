@@ -18,3 +18,8 @@ MonoBehaviour:
   text: {fileID: 21300000, guid: 228bcbeefd55d0f4cbbda4facb1b06df, type: 3}
   textOutlineColor: {r: 0.5019608, g: 0.3882353, b: 0.15294118, a: 1}
   mat: {fileID: 2100000, guid: e0fe56d78adbc6543a0e8e914fb10e01, type: 2}
+  victoryPhrases:
+  - "Still think I\u2019m unworthy?"
+  - "I didn\u2019t inherit strength\u2026 I earned it."
+  - Underestimating me was your first mistake.
+  - "This victory\u2026 It\u2019s just the beginning."
