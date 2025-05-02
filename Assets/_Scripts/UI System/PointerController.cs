@@ -33,7 +33,7 @@ public class PointerController : MonoBehaviour
         if (selected != null && selected.TryGetComponent<RectTransform>(out RectTransform selectedRect))
         {
             Vector2 pos = selectedRect.anchoredPosition;
-            if(lastPos == pos) return;
+            // if(lastPos == pos) return;
             MovePointer(selectedRect);
             lastPos = pos;
         }
