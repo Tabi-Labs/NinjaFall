@@ -141,7 +141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &18334698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,10 +242,28 @@ MonoBehaviour:
   _lerpDuration: 2
   _musicID: MX_MainMenu
   _startButton: {fileID: 319098358}
---- !u!4 &134406344 stripped
+--- !u!1 &134406343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 134406344}
+  - component: {fileID: 134406345}
+  m_Layer: 0
+  m_Name: '@ Scene Manager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &134406344
 Transform:
-  m_CorrespondingSourceObject: {fileID: 5392430451357612106, guid: cc479830ab3e6db44bc7f9ca3234073c, type: 3}
-  m_PrefabInstance: {fileID: 7448103313391537698}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 134406343}
   serializedVersion: 2
@@ -3555,10 +3573,45 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 459852346}
   m_CullTransparentMesh: 1
---- !u!4 &528216182 stripped
+--- !u!1 &528216180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 528216182}
+  - component: {fileID: 528216181}
+  m_Layer: 0
+  m_Name: '@ Postprocessing Volume'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &528216181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528216180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 0f324b86dacf82640874c2c9dbbf59b3, type: 2}
+--- !u!4 &528216182
 Transform:
-  m_CorrespondingSourceObject: {fileID: 9140783755403331029, guid: bf69c36715ff57740919b44b9553fd71, type: 3}
-  m_PrefabInstance: {fileID: 1931962634029266940}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528216180}
   serializedVersion: 2
