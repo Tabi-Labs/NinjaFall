@@ -29,6 +29,7 @@ public class PlayerConfigurationManager : MonoBehaviour
     // Variables for handling bot addition
     public PlayerInput hostPlayerInput  {get; private set;} = null;
     private InputSystemUIInputModule hostInputModule = null;
+    private CharacterSelectorHandler hostCsh = null;
     private int newBotId = -1;
     public bool isAddingBot {get; private set;} = false;
     public bool preventBotAddition {get; private set;} = true;
@@ -94,6 +95,7 @@ public class PlayerConfigurationManager : MonoBehaviour
             StartCoroutine(DelayAddBotAction(pi));
             hostPlayerInput = pi;
             hostInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            hostCsh = csh;
             preventBotAddition = false;
         }
 
@@ -111,6 +113,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         // Assign PlayerInput to CharacterSelectorHandler
         if(isAddingBot){
             hostPlayerInput.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            hostCsh.ResetSelection();
             playerName = "Bot " + ++BotCount;
         } else {
             pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
