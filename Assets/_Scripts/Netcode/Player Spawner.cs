@@ -63,23 +63,24 @@ public class PlayerSpawner : NetworkBehaviour
             players[i].transform.position = spawnPoint.position;
             players[i].transform.rotation = spawnPoint.rotation;
 
-            if (i % 2 == 0)
-            {
-                players[i].GetComponent<Player>().isFacingRight = false;
-            }
-
-            // Habilitar campos del jugador
-            enablePlayerFields(players[i]);
-
             // Sincronizar con los clientes si estamos en red
             if (NetworkManager)
             {
                 if (players[i].TryGetComponent<NetworkObject>(out var netObj))
                 {
-                    Debug.Log("Spawn");
                     UpdatePlayerPositionClientRpc(netObj, spawnPoint.position, spawnPoint.rotation);
                     EnablePlayerFieldsClientRpc(netObj);
                 }
+            }
+            else
+            {
+                if (i % 2 == 0)
+                {
+                    players[i].GetComponent<Player>().isFacingRight = false;
+                }
+
+                // Habilitar campos del jugador
+                enablePlayerFields(players[i]);
             }
         }
     }
@@ -101,6 +102,7 @@ public class PlayerSpawner : NetworkBehaviour
     public void RespawnPlayer(GameObject player, int playerID)
     {
         //if (!KillsCounter.Instance.alivePlayers[playerID]) return;
+        //player.GetComponent<Player>().StateMachine.ChangeState(player.GetComponent<Player>().IdleState);
         StartCoroutine(RespawnAfterDelay(player, respawnDelay));
     }
 
@@ -119,12 +121,13 @@ public class PlayerSpawner : NetworkBehaviour
         player.GetComponent<Player>().IsDead = false;
 
         // Sincronizar posición y habilitación de campos con clientes (Net)
-        if (IsServer)
+        if (NetworkManager)
         {
             if (player.TryGetComponent<NetworkObject>(out var netObj))
             {
-                UpdatePlayerPositionClientRpc(netObj, randomSpawn.position, randomSpawn.rotation);
-                EnablePlayerFieldsClientRpc(netObj);
+                //UpdatePlayerPositionClientRpc(netObj, randomSpawn.position, randomSpawn.rotation);
+                //EnablePlayerFieldsClientRpc(netObj);
+                EnableFieldsServerRpc(netObj, randomSpawn.position, randomSpawn.rotation);
             }
         }
     }
@@ -156,8 +159,13 @@ public class PlayerSpawner : NetworkBehaviour
             player.GetComponent<Player>().FeetColl.enabled = true;
             player.GetComponent<Player>().HeadColl.enabled = true;
             player.GetComponent<Player>().BodyColl.enabled = true;
-
         }
+    }
+    [ServerRpc(RequireOwnership = false)]
+    private void EnableFieldsServerRpc(NetworkObjectReference playerRef, Vector3 position, Quaternion rotation)
+    {
+        UpdatePlayerPositionClientRpc(playerRef, position, rotation);
+        EnablePlayerFieldsClientRpc(playerRef);
     }
 
     private void OnDisable()

@@ -330,9 +330,7 @@ public class Player : NetworkBehaviour
     {
         int playerIndex = _playerInput.playerIndex;
         StateMachine.ChangeState(IdleState);
-        KillsCounter.Instance.PlayerKilled(playerIndex, this);
-
-
+        
         if (!NetworkManager)
         {
             // Comportamiento local
@@ -341,10 +339,15 @@ public class Player : NetworkBehaviour
         else
         {
             // Sincronizar con todos los clientes
-            DeletePlayerClientRpc();
+            DeletePlayerServerRpc();
+        }
+        KillsCounter.Instance.PlayerKilled(playerIndex);
+        if (KillsCounter.Instance.alivePlayers[playerIndex])
+        {
+            PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
+            //RespawnPlayerServerRpc(playerIndex);
         }
         
-        //PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
     }
 
     private void DisablePlayerLocally()
@@ -360,11 +363,22 @@ public class Player : NetworkBehaviour
         transform.position = new Vector3(1000, 1000, 1000); // Mover fuera de la vista
     }
 
+    [ServerRpc]
+    private void DeletePlayerServerRpc()
+    {
+        // Deshabilitar el jugador en todos los clientes
+        DeletePlayerClientRpc();
+    }
     [ClientRpc]
     private void DeletePlayerClientRpc()
     {
         // Deshabilitar el jugador en todos los clientes
         DisablePlayerLocally();
+    }
+    [ServerRpc]
+    private void RespawnPlayerServerRpc(int playerIndex)
+    {
+        PlayerSpawner.Instance.RespawnPlayer(this.gameObject, playerIndex);
     }
     #endregion
     #region Landed
