@@ -234,6 +234,10 @@ PrefabInstance:
       propertyPath: m_text
       value: null
       objectReference: {fileID: 0}
+    - target: {fileID: 6474073314671819314, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+      propertyPath: texts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6604586491948405139, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -16.920013
@@ -311,6 +315,8 @@ MonoBehaviour:
   previousScene: 01_Start_Menu
   gameScene: 03_Main_Game
   GameStartBanner: {fileID: 2062076157}
+  NetworkReadyCount:
+    m_InternalValue: 0
 --- !u!114 &132585211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4484,6 +4490,10 @@ PrefabInstance:
       propertyPath: m_text
       value: null
       objectReference: {fileID: 0}
+    - target: {fileID: 6474073314671819314, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+      propertyPath: texts.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6604586491948405139, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -16.920013
@@ -4869,6 +4879,10 @@ PrefabInstance:
     - target: {fileID: 5613219412847315062, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_text
       value: null
+      objectReference: {fileID: 0}
+    - target: {fileID: 6474073314671819314, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+      propertyPath: texts.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6604586491948405139, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5574,6 +5588,10 @@ PrefabInstance:
     - target: {fileID: 5613219412847315062, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_text
       value: null
+      objectReference: {fileID: 0}
+    - target: {fileID: 6474073314671819314, guid: 728377e396063b14a9da94d995f79b47, type: 3}
+      propertyPath: texts.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6604586491948405139, guid: 728377e396063b14a9da94d995f79b47, type: 3}
       propertyPath: m_AnchoredPosition.y

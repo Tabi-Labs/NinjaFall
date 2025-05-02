@@ -13,7 +13,8 @@ public class PlayerSpawner : NetworkBehaviour
     private LateJoinsBehaviour lateJoinsBehaviour;
     private List<Transform> spawnPoints;
     [SerializeField] private float respawnDelay = 1f;
-
+    // Temporal
+    private StatusEffectManager statusEffectManager;
     // Singleton Pattern
     public static PlayerSpawner Instance { get; private set; }
 
@@ -170,6 +171,8 @@ public class PlayerSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        statusEffectManager = FindAnyObjectByType<StatusEffectManager>();
+        statusEffectManager.gameObject.SetActive(false);
         if (IsServer)
         {
             Debug.Log("OnNetworkSpawn: Spawneando jugadores...");
