@@ -92,7 +92,9 @@ public class BotManager : MonoBehaviour
     {
         foreach (BotController bot in bots.Values)
         {
-            InputSystem.RemoveDevice(bot.virtualGamepad);
+            Gamepad currentGamepad = bot.virtualGamepad;
+            Destroy(bot.playerInput.gameObject);
+            InputSystem.RemoveDevice(currentGamepad);
         }
         bots.Clear();
     }

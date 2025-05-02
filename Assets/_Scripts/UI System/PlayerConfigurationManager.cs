@@ -150,12 +150,23 @@ public class PlayerConfigurationManager : NetworkBehaviour
         }
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
-        // Desuscribirse del evento al destruir el objeto
+        base.OnDestroy();
+
         if (NetworkManager.Singleton != null)
         {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+
+        if (Instance == this)
+        {
+            if(hostPlayerInput != null)
+            {
+                addBotAction = hostPlayerInput.actions.FindAction("AddBot");
+                addBotAction.performed -= HandleBotJoin;
+                addBotAction.Disable();
+            }
         }
     }
 
