@@ -42,6 +42,7 @@ public class SceneLoader : MonoBehaviour
             yield return transitionCourtain.DOFade(1, transitionDuration).WaitForCompletion();
         }
 
+        DOTween.KillAll();
         SceneManager.LoadScene(sceneName);
 
         if (transitionCourtain != null)

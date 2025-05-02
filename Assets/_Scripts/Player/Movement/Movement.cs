@@ -101,6 +101,10 @@ public class Movement : MonoBehaviour
         HorizontalVelocity = 0f;
         VerticalVelocity = 0f;
     }
+    public void StopX()
+    {
+        HorizontalVelocity = 0f;
+    }
     public void Impulse(Vector2 impulse, float inertiaTime)
     {
         HorizontalVelocity = impulse.x;

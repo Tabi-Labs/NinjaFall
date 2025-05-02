@@ -18,6 +18,7 @@ public class RangedAttack : NetworkBehaviour
     private float gravityDebuff = 1.0f;
     private float gravityIgnoreTimer = 0.4f;
     public int ShurikensCount { get; private set; }
+    public int ShurikensThrown{get;private set;}
     public GameEvent shurikenAmmoEvent;
     private Color _debugColor = Color.red;
 
@@ -64,21 +65,21 @@ public class RangedAttack : NetworkBehaviour
 
     void OnRangedAttack()
     {
-        // Validación común para todos los modos
+        // Validaciï¿½n comï¿½n para todos los modos
         if (_player.IsWallSliding && _player.IsWallSlideFalling) return;
-        if (ShurikensCount >= _attackStats.MaxShurikens)
+        if (ShurikensThrown >= _attackStats.MaxShurikens) 
         {
             NoAmmoFX();
             return;
         }
 
-        // Usar la dirección de apuntado o la dirección por defecto
+        // Usar la direcciï¿½n de apuntado o la direcciï¿½n por defecto
         Vector3 direction = aimDirection == default ? transform.right : aimDirection;
 
         if (NetworkManager && NetworkManager.IsListening)
         {
             // Estamos en modo red
-            if (!IsOwner) return; // Solo el dueño puede disparar
+            if (!IsOwner) return; // Solo el dueï¿½o puede disparar
 
             // Solicitar al servidor que instancie el proyectil
             SpawnProjectileServerRpc(direction);
@@ -89,7 +90,7 @@ public class RangedAttack : NetworkBehaviour
             SpawnProjectileLocally(direction);
         }
 
-        // Resetear la dirección de apuntado
+        // Resetear la direcciï¿½n de apuntado
         aimDirection = default;
     }
 
@@ -126,7 +127,7 @@ public class RangedAttack : NetworkBehaviour
             networkObject.Spawn();
         }
 
-        // Actualizar el contador de shurikens en el cliente que disparó
+        // Actualizar el contador de shurikens en el cliente que disparï¿½
         UpdateShurikenCountClientRpc(NetworkManager.LocalClientId);
     }
 
@@ -135,12 +136,13 @@ public class RangedAttack : NetworkBehaviour
     {
         if (IsOwner && OwnerClientId == clientId)
         {
-            ShurikensCount++;
-            if (ShurikensCount > _attackStats.MaxShurikens) ShurikensCount = _attackStats.MaxShurikens;
+            aimDirection = default;
+            ShurikensThrown++;
+            if(ShurikensThrown > _attackStats.MaxShurikens) ShurikensThrown = _attackStats.MaxShurikens;
 
             if (shurikenAmmoEvent != null)
             {
-                shurikenAmmoEvent.Raise(_player, ShurikensCount);
+                shurikenAmmoEvent.Raise(_player, ShurikensThrown);
             }
 
             ShurikenFX();
@@ -170,15 +172,13 @@ public class RangedAttack : NetworkBehaviour
         Debug.DrawRay(_projectileSpawnPoint.position, transform.right * _attackStats.RangedAttackRange, color);
     }
 
-    public void OnShurikenPickedUp()
-    {
-        ShurikensCount--;
-        if (ShurikensCount < 0) ShurikensCount = 0;
-
-        if (shurikenAmmoEvent != null)
-        {
-            shurikenAmmoEvent.Raise(_player, ShurikensCount);
-        }
+    public bool OnShurikenPickedUp()
+    {   
+        if(ShurikensThrown <= 0) return false;
+        ShurikensThrown--;
+        if (ShurikensThrown < 0) ShurikensThrown = 0;
+        shurikenAmmoEvent.Raise(_player, ShurikensThrown);
+        return true;    
     }
 
     // Destroy the shuriken if it is PICKED UP
@@ -205,8 +205,8 @@ public class RangedAttack : NetworkBehaviour
             else
             {
                 // En modo local, destruimos directamente
+            if(OnShurikenPickedUp())
                 Destroy(shuriken.gameObject);
-                OnShurikenPickedUp();
             }
         }
     }
