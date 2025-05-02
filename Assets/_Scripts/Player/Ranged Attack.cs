@@ -156,12 +156,12 @@ public class RangedAttack : NetworkBehaviour
         projectile.GetComponent<ProjectileBehaviour>().Init(direction, _selfDamageable, true, wallBuff, gravityIgnoreTimer, gravityDebuff);
 
         // Actualizar contador local
-        ShurikensCount++;
-        if (ShurikensCount > _attackStats.MaxShurikens) ShurikensCount = _attackStats.MaxShurikens;
+        ShurikensThrown++;
+        if (ShurikensThrown > _attackStats.MaxShurikens) ShurikensThrown = _attackStats.MaxShurikens;
 
         if (shurikenAmmoEvent != null)
         {
-            shurikenAmmoEvent.Raise(_player, ShurikensCount);
+            shurikenAmmoEvent.Raise(_player, ShurikensThrown);
         }
 
         ShurikenFX();
