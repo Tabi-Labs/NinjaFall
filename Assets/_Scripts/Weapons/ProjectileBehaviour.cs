@@ -82,7 +82,18 @@ public class ProjectileBehaviour : MonoBehaviour
 
                 CheckForDamageHit(damageableComponent);
 
-                OnObstacleHit(collision.ClosestPoint(transform.position), collision);
+                if (damageableComponent == null)
+                {
+
+                    if (pathPoints == null || pathPoints.Length == 0)
+                    {
+                        pathPoints = GetPathPointsFromCollider(collision);
+
+                    }
+
+                    OnObstacleHit(collision.ClosestPoint(transform.position), collision);
+                }
+                
 
                 return;
             }
@@ -91,13 +102,13 @@ public class ProjectileBehaviour : MonoBehaviour
             {
                 Debug.Log("Impacto en un objeto que tiene trigger activado");
 
-                if (damageableComponent != null )
+                if (_shouldDamageOwner && damageableComponent != null )
                 {
                     Debug.Log("Intenta auto aim");
                     AutoAim(collision.transform, damageableComponent);
                 }
 
-                else if (pathPoints == null || pathPoints.Length == 0)
+                if (pathPoints == null || pathPoints.Length == 0)
                 {
                     pathPoints = GetPathPointsFromCollider(collision);
 
