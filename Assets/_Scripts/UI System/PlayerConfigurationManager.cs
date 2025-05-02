@@ -466,17 +466,37 @@ public class PlayerConfigurationManager : NetworkBehaviour
             Debug.LogError("charIdx out of range: " + charIdx);
             return false;
         }
-
-        lockedCharacterData[charIdx] = true;
         UpdateReadyCount(1); // Usar el m�todo que manejar� la red
-
-        pi.GetComponent<SpriteRenderer>().material = characterDatas[charIdx].mat;
-        pi.GetComponent<Player>().CharacterData = characterDatas[charIdx];
-        pi.GetComponent<Player>().isReady = true;
+        if (NetworkManager)
+        {
+            LockCharacterRpc(charIdx, pi.GetComponent<Player>().GetNetworkObject());
+        }
+        else
+        {
+            lockedCharacter(charIdx, pi);
+        }
 
         return true;
     }
-
+    [Rpc(SendTo.Server)]
+    private void LockCharacterRpc(int charIdx, NetworkObjectReference piNOR)
+    {
+        LockCharacterClientRpc(charIdx, piNOR);
+    }
+    [Rpc(SendTo.Everyone)]
+    private void LockCharacterClientRpc(int charIdx, NetworkObjectReference piNOR)
+    {
+        piNOR.TryGet(out NetworkObject playerNetworkObject);
+        PlayerInput pi = playerNetworkObject.GetComponent<PlayerInput>();
+        lockedCharacter(charIdx, pi);
+    }
+    private void lockedCharacter(int charIdx, PlayerInput pi)
+    {
+        lockedCharacterData[charIdx] = true;
+        pi.GetComponent<SpriteRenderer>().material = characterDatas[charIdx].mat;
+        pi.GetComponent<Player>().CharacterData = characterDatas[charIdx];
+        pi.GetComponent<Player>().isReady = true;
+    }
     public bool UnlockCharacter(int charIdx, PlayerInput pi)
     {
         if (charIdx < 0 || charIdx >= lockedCharacterData.Length)
@@ -484,14 +504,31 @@ public class PlayerConfigurationManager : NetworkBehaviour
             Debug.LogError("charIdx out of range: " + charIdx);
             return false;
         }
-
-        pi.GetComponent<Player>().isReady = false;
-
         UpdateReadyCount(-1); // Usar el m�todo que manejar� la red
-        lockedCharacterData[charIdx] = false;
+        if (NetworkManager)
+        {
+            UnLockCharacterRpc(charIdx, pi.GetComponent<Player>().GetNetworkObject());
+        }
+        else
+        {
+            pi.GetComponent<Player>().isReady = false;
+            lockedCharacterData[charIdx] = false;
+        }
         return true;
     }
-
+    [Rpc(SendTo.Server)]
+    private void UnLockCharacterRpc(int charIdx, NetworkObjectReference piNOR)
+    {
+        UnLockCharacterClientRpc(charIdx, piNOR);
+    }
+    [Rpc(SendTo.Everyone)]
+    private void UnLockCharacterClientRpc(int charIdx, NetworkObjectReference piNOR)
+    {
+        piNOR.TryGet(out NetworkObject playerNetworkObject);
+        PlayerInput pi = playerNetworkObject.GetComponent<PlayerInput>();
+        pi.GetComponent<Player>().isReady = false;
+        lockedCharacterData[charIdx] = false;
+    }
     // Count Management
     // --------------------------------------------------------------------------------
 
