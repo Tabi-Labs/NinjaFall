@@ -11,4 +11,5 @@ public class CharacterData : ScriptableObject
     public Sprite text;                          // Imagen del texto
     public Color textOutlineColor;               // Color del borde del texto
     public Material mat;                         // Material personalizado
+    public string[] victoryPhrases;              // Frases cuando el peronaje sale ganador
 }

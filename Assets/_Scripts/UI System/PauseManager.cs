@@ -20,6 +20,7 @@ public class PauseManager : MonoBehaviour
     [SerializeField] GameObject pause_canvas;
     [SerializeField] GameObject finish_canvas;
     [SerializeField] GameObject winner_portrait;
+    [SerializeField] TextMeshProUGUI winner_text;
     private CharacterData character_data;
 
     private bool is_paused = false;
@@ -98,6 +99,7 @@ public class PauseManager : MonoBehaviour
                 anim.runtimeAnimatorController = character_data.portraitAnimator;
                 anim.updateMode = AnimatorUpdateMode.UnscaledTime;
                 winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
+                winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
 
                 finish_canvas.SetActive(true);
                 break;

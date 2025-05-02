@@ -18,3 +18,8 @@ MonoBehaviour:
   text: {fileID: 21300000, guid: 7bcac64d3bf8ef04da5c286f838a3ec9, type: 3}
   textOutlineColor: {r: 0.28235295, g: 0.23137255, b: 0.8, a: 1}
   mat: {fileID: 2100000, guid: ddf5ec9472f2c2b43a8115967f775c49, type: 2}
+  victoryPhrases:
+  - I only followed the path I was taught.
+  - The honor of the Aoyama Clan stands unshaken.
+  - One more step... Towards our promised glory.
+  - "Discipline and technique. That\u2019s all I need."
