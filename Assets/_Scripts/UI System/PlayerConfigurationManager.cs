@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
 
 public class PlayerConfigurationManager : NetworkBehaviour
 {
@@ -20,7 +24,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
     public bool[] lockedCharacterData { get; private set; }
     public int MaxPlayers { get; private set; }
 
-    // Esta propiedad actuará como proxy para usar NetworkReadyCount cuando estemos en red
+    // Esta propiedad actuarï¿½ como proxy para usar NetworkReadyCount cuando estemos en red
     // o usar _localReadyCount cuando estemos en modo local
     public int readyCount
     {
@@ -39,8 +43,19 @@ public class PlayerConfigurationManager : NetworkBehaviour
     // Respaldo para modo local
     private int _localReadyCount = 0;
 
-    // Variable para trackear qué paneles han sido asignados a cada cliente
+    // Variable para trackear quï¿½ paneles han sido asignados a cada cliente
     private Dictionary<ulong, int> clientPanelAssignments = new Dictionary<ulong, int>();
+    public int BotCount {get; private set;} = 0;
+    public int PlayerCount {get; private set;} = 0;
+
+    // Variables for handling bot addition
+    public PlayerInput hostPlayerInput  {get; private set;} = null;
+    private InputSystemUIInputModule hostInputModule = null;
+    private CharacterSelectorHandler hostCsh = null;
+    private int newBotId = -1;
+    public bool isAddingBot {get; private set;} = false;
+    public bool preventBotAddition {get; private set;} = true;
+    private InputAction addBotAction;
 
     // Singleton Pattern
     public static PlayerConfigurationManager Instance { get; private set; }
@@ -94,7 +109,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
             playerInputManager.enabled = false;
             StartCoroutine(FindAndAssignPlayerToPanel());
 
-            // Suscribirse al evento de conexión de clientes
+            // Suscribirse al evento de conexiï¿½n de clientes
             if (NetworkManager.Singleton != null)
             {
                 NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -108,11 +123,11 @@ public class PlayerConfigurationManager : NetworkBehaviour
         // Actualizar el contador local para mantener sincronizado
         _localReadyCount = newValue;
 
-        // Actualizar el banner según el nuevo valor
+        // Actualizar el banner segï¿½n el nuevo valor
         UpdateGameStartBanner(newValue);
     }
 
-    // Método para actualizar la visualización del banner
+    // Mï¿½todo para actualizar la visualizaciï¿½n del banner
     private void UpdateGameStartBanner(int count)
     {
         if (count >= 2)
@@ -144,7 +159,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         }
     }
 
-    // Método público para actualizar el contador de jugadores listos desde el exterior
+    // Mï¿½todo pï¿½blico para actualizar el contador de jugadores listos desde el exterior
     public void UpdateReadyCount(int delta)
     {
         if (NetworkManager)
@@ -200,7 +215,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         // Solo el cliente destinatario procesa esta RPC
         if (NetworkManager.Singleton.LocalClientId != clientId) return;
 
-        // No es necesario mostrar logs aquí
+        // No es necesario mostrar logs aquï¿½
     }
 
     [ClientRpc]
@@ -215,7 +230,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
     private IEnumerator FindAndAssignPlayerToPanel()
     {
-        // Esperar un frame para asegurarnos de que todos los objetos están inicializados
+        // Esperar un frame para asegurarnos de que todos los objetos estï¿½n inicializados
         yield return null;
 
         // Buscar todos los Player en la escena
@@ -232,7 +247,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         // Si no encontramos un jugador local, salir
         if (localPlayer == null)
         {
-            Debug.LogWarning("No se encontró un Player local en la escena.");
+            Debug.LogWarning("No se encontrï¿½ un Player local en la escena.");
             yield break;
         }
 
@@ -248,16 +263,16 @@ public class PlayerConfigurationManager : NetworkBehaviour
             csh = characterSelectorHandlers[0];
             panelIndex = 0;
 
-            // Si ya está ocupado, liberarlo primero
+            // Si ya estï¿½ ocupado, liberarlo primero
             if (!csh.isAvailable)
             {
                 csh.Deactivate();
             }
 
-            // Registrar esta asignación
+            // Registrar esta asignaciï¿½n
             clientPanelAssignments[localClientId] = panelIndex;
 
-            // Informar a otros clientes sobre nuestra asignación
+            // Informar a otros clientes sobre nuestra asignaciï¿½n
             if (IsServer)
             {
                 RegisterPanelAssignmentServerRpc(localClientId, panelIndex);
@@ -268,8 +283,8 @@ public class PlayerConfigurationManager : NetworkBehaviour
             // Para clientes, solicitar un panel al servidor
             RequestPanelAssignmentServerRpc(localClientId);
 
-            // Esperar hasta que recibamos la asignación
-            float timeout = 5.0f; // 5 segundos máximo de espera
+            // Esperar hasta que recibamos la asignaciï¿½n
+            float timeout = 5.0f; // 5 segundos mï¿½ximo de espera
             float elapsed = 0f;
 
             while (!clientPanelAssignments.ContainsKey(localClientId) && elapsed < timeout)
@@ -280,7 +295,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
             if (!clientPanelAssignments.ContainsKey(localClientId))
             {
-                Debug.LogError("No se recibió asignación de panel del servidor en el tiempo esperado.");
+                Debug.LogError("No se recibiï¿½ asignaciï¿½n de panel del servidor en el tiempo esperado.");
                 yield break;
             }
 
@@ -296,7 +311,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
             yield break;
         }
 
-        // Desactivar componentes que no deberían interactuar con el mundo de juego
+        // Desactivar componentes que no deberï¿½an interactuar con el mundo de juego
         MonoBehaviour[] components = playerInput.GetComponents<MonoBehaviour>();
         playerInput.transform.position = new Vector3(1000, 1000, 1000);
         foreach (MonoBehaviour component in components)
@@ -315,12 +330,12 @@ public class PlayerConfigurationManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void RequestPanelAssignmentServerRpc(ulong clientId)
     {
-        // Buscar el primer panel disponible a partir del índice 1
+        // Buscar el primer panel disponible a partir del ï¿½ndice 1
         int assignedPanel = -1;
 
         for (int i = 1; i < characterSelectorHandlers.Length; i++)
         {
-            // Verificar si este panel ya está asignado a algún cliente
+            // Verificar si este panel ya estï¿½ asignado a algï¿½n cliente
             if (!clientPanelAssignments.ContainsValue(i) && characterSelectorHandlers[i].isAvailable)
             {
                 assignedPanel = i;
@@ -334,17 +349,17 @@ public class PlayerConfigurationManager : NetworkBehaviour
             return;
         }
 
-        // Registrar esta asignación
+        // Registrar esta asignaciï¿½n
         RegisterPanelAssignmentServerRpc(clientId, assignedPanel);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void RegisterPanelAssignmentServerRpc(ulong clientId, int panelIndex)
     {
-        // Registrar la asignación en el servidor
+        // Registrar la asignaciï¿½n en el servidor
         clientPanelAssignments[clientId] = panelIndex;
 
-        // Informar a todos los clientes sobre esta asignación
+        // Informar a todos los clientes sobre esta asignaciï¿½n
         SyncPanelAssignmentToClientRpc(clientId, panelIndex);
     }
 
@@ -356,6 +371,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         if (NetworkManager) return;
         int i;
         CharacterSelectorHandler csh = null;
+        string playerName;
 
         // Get free CharacterSelectorHandler
         for (i = 0; i < characterSelectorHandlers.Length; i++)
@@ -367,22 +383,59 @@ public class PlayerConfigurationManager : NetworkBehaviour
             }
         }
 
-        MonoBehaviour[] components = pi.GetComponents<MonoBehaviour>();
-        pi.transform.position = new Vector3(1000, 1000, 1000);
-        foreach (MonoBehaviour component in components)
+        // Handle case when no free CharacterSelectorHandler is available
+        if(csh == null)
         {
-            if (component is PlayerInput || component is NetworkObject || component is Player) continue;
-            component.enabled = false;
+            Debug.Log("No free CharacterSelectorHandler available.");
+            if(isAddingBot)
+            {
+                isAddingBot = false;
+                BotManager.Instance.RemoveBotById(newBotId);
+            }
+            Destroy(pi.gameObject);
+            return;
         }
-        pi.GetComponent<SpriteRenderer>().enabled = false;
-        pi.GetComponent<Animator>().enabled = false;
 
-        // Assign PlayerInput to CharacterSelectorHandler
-        if (csh)
-        {
-            pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
-            csh.Activate(pi);
+        // Handle case when player is host
+        if(pi.playerIndex == 0){
+            StartCoroutine(DelayAddBotAction(pi));
+            hostPlayerInput = pi;
+            hostInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            hostCsh = csh;
+            preventBotAddition = false;
         }
+
+        // Disable components except PlayerInput on player prefab
+    MonoBehaviour[] components = pi.GetComponents<MonoBehaviour>();
+    pi.transform.position = new Vector3(1000, 1000, 1000);
+    foreach (MonoBehaviour component in components)
+    {
+        if (component is PlayerInput || component is NetworkObject || component is Player) continue;
+        component.enabled = false;
+    }
+    pi.GetComponent<SpriteRenderer>().enabled = false;
+    pi.GetComponent<Animator>().enabled = false;
+
+    // Assign PlayerInput to CharacterSelectorHandler
+    if(isAddingBot){
+        hostPlayerInput.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+        hostCsh.ResetSelection();
+        playerName = "Bot " + ++BotCount;
+    } else {
+        pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+        playerName = "P" + (pi.playerIndex + 1); // Mejor prÃ¡ctica para numeraciÃ³n de jugadores
+    }
+
+    csh.Activate(pi, isAddingBot, playerName);
+    isAddingBot = false;
+}
+
+    public void HandleBotJoin(InputAction.CallbackContext context)
+    {
+        if (preventBotAddition) return;
+        isAddingBot = true;
+        preventBotAddition = true;
+        newBotId = BotManager.Instance.CreateBot();
     }
 
     // Getters and Setters
@@ -415,7 +468,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         }
 
         lockedCharacterData[charIdx] = true;
-        UpdateReadyCount(1); // Usar el método que manejará la red
+        UpdateReadyCount(1); // Usar el mï¿½todo que manejarï¿½ la red
 
         pi.GetComponent<SpriteRenderer>().material = characterDatas[charIdx].mat;
         pi.GetComponent<Player>().CharacterData = characterDatas[charIdx];
@@ -434,10 +487,56 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
         pi.GetComponent<Player>().isReady = false;
 
-        UpdateReadyCount(-1); // Usar el método que manejará la red
+        UpdateReadyCount(-1); // Usar el mï¿½todo que manejarï¿½ la red
         lockedCharacterData[charIdx] = false;
         return true;
     }
+
+    // Count Management
+    // --------------------------------------------------------------------------------
+
+    public void IncreasePlayerCount()
+    {
+        PlayerCount++;
+        if (PlayerCount >= MaxPlayers)
+        {
+            Debug.LogError("Max players reached.");
+            return;
+        }
+    }
+
+    public void DecreasePlayerCount()
+    {
+        PlayerCount--;
+        if (PlayerCount < 0)
+        {
+            Debug.LogError("Player count cannot be negative.");
+            return;
+        }
+    }
+
+    public void IncreaseBotCount()
+    {
+        BotCount++;
+        if (BotCount >= MaxPlayers)
+        {
+            Debug.LogError("Max players reached.");
+            return;
+        }
+    }
+
+    public void DecreaseBotCount()
+    {
+        BotCount--;
+        if (BotCount < 0)
+        {
+            Debug.LogError("Bot count cannot be negative.");
+            return;
+        }
+    }
+
+    // Scene Management
+    // --------------------------------------------------------------------------------
 
     public void StartGame()
     {
@@ -463,5 +562,34 @@ public class PlayerConfigurationManager : NetworkBehaviour
             NetworkManager.Singleton.SceneManager.LoadScene(previousScene, LoadSceneMode.Single);
         else
             SceneLoader.Instance.ChangeScene(previousScene);
+    }
+
+    // Auxiliary Functions
+    // --------------------------------------------------------------------------------
+
+    private IEnumerator DelayAddBotAction(PlayerInput pi)
+    {
+        yield return null;
+        addBotAction = pi.actions.FindAction("AddBot");
+        addBotAction.performed += HandleBotJoin;
+        addBotAction.Enable();
+    }
+
+    public void SwitchPlayerUI(PlayerInput playerInput, InputSystemUIInputModule newModule)
+    {
+        GameObject newModuleGO = newModule.gameObject;
+        newModule.enabled = false;
+        Destroy(newModule);
+        InputSystemUIInputModule newModuleInstance = newModuleGO.AddComponent<InputSystemUIInputModule>();
+        newModuleInstance.actionsAsset = playerInput.actions;
+        playerInput.uiInputModule = newModuleInstance;
+        playerInput.uiInputModule.enabled = true;
+        playerInput.uiInputModule.UpdateModule();
+    }
+
+    public void RestoreHostInput(){
+        SwitchPlayerUI(hostPlayerInput, hostInputModule);
+        hostInputModule = hostPlayerInput.uiInputModule;
+        preventBotAddition = false;
     }
 }

@@ -9,6 +9,7 @@ using System;
 using TMPro;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using Unity.VisualScripting;
 
 public class CharacterSelectorHandler : NetworkBehaviour
 {
@@ -45,6 +46,8 @@ public class CharacterSelectorHandler : NetworkBehaviour
     public int playerIndex { get; set; } = -1;
     public PlayerInput pi { get; set; } = null;
     public int CurrentCharacterIndex => currCharacterIdx;
+    // Properties
+    public bool isBot { get; private set; }
 
     // Variables privadas
     private int currCharacterIdx = 0;
@@ -54,12 +57,12 @@ public class CharacterSelectorHandler : NetworkBehaviour
     // Propiedad auxiliar para verificar si estamos en modo red
     private bool IsNetworked => NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
 
-    // Inicialización y configuración
+    // Inicializaciï¿½n y configuraciï¿½n
     // --------------------------------------------------------------------------------
 
     void Start()
     {
-        // Inicialización de referencias a componentes
+        // Inicializaciï¿½n de referencias a componentes
         portraitPanel = transform.Find("PortraitPanel").GetComponent<RectTransform>();
         emptyPanel = transform.Find("EmptyPanel").GetComponent<RectTransform>();
         leftArrow = transform.Find("PortraitPanel/LeftArrow").GetComponent<Selectable>();
@@ -89,7 +92,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         // Iniciar en estado desactivado
         Deactivate();
 
-        // Suscribirse al evento de conexión de clientes si estamos en modo red
+        // Suscribirse al evento de conexiï¿½n de clientes si estamos en modo red
         if (IsNetworked)
         {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
@@ -109,13 +112,13 @@ public class CharacterSelectorHandler : NetworkBehaviour
     {
         base.OnNetworkSpawn();
 
-        // Si somos el servidor, anunciamos información actualizada a todos
+        // Si somos el servidor, anunciamos informaciï¿½n actualizada a todos
         if (IsServer && !isAvailable)
         {
             BroadcastPanelInfoToAllClientRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx, isSelected);
         }
 
-        // Si somos un cliente (incluyendo host), solicitar información de todos los paneles al servidor
+        // Si somos un cliente (incluyendo host), solicitar informaciï¿½n de todos los paneles al servidor
         if (IsClient)
         {
             StartCoroutine(RequestPanelInfoWithDelay());
@@ -124,10 +127,10 @@ public class CharacterSelectorHandler : NetworkBehaviour
 
     private IEnumerator RequestPanelInfoWithDelay()
     {
-        // Esperamos un breve momento para asegurarnos de que todo está listo
+        // Esperamos un breve momento para asegurarnos de que todo estï¿½ listo
         yield return new WaitForSeconds(0.5f);
 
-        // Solicitar información de paneles al servidor
+        // Solicitar informaciï¿½n de paneles al servidor
         RequestPanelInfoServerRpc(NetworkManager.Singleton.LocalClientId);
     }
 
@@ -140,7 +143,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         {
             if (!handler.isAvailable)
             {
-                // Enviar información al cliente sobre este panel ocupado
+                // Enviar informaciï¿½n al cliente sobre este panel ocupado
                 BroadcastPanelInfoRpc(clientId, handler.transform.GetSiblingIndex(), handler.playerIndex, handler.CurrentCharacterIndex, handler.isSelected);
             }
         }
@@ -149,7 +152,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
     // Se llama cuando un cliente se conecta al juego
     private void OnClientConnected(ulong clientId)
     {
-        // Si somos el servidor y este panel ya está asignado, informar al cliente
+        // Si somos el servidor y este panel ya estï¿½ asignado, informar al cliente
         if (IsServer && !isAvailable)
         {
             // Notificar al nuevo cliente sobre el estado actual del panel
@@ -164,7 +167,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
 
-        // Buscar el panel correspondiente al índice en la jerarquía
+        // Buscar el panel correspondiente al ï¿½ndice en la jerarquï¿½a
         CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
         CharacterSelectorHandler targetPanel = null;
 
@@ -197,7 +200,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         // Actualizar visualmente
         targetPanel.UpdateCharacterData(0, characterIdx);
 
-        // Actualizar flechas según estado de selección
+        // Actualizar flechas segï¿½n estado de selecciï¿½n
         if (selected)
         {
             targetPanel.leftArrow.gameObject.SetActive(false);
@@ -215,11 +218,11 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     private void BroadcastPanelInfoRpc(ulong targetClientId, int panelSiblingIndex, int playerIdx, int characterIdx, bool selected)
     {
-        // Solo el cliente objetivo debe procesar esta notificación
+        // Solo el cliente objetivo debe procesar esta notificaciï¿½n
         if (NetworkManager.Singleton.LocalClientId != targetClientId)
             return;
 
-        // Buscar el panel correspondiente al índice en la jerarquía
+        // Buscar el panel correspondiente al ï¿½ndice en la jerarquï¿½a
         CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
         CharacterSelectorHandler targetPanel = null;
 
@@ -252,7 +255,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         // Actualizar visualmente
         targetPanel.UpdateCharacterData(0, characterIdx);
 
-        // Actualizar flechas según estado de selección
+        // Actualizar flechas segï¿½n estado de selecciï¿½n
         if (selected)
         {
             targetPanel.leftArrow.gameObject.SetActive(false);
@@ -267,7 +270,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         }
     }
 
-    public void Activate(PlayerInput pi)
+    public void Activate(PlayerInput pi, bool isBot = false, string playerName = null)
     {
         if (IsNetworked)
         {
@@ -293,13 +296,17 @@ public class CharacterSelectorHandler : NetworkBehaviour
             }
         }
         else
-        {
+        {     
+            if(playerName != null){
+            topText.text = playerName;
+    }
             isAvailable = false;
             portraitPanel.gameObject.SetActive(true);
             emptyPanel.gameObject.SetActive(false);
             this.playerIndex = pi.playerIndex;
             this.pi = pi;
             canControl = true; // En modo local, siempre podemos controlar
+            this.isBot = isBot;
         }
     }
 
@@ -326,15 +333,15 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (targetPanel == null)
             return;
 
-        // Si el panel ya está controlado por este cliente, no hacer nada
+        // Si el panel ya estï¿½ controlado por este cliente, no hacer nada
         if (targetPanel.canControl)
             return;
 
-        // Verificar si este panel está reservado para otro jugador
+        // Verificar si este panel estï¿½ reservado para otro jugador
         if (!targetPanel.isAvailable && targetPanel.playerIndex != playerIndex)
         {
-            // Este panel ya está reservado para otro jugador
-            Debug.LogWarning($"El panel {panelSiblingIndex} ya está reservado para el jugador {targetPanel.playerIndex}, no se puede activar para el jugador {playerIndex}");
+            // Este panel ya estï¿½ reservado para otro jugador
+            Debug.LogWarning($"El panel {panelSiblingIndex} ya estï¿½ reservado para el jugador {targetPanel.playerIndex}, no se puede activar para el jugador {playerIndex}");
             return;
         }
 
@@ -347,7 +354,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         targetPanel.portraitPanel.gameObject.SetActive(true);
         targetPanel.emptyPanel.gameObject.SetActive(false);
 
-        // Actualizar visualización
+        // Actualizar visualizaciï¿½n
         targetPanel.UpdateCharacterData(0, initialCharacterIdx);
     }
 
@@ -438,7 +445,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         {
             HandleArrow(-1);
 
-            // En modo red, notificar cambio de selección
+            // En modo red, notificar cambio de selecciï¿½n
             if (IsNetworked)
             {
                 NotifyCharacterSelectionChangedServerRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx);
@@ -448,7 +455,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         {
             HandleArrow(1);
 
-            // En modo red, notificar cambio de selección
+            // En modo red, notificar cambio de selecciï¿½n
             if (IsNetworked)
             {
                 NotifyCharacterSelectionChangedServerRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx);
@@ -461,7 +468,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void NotifyCharacterSelectionChangedServerRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
     {
-        // El servidor recibe la notificación y la reenvía a todos los clientes
+        // El servidor recibe la notificaciï¿½n y la reenvï¿½a a todos los clientes
         NotifyCharacterSelectionChangedClientRpc(panelSiblingIndex, playerIdx, characterIdx);
     }
 
@@ -472,7 +479,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
 
-        // Buscar el panel en la jerarquía
+        // Buscar el panel en la jerarquï¿½a
         CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
         CharacterSelectorHandler targetPanel = null;
 
@@ -488,7 +495,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (targetPanel == null || targetPanel.canControl)
             return;
 
-        // Actualizar la visualización del personaje para paneles remotos
+        // Actualizar la visualizaciï¿½n del personaje para paneles remotos
         targetPanel.UpdateCharacterData(0, characterIdx);
     }
 
@@ -497,7 +504,12 @@ public class CharacterSelectorHandler : NetworkBehaviour
         // Solo permitir control si este panel pertenece al jugador local
         if (!canControl || isAvailable)
             return;
-
+        if  (isBot) {
+            pcm.RestoreHostInput();
+            Destroy(pi.gameObject);
+            pcm.DecreaseBotCount();
+            Deactivate();
+        }
         if (!isSelected)
         {
             if (playerIndex == 0)
@@ -526,7 +538,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void NotifyCharacterUnlockedServerRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
     {
-        // El servidor recibe la notificación y la reenvía a todos los clientes
+        // El servidor recibe la notificaciï¿½n y la reenvï¿½a a todos los clientes
         NotifyCharacterUnlockedClientRpc(panelSiblingIndex, playerIdx, characterIdx);
     }
 
@@ -537,7 +549,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
 
-        // Buscar el panel en la jerarquía
+        // Buscar el panel en la jerarquï¿½a
         CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
         CharacterSelectorHandler targetPanel = null;
 
@@ -553,7 +565,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (targetPanel == null || targetPanel.canControl)
             return;
 
-        // Actualizar la visualización del personaje para paneles remotos
+        // Actualizar la visualizaciï¿½n del personaje para paneles remotos
         targetPanel.isSelected = false;
         targetPanel.leftArrow.gameObject.SetActive(true);
         targetPanel.rightArrow.gameObject.SetActive(true);
@@ -565,7 +577,9 @@ public class CharacterSelectorHandler : NetworkBehaviour
         // Solo permitir control si este panel pertenece al jugador local
         if (!canControl || isAvailable)
             return;
-
+        if(isBot) {
+            pcm.RestoreHostInput();
+        }
         if (isSelected)
         {
             if (playerIndex == 0)
@@ -602,7 +616,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void NotifyCharacterLockedServerRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
     {
-        // El servidor recibe la notificación y la reenvía a todos los clientes
+        // El servidor recibe la notificaciï¿½n y la reenvï¿½a a todos los clientes
         NotifyCharacterLockedClientRpc(panelSiblingIndex, playerIdx, characterIdx);
     }
 
@@ -613,7 +627,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
             return;
 
-        // Buscar el panel en la jerarquía
+        // Buscar el panel en la jerarquï¿½a
         CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
         CharacterSelectorHandler targetPanel = null;
 
@@ -629,7 +643,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         if (targetPanel == null || targetPanel.canControl)
             return;
 
-        // Actualizar la visualización del personaje para paneles remotos
+        // Actualizar la visualizaciï¿½n del personaje para paneles remotos
         targetPanel.UpdateCharacterData(0, characterIdx);
         targetPanel.isSelected = true;
         targetPanel.leftArrow.gameObject.SetActive(false);
@@ -637,7 +651,7 @@ public class CharacterSelectorHandler : NetworkBehaviour
         targetPanel.portraitOutline.enabled = true;
     }
 
-    // Métodos auxiliares
+    // Mï¿½todos auxiliares
     // --------------------------------------------------------------------------------
 
     private void HandleArrow(int direction)
@@ -649,12 +663,12 @@ public class CharacterSelectorHandler : NetworkBehaviour
             portraitPanel.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
-        // Determinar el ángulo de sacudida según la dirección
+        // Determinar el ï¿½ngulo de sacudida segï¿½n la direcciï¿½n
         float angle = direction > 0 ? -shakeAngle : shakeAngle;
         portraitPanel.DOPunchRotation(new Vector3(0, 0, angle), shakeDuration, 5, 1);
         portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.5f, 10, 1);
 
-        // Actualizar el índice actual según la dirección
+        // Actualizar el ï¿½ndice actual segï¿½n la direcciï¿½n
         UpdateCharacterData(currCharacterIdx, direction);
 
         // Reproducir efecto de sonido
@@ -684,12 +698,12 @@ public class CharacterSelectorHandler : NetworkBehaviour
         nameImage.GetComponent<Outline>().effectColor = data.textOutlineColor;
     }
 
-    private void ResetSelection()
+    public void ResetSelection()
     {
         eventSystem.SetSelectedGameObject(nameButton.gameObject);
     }
 
-    // Método público para otras clases
+    // Mï¿½todo pï¿½blico para otras clases
     public void UpdateVisualState(bool locked)
     {
         if (locked)

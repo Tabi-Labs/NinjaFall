@@ -12,7 +12,6 @@ public class InmuneBuff : StatusEffect
         if (playerInstance != null)
         {
             IDamageable damageable = playerInstance.GetComponent<IDamageable>();
-            Debug.Log("Intentando eliminar efecto visual: " + damageable);
             if (damageable != null && !damageable.IsInmune())
             {
                 Debug.Log("Eliminado efecto visual " + damageable.IsInmune());
