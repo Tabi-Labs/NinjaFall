@@ -130,22 +130,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 856370368810810127, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: -3062833358307302403, guid: 2dd9b47c509595d4e8f6351a2e5d6509, type: 2}
     - target: {fileID: 1384564111540189269, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
-    - target: {fileID: 1486275993043797008, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: -3062833358307302403, guid: 2dd9b47c509595d4e8f6351a2e5d6509, type: 2}
-    - target: {fileID: 1860607272513012396, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: -181667689220725426, guid: 2dd9b47c509595d4e8f6351a2e5d6509, type: 2}
     - target: {fileID: 5331168497185534522, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -186,10 +174,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8521584450964148430, guid: bd5a50a04dc8d81429cc08bfdf7db703, type: 3}
-      propertyPath: OutputAudioMixerGroup
-      value: 
-      objectReference: {fileID: -181667689220725426, guid: 2dd9b47c509595d4e8f6351a2e5d6509, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

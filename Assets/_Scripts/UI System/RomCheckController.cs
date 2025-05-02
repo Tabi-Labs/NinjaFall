@@ -11,7 +11,6 @@ public class RomCheckController : MonoBehaviour
     [SerializeField] float _lerpDuration = 0.5f;
     [SerializeField] string _musicID = "MX_MainMenu";
     [SerializeField] Button _startButton;
-    [SerializeField] GameObject settingsCanvas;
     
     private TextMeshProUGUI _text;
     private Image _background;
@@ -22,7 +21,6 @@ public class RomCheckController : MonoBehaviour
         _background = GetComponentInChildren<Image>();
 
         _startButton.enabled = false;
-        settingsCanvas.SetActive(false);
         StartCoroutine(LerpText());
     }
 

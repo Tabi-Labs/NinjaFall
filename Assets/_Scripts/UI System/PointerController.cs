@@ -51,7 +51,12 @@ public class PointerController : MonoBehaviour
     private void MovePointer(RectTransform target)
     {
         DOTween.Kill(rectTransform);
-        rectTransform.anchoredPosition = parentPos + target.anchoredPosition - new Vector2(pointerOffset - target.rect.min.x, 0);
+
+        Vector3 worldCenter = target.TransformPoint(target.rect.center);
+        Vector3 localCenter = rectTransform.parent.InverseTransformPoint(worldCenter);
+        float adjustedX = parentPos.x + target.anchoredPosition.x - (pointerOffset - target.rect.min.x);
+
+        rectTransform.anchoredPosition = new Vector2(adjustedX, localCenter.y);
         Tween();
     }
 
