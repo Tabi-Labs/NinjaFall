@@ -24,5 +24,7 @@ public class ToxicBuff : StatusEffect
             _player.SetToxicBuff(false);
             _player.SetInmuneToxic(false);
         }
+
+        Debug.Log("Eliminando efecto NUEVO");
     }
 }

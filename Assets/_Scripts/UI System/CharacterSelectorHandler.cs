@@ -8,6 +8,7 @@ using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 public class CharacterSelectorHandler : MonoBehaviour
 {
@@ -44,6 +45,7 @@ public class CharacterSelectorHandler : MonoBehaviour
     public bool isSelected {get; private set;} = false;
     public int playerIndex {get; private set;} = -1;
     public PlayerInput pi {get; private set;} = null;
+    public bool isBot { get; private set; }
 
     // Private Variables
     private int currCharacterIdx = 0;
@@ -82,13 +84,14 @@ public class CharacterSelectorHandler : MonoBehaviour
         Deactivate();
     }
 
-    public void Activate(PlayerInput pi)
+    public void Activate(PlayerInput pi, bool isBot = false)
     {
         StartCoroutine(SetAvailabilityNextFrame(false));
         portraitPanel.gameObject.SetActive(true);
         emptyPanel.gameObject.SetActive(false);
         this.playerIndex = pi.playerIndex;
         this.pi = pi;
+        this.isBot = isBot;
     }
 
     private IEnumerator SetAvailabilityNextFrame(bool available)
@@ -182,6 +185,11 @@ public class CharacterSelectorHandler : MonoBehaviour
     }
 
     public void OnCancel(BaseEventData eventData){
+        if  (isBot) {
+            pcm.RestoreHostInput();
+            Destroy(pi.gameObject);
+            Deactivate();
+        }
         if (!isSelected){
             if(playerIndex == 0){
                 pcm.BackToMainMenu();
@@ -200,6 +208,9 @@ public class CharacterSelectorHandler : MonoBehaviour
 
     public void OnSubmit(BaseEventData eventData){
         if (isAvailable) return;
+        if(isBot) {
+            pcm.RestoreHostInput();
+        }
         if (isSelected) {
             if (playerIndex == 0){
                 pcm.StartGame();
@@ -268,7 +279,7 @@ public class CharacterSelectorHandler : MonoBehaviour
         nameImage.GetComponent<Outline>().effectColor = data.textOutlineColor;
     }
 
-    private void ResetSelection()
+    public void ResetSelection()
     {
         eventSystem.SetSelectedGameObject(nameButton.gameObject);
     }

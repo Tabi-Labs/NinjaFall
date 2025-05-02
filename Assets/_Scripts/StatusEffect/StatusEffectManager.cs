@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class StatusEffectManager : MonoBehaviour
 {
-    private List<StatusEffect> activeEffects = new List<StatusEffect>();
-    private Dictionary<StatusEffect, Coroutine> effectCoroutines = new Dictionary<StatusEffect, Coroutine>();
+    private Dictionary<string, Coroutine> effectCoroutines = new Dictionary<string, Coroutine>();
+    private Dictionary<string, StatusEffect> activeEffects = new Dictionary<string, StatusEffect>();
 
 
     // Singleton Pattern
@@ -28,26 +28,39 @@ public class StatusEffectManager : MonoBehaviour
     {
         Debug.Log("Clase Effect Manager aplicando efecto");
 
-        if (effectCoroutines.ContainsKey(effect))
+        if (effectCoroutines.ContainsKey(effect.EffectName))
         {
-            StopCoroutine(effectCoroutines[effect]);
-            effectCoroutines.Remove(effect);
-            activeEffects.Remove(effect);
+            
+            StopCoroutine(effectCoroutines[effect.EffectName]);
+
+
+            StatusEffect previousEffect = activeEffects[effect.EffectName];
+            RemoveEffect(previousEffect, player);
         }
 
         effect.ApplyEffect(player);
-        activeEffects.Add(effect);
+        effect.StartVisualEffect(player);
         Coroutine coroutine = StartCoroutine(RemoveEffectAfterDuration(effect, player));
-        effectCoroutines.Add(effect, coroutine);
+        effectCoroutines.Add(effect.EffectName, coroutine);
+        activeEffects.Add(effect.EffectName, effect);
+        Debug.Log("Manager: " + effectCoroutines);
     }
     
 
     private IEnumerator RemoveEffectAfterDuration(StatusEffect effect, GameObject player)
     {
         yield return new WaitForSeconds(effect.Duration);
-        Debug.Log("Clase Effect Manager eliminando efecto");
+        // Debug.Log("Clase Effect Manager eliminando efecto");
+        RemoveEffect(effect, player);
+    }
+
+    private void RemoveEffect(StatusEffect effect, GameObject player)
+    {
+        effect.StopVisualEffect();
+        effectCoroutines.Remove(effect.EffectName);
+        activeEffects.Remove(effect.EffectName);
         effect.RemoveEffect(player);
-        effectCoroutines.Remove(effect);
-        activeEffects.Remove(effect);
+
+        //Destroy(effect);
     }
 }
