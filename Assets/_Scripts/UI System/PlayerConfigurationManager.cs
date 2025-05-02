@@ -20,15 +20,19 @@ public class PlayerConfigurationManager : MonoBehaviour
     [SerializeField] private string gameScene = "GameScene";
     [SerializeField] private GameObject GameStartBanner;
     public bool[] lockedCharacterData{ get; private set; }
+
     public int MaxPlayers {get; private set;}
+    public int PlayerCount {get; private set;} = 0;
+    public int BotCount {get; private set;} = 0;
     public int readyCount {get; private set;} = 0;
 
     // Variables for handling bot addition
     public PlayerInput hostPlayerInput  {get; private set;} = null;
+    private InputSystemUIInputModule hostInputModule = null;
+    private CharacterSelectorHandler hostCsh = null;
     private int newBotId = -1;
     public bool isAddingBot {get; private set;} = false;
     public bool preventBotAddition {get; private set;} = true;
-    private InputSystemUIInputModule hostInputModule = null;
     private InputAction addBotAction;
 
     // Singleton Pattern
@@ -54,13 +58,14 @@ public class PlayerConfigurationManager : MonoBehaviour
         MaxPlayers = characterSelectorHandlers.Length;
     }
 
-    // Brief: Handle player join, called from PlayerInputManager
+    // Handlers
     // --------------------------------------------------------------------------------
 
     public void HandlePlayerJoin(PlayerInput pi)
     {
         int i;
         CharacterSelectorHandler csh = null;
+        string playerName;
 
         // Get free CharacterSelectorHandler
         for(i = 0; i < characterSelectorHandlers.Length; i++)
@@ -90,6 +95,7 @@ public class PlayerConfigurationManager : MonoBehaviour
             StartCoroutine(DelayAddBotAction(pi));
             hostPlayerInput = pi;
             hostInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            hostCsh = csh;
             preventBotAddition = false;
         }
 
@@ -107,11 +113,15 @@ public class PlayerConfigurationManager : MonoBehaviour
         // Assign PlayerInput to CharacterSelectorHandler
         if(isAddingBot){
             hostPlayerInput.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            hostCsh.ResetSelection();
+            playerName = "Bot " + ++BotCount;
         } else {
             pi.uiInputModule = csh.GetComponentInChildren<InputSystemUIInputModule>();
+            playerName = "P" + ++BotCount;
         }
 
-        csh.Activate(pi, isAddingBot);
+        csh.Activate(pi, isAddingBot, playerName);
+        isAddingBot = false;
     }
 
     public void HandleBotJoin(InputAction.CallbackContext context)
@@ -120,12 +130,6 @@ public class PlayerConfigurationManager : MonoBehaviour
         isAddingBot = true;
         preventBotAddition = true;
         newBotId = BotManager.Instance.CreateBot();
-    }
-
-    public void RestoreHostInput(){
-        SwitchPlayerUI(hostPlayerInput, hostInputModule);
-        hostInputModule = hostPlayerInput.uiInputModule;
-        preventBotAddition = false;
     }
 
     // Getters and Setters
@@ -184,6 +188,52 @@ public class PlayerConfigurationManager : MonoBehaviour
         return true;
     }
 
+    // Count Management
+    // --------------------------------------------------------------------------------
+
+    public void IncreasePlayerCount()
+    {
+        PlayerCount++;
+        if (PlayerCount >= MaxPlayers)
+        {
+            Debug.LogError("Max players reached.");
+            return;
+        }
+    }
+
+    public void DecreasePlayerCount()
+    {
+        PlayerCount--;
+        if (PlayerCount < 0)
+        {
+            Debug.LogError("Player count cannot be negative.");
+            return;
+        }
+    }
+
+    public void IncreaseBotCount()
+    {
+        BotCount++;
+        if (BotCount >= MaxPlayers)
+        {
+            Debug.LogError("Max players reached.");
+            return;
+        }
+    }
+
+    public void DecreaseBotCount()
+    {
+        BotCount--;
+        if (BotCount < 0)
+        {
+            Debug.LogError("Bot count cannot be negative.");
+            return;
+        }
+    }
+
+    // Scene Management
+    // --------------------------------------------------------------------------------
+
     public void StartGame()
     {
         if (readyCount < 2){
@@ -203,53 +253,15 @@ public class PlayerConfigurationManager : MonoBehaviour
         SceneLoader.Instance.ChangeScene(previousScene);
     }
 
-    private InputSystemUIInputModule ResetInputModule(InputSystemUIInputModule originalModule)
+    // Auxiliary Functions
+    // --------------------------------------------------------------------------------
+
+    private IEnumerator DelayAddBotAction(PlayerInput pi)
     {
-        if (originalModule == null)
-        {
-            Debug.LogError("[ResetInputModule] Original module is null.");
-            return null;
-        }
-
-        GameObject parentGameObject = originalModule.gameObject;
-
-        // Backup any important fields if needed (before destroying)
-        var actionsAsset = originalModule.actionsAsset;
-        var pointAction = originalModule.point;
-        var moveAction = originalModule.move;
-        var submitAction = originalModule.submit;
-        var cancelAction = originalModule.cancel;
-        var leftClickAction = originalModule.leftClick;
-        var middleClickAction = originalModule.middleClick;
-        var rightClickAction = originalModule.rightClick;
-        var scrollWheelAction = originalModule.scrollWheel;
-        var trackedDevicePositionAction = originalModule.trackedDevicePosition;
-        var trackedDeviceOrientationAction = originalModule.trackedDeviceOrientation;
-
-        // Destroy the old InputModule
-        DestroyImmediate(originalModule);
-
-        // Create a fresh one
-        InputSystemUIInputModule newModule = parentGameObject.AddComponent<InputSystemUIInputModule>();
-
-        // Reassign the fields
-        newModule.actionsAsset = actionsAsset;
-        newModule.point = pointAction;
-        newModule.move = moveAction;
-        newModule.submit = submitAction;
-        newModule.cancel = cancelAction;
-        newModule.leftClick = leftClickAction;
-        newModule.middleClick = middleClickAction;
-        newModule.rightClick = rightClickAction;
-        newModule.scrollWheel = scrollWheelAction;
-        newModule.trackedDevicePosition = trackedDevicePositionAction;
-        newModule.trackedDeviceOrientation = trackedDeviceOrientationAction;
-
-        // Enable the module
-        newModule.enabled = true;
-        newModule.UpdateModule();
-
-        return newModule;
+        yield return null;
+        addBotAction = pi.actions.FindAction("AddBot");
+        addBotAction.performed += HandleBotJoin;
+        addBotAction.Enable();
     }
 
     public void SwitchPlayerUI(PlayerInput playerInput, InputSystemUIInputModule newModule)
@@ -264,14 +276,9 @@ public class PlayerConfigurationManager : MonoBehaviour
         playerInput.uiInputModule.UpdateModule();
     }
 
-    // Auxiliary Functions
-    // --------------------------------------------------------------------------------
-
-    private IEnumerator DelayAddBotAction(PlayerInput pi)
-    {
-        yield return null;
-        addBotAction = pi.actions.FindAction("AddBot");
-        addBotAction.performed += HandleBotJoin;
-        addBotAction.Enable();
+    public void RestoreHostInput(){
+        SwitchPlayerUI(hostPlayerInput, hostInputModule);
+        hostInputModule = hostPlayerInput.uiInputModule;
+        preventBotAddition = false;
     }
 }
