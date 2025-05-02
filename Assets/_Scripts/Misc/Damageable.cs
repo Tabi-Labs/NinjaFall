@@ -22,10 +22,12 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     private SpriteRenderer _spriteRenderer;
 
-    public float blinkDuration = 2f;      // Tiempo total de parpadeo (en segundos)
-    public float blinkInterval = 0.2f;    // Tiempo entre cada cambio de opacidad
+    public float blinkDuration = 3f;      // Tiempo total de parpadeo (en segundos)
+    public float blinkInterval = 0.5f;    // Tiempo entre cada cambio de opacidad
     public float transparentAlpha = 0.8f; // Nivel de transparencia durante el parpadeo
     private Sequence blinkSequence;
+
+    
 
     protected void Awake() 
     {
@@ -111,9 +113,11 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     public void Blink()
     {
-        if (_spriteRenderer == null) _spriteRenderer = GetComponent<SpriteRenderer>();
+        Debug.Log("Parpadeo");
 
         Color originalColor = _spriteRenderer.color;
+
+        Color blinkColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.2f);
 
         int loopCount = Mathf.FloorToInt(blinkDuration / (blinkInterval * 2));
 
@@ -121,11 +125,13 @@ public class Damageable : NetworkBehaviour, IDamageable
 
         for (int i = 0; i < loopCount; i++)
         {
-            blinkSequence.Append(_spriteRenderer.DOFade(transparentAlpha, blinkInterval));
-            blinkSequence.Append(_spriteRenderer.DOFade(originalColor.a, blinkInterval));
+            blinkSequence.Append(_spriteRenderer.DOColor(originalColor, blinkInterval));
+            blinkSequence.Append(_spriteRenderer.DOColor(blinkColor, blinkInterval));
         }
-
-        blinkSequence.OnComplete(() => _spriteRenderer.color = originalColor);
+        blinkSequence.OnComplete(() => {
+            _spriteRenderer.color = originalColor;
+            Debug.Log("Parpadeo completado");
+        });
     }
 
 
