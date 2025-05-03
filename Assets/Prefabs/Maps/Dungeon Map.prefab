@@ -7024,7 +7024,7 @@ MonoBehaviour:
   - {x: 9, y: 6, z: 0}
   m_ShapePathHash: 477492501
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44266
+  m_InstanceId: 66892
   m_LocalBounds:
     m_Center: {x: 8.5, y: 0.5, z: 0}
     m_Extent: {x: 0.5, y: 5.5, z: 0}
@@ -7283,7 +7283,7 @@ MonoBehaviour:
   - {x: 9, y: -5, z: 0}
   m_ShapePathHash: -1279920875
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44158
+  m_InstanceId: 66758
   m_LocalBounds:
     m_Center: {x: 0, y: -4.5, z: 0}
     m_Extent: {x: 9, y: 0.5, z: 0}
@@ -8060,7 +8060,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.024868965, y: 0.03905964}
+  m_Offset: {x: 0.017436266, y: 0.02419424}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -8071,7 +8071,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.2292213, y: 4.1864233}
+  m_Size: {x: 2.3927417, y: 4.3053474}
   m_EdgeRadius: 0
 --- !u!1 &2265946071993318441
 GameObject:
@@ -8213,7 +8213,7 @@ MonoBehaviour:
   - {x: 9, y: -5, z: 0}
   m_ShapePathHash: -1279920875
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44226
+  m_InstanceId: 66850
   m_LocalBounds:
     m_Center: {x: 0, y: -4.5, z: 0}
     m_Extent: {x: 9, y: 0.5, z: 0}
@@ -8419,7 +8419,7 @@ MonoBehaviour:
   - {x: 2, y: 0, z: 0}
   m_ShapePathHash: 462812437
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44130
+  m_InstanceId: 66726
   m_LocalBounds:
     m_Center: {x: 0, y: 0.5, z: 0}
     m_Extent: {x: 2, y: 0.5, z: 0}
@@ -19456,7 +19456,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.020253062, y: -0.12879282}
+  m_Offset: {x: -0.027685642, y: -0.14365819}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -19467,7 +19467,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.1769447, y: 1.1732544}
+  m_Size: {x: 4.281003, y: 1.2624476}
   m_EdgeRadius: 0
 --- !u!1 &6675490432479882160
 GameObject:
@@ -19537,7 +19537,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0319407, y: 0.04134381}
+  m_Offset: {x: 0.039373636, y: 0.0041799545}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -19548,7 +19548,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.224442, y: 4.205365}
+  m_Size: {x: 2.358231, y: 4.2796926}
   m_EdgeRadius: 0
 --- !u!1 &7209208727240622247
 GameObject:
@@ -19866,7 +19866,7 @@ MonoBehaviour:
   - {x: 9, y: -5, z: 0}
   m_ShapePathHash: -1279920875
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44310
+  m_InstanceId: 66944
   m_LocalBounds:
     m_Center: {x: 0, y: -4.5, z: 0}
     m_Extent: {x: 9, y: 0.5, z: 0}
@@ -20021,7 +20021,7 @@ MonoBehaviour:
   - {x: 0.9686837, y: -5.0078344, z: 0}
   m_ShapePathHash: -1218245115
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44116
+  m_InstanceId: 66706
   m_LocalBounds:
     m_Center: {x: 0, y: -3.5039172, z: 0}
     m_Extent: {x: 1, y: 1.5039172, z: 0}
@@ -20145,7 +20145,7 @@ MonoBehaviour:
   - {x: -8, y: 6, z: 0}
   m_ShapePathHash: -1026165483
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44242
+  m_InstanceId: 66868
   m_LocalBounds:
     m_Center: {x: -8.5, y: 0.5, z: 0}
     m_Extent: {x: 0.5, y: 5.5, z: 0}
@@ -20238,7 +20238,7 @@ MonoBehaviour:
   - {x: 9, y: 6, z: 0}
   m_ShapePathHash: 632681749
   m_Mesh: {fileID: 0}
-  m_InstanceId: 44170
+  m_InstanceId: 66774
   m_LocalBounds:
     m_Center: {x: 0, y: 5.5, z: 0}
     m_Extent: {x: 9, y: 0.5, z: 0}
