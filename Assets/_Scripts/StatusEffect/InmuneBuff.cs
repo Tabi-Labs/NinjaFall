@@ -14,7 +14,6 @@ public class InmuneBuff : StatusEffect
             IDamageable damageable = playerInstance.GetComponent<IDamageable>();
             if (damageable != null && !damageable.IsInmune())
             {
-                Debug.Log("Eliminado efecto visual " + damageable.IsInmune());
                 StopVisualEffect();
                 SetActive(false);
             }
@@ -27,7 +26,6 @@ public class InmuneBuff : StatusEffect
         IDamageable damageable = player.GetComponent<IDamageable>();
         playerInstance = player;
 
-        Debug.Log("Instancia del jugador en el buff: " + playerInstance);
         if (damageable != null)
         {
             damageable.SetInmune(true);
@@ -41,7 +39,5 @@ public class InmuneBuff : StatusEffect
         {
             damageable.SetInmune(false);
         }
-        Debug.Log("Eliminando efecto NUEVO");
-        
     }
 }
