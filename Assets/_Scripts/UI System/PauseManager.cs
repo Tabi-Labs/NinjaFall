@@ -16,11 +16,16 @@ public enum PauseMode
 
 public class PauseManager : MonoBehaviour
 {
+    [Header("Pause Settings")]
+    [SerializeField] PauseMode _initialPauseMode = PauseMode.pre_game;
+    [SerializeField] bool _startPaused = true;
+    [Header("UI Elements")]
     [SerializeField] GameObject start_canvas;
     [SerializeField] GameObject pause_canvas;
     [SerializeField] GameObject finish_canvas;
     [SerializeField] GameObject winner_portrait;
     [SerializeField] TextMeshProUGUI winner_text;
+    
     private CharacterData character_data;
 
     private bool is_paused = false;
@@ -146,7 +151,7 @@ public class PauseManager : MonoBehaviour
 
     public void StartGame()
     {
-        PauseFunctionality(true, PauseMode.pre_game);
+        PauseFunctionality(_startPaused, _initialPauseMode);
     }
 
     public void PauseGame()
