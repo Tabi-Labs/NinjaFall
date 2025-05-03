@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 public class KillsCounter : NetworkBehaviour
 {
     public static KillsCounter Instance;
-    public int MAX_LIVES = 5;
+    private const int MAX_LIVES = 2;
 
     // Arreglo para almacenar las vidas de los jugadores (modo en red)
     private int[] playerLives;
@@ -196,9 +196,9 @@ public class KillsCounter : NetworkBehaviour
 
                     if (winnerID >= 0)
                     {
-                        if (NetworkManager && NetworkManager.IsListening && IsServer)
+                        if (NetworkManager)
                         {
-                            AnnounceWinnerClientRpc(winnerID);
+                            AnnounceWinnerServerRpc(winnerID);
                         }
                         else
                         {
@@ -309,14 +309,20 @@ public class KillsCounter : NetworkBehaviour
         UpdateUI();
     }
 
-    [ClientRpc]
+    [Rpc(SendTo.Everyone)]
     private void AnnounceWinnerClientRpc(int winnerID)
     {
-        if (!gameEnded)
-        {
+
             gameEnded = true;
             DetermineWinner(winnerID);
-        }
+    }
+    [Rpc(SendTo.Server)]
+    private void AnnounceWinnerServerRpc(int winnerID)
+    {
+
+        AnnounceWinnerClientRpc(winnerID);
+        //DetermineWinner(winnerID);
+
     }
 
     #endregion

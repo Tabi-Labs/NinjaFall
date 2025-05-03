@@ -15,6 +15,7 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private float respawnDelay = 1f;
     // Temporal
     private StatusEffectManager statusEffectManager;
+    private LevelSelector levelSelector;
     // Singleton Pattern
     public static PlayerSpawner Instance { get; private set; }
 
@@ -166,8 +167,14 @@ public class PlayerSpawner : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
+        // Desabilitar los powr ups y maps de la escena de manera TEMPORAL
         statusEffectManager = FindAnyObjectByType<StatusEffectManager>();
         statusEffectManager.gameObject.SetActive(false);
+        //levelSelector = FindAnyObjectByType<LevelSelector>();
+        //if (levelSelector != null)
+        //{
+        //    levelSelector.gameObject.SetActive(false);
+        //}
         if (IsServer)
         {
             Debug.Log("OnNetworkSpawn: Spawneando jugadores...");
@@ -183,7 +190,7 @@ public class PlayerSpawner : NetworkBehaviour
         {
             if (id != OwnerClientId)
             {
-                NetworkObject playerNetworkObject = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.transform.GetChild(0).GetComponent<NetworkObject>();
+                NetworkObject playerNetworkObject = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.GetComponent<NetworkObject>();
                 playerNetworkObject.Despawn(true);
             }
         }

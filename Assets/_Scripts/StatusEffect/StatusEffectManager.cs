@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StatusEffectManager : MonoBehaviour
@@ -61,6 +62,10 @@ public class StatusEffectManager : MonoBehaviour
         activeEffects.Remove(effect.EffectName);
         effect.RemoveEffect(player);
 
-        //Destroy(effect);
+        if (!effect.IsDestroyed())
+        {
+            Destroy(effect);
+        }
+        
     }
 }

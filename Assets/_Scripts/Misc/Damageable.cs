@@ -20,6 +20,13 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     private SpriteRenderer _spriteRenderer;
 
+    public float blinkDuration = 3f;      // Tiempo total de parpadeo (en segundos)
+    public float blinkInterval = 0.5f;    // Tiempo entre cada cambio de opacidad
+    public float transparentAlpha = 0.8f; // Nivel de transparencia durante el parpadeo
+    private Sequence blinkSequence;
+
+    
+
     public event Action OnDamageTakenEvent;
     public event Action OnParryEvent; // Event to notify when parry is triggered
     protected void Awake() 
@@ -110,7 +117,33 @@ public class Damageable : NetworkBehaviour, IDamageable
         Vector3 newPosition = newSpot.position + new Vector3(GetRandomSign(), 0, 0);
 
         transform.position = newPosition;
+
+        Blink();
     }
+
+    public void Blink()
+    {
+        Debug.Log("Parpadeo");
+
+        Color originalColor = _spriteRenderer.color;
+
+        Color blinkColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.2f);
+
+        int loopCount = Mathf.FloorToInt(blinkDuration / (blinkInterval * 2));
+
+        blinkSequence = DOTween.Sequence();
+
+        for (int i = 0; i < loopCount; i++)
+        {
+            blinkSequence.Append(_spriteRenderer.DOColor(originalColor, blinkInterval));
+            blinkSequence.Append(_spriteRenderer.DOColor(blinkColor, blinkInterval));
+        }
+        blinkSequence.OnComplete(() => {
+            _spriteRenderer.color = originalColor;
+            Debug.Log("Parpadeo completado");
+        });
+    }
+
 
     private float GetRandomSign()
     {
