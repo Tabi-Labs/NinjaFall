@@ -100,8 +100,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EffectName: Shuriken wall buff
   Duration: 5
-  orbitingOrbPrefab: {fileID: 0}
-  orbitRadius: 10
+  orbitingOrbPrefab: {fileID: 3495554874557796414, guid: 087edcff086286c42b0cd41f448c8eb0, type: 3}
+  orbitRadius: 0.25
   orbitDuration: 2
 --- !u!61 &-9150510426066677798
 BoxCollider2D:
