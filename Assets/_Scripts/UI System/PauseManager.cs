@@ -6,6 +6,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using System.Linq;
+using Unity.Netcode;
 
 public enum PauseMode
 {
@@ -14,7 +15,7 @@ public enum PauseMode
     post_game
 }
 
-public class PauseManager : MonoBehaviour
+public class PauseManager : NetworkBehaviour
 {
     [Header("Pause Settings")]
     [SerializeField] PauseMode _initialPauseMode = PauseMode.pre_game;
@@ -55,58 +56,46 @@ public class PauseManager : MonoBehaviour
 
     public void PauseFunctionality(bool pause, PauseMode mode)
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); //Puede cambiar
-
-        foreach (GameObject player in players)
+        if(NetworkManager && IsServer)
         {
-            if (player.GetComponent<CustomInputManager>() != null)
-            {
-                player.GetComponent<CustomInputManager>().enabled = !pause;
-            }
+            StopPlayersClientRpc(pause);
         }
-
+        else
+        {
+            StopPlayers(pause);
+        }
+            
         switch (mode) {
             case PauseMode.pre_game:
-                Time.timeScale = 1.0f;
-
-                start_canvas.SetActive(true);
-                TextMeshProUGUI start_text = start_canvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-                start_text.text = "READY";
-                start_text.alpha = 1.0f;
-                AudioManager.PlaySpeech("VO_Ready");
-                start_text.DOFade(0.0f, 1.0f).OnComplete(() => {
-                    start_text.text = "SET";
-                    start_text.alpha = 1.0f;
-                    AudioManager.PlaySpeech("VO_Set");
-                    start_text.DOFade(0.0f, 1.0f).OnComplete(() => {
-                        start_text.text = "GO!";
-                        start_text.alpha = 1.0f;
-                        AudioManager.PlaySpeech("VO_Go");
-                        start_text.gameObject.transform.DOScale(new Vector3(1.3f, 1.3f, 1.0f), 0.5f).OnComplete(() => {
-                            start_text.alpha = 0.0f;
-                            start_canvas.SetActive(false);
-                            PauseFunctionality(false, PauseMode.mid_game);
-                        });
-                    });
-                });
+                if (NetworkManager && IsServer)
+                {
+                    PreGameClientRpc();
+                }
+                else
+                {
+                    PreGameFunctionality();
+                }
 
                 break;
             case PauseMode.mid_game:
-                Time.timeScale = pause ? 0.0f : 1.0f;
-                pause_canvas.SetActive(pause);
-                is_paused = pause;
+                if (NetworkManager && IsServer)
+                {
+                    MidGameClientRpc(pause);
+                }
+                else
+                {
+                    MidGameFunctionality(pause);
+                }
                 break;
             case PauseMode.post_game:
-                BotManager.Instance.StopBots();
-                Time.timeScale = 0.0f;
-                winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
-                Animator anim = winner_portrait.GetComponent<Animator>();
-                anim.runtimeAnimatorController = character_data.portraitAnimator;
-                anim.updateMode = AnimatorUpdateMode.UnscaledTime;
-                winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
-                winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
-
-                finish_canvas.SetActive(true);
+                if(NetworkManager && IsServer)
+                {
+                    PostGameClientRpc();
+                }
+                else
+                {
+                    PostGameFunctionality();
+                }
                 break;
         }
     }
@@ -115,7 +104,7 @@ public class PauseManager : MonoBehaviour
     {
         PauseFunctionality(_startPaused, _initialPauseMode);
     }
-
+    
     public void PauseGame()
     {
         if (ignore_pause) return;
@@ -129,7 +118,89 @@ public class PauseManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         ignore_pause = false;
     }
+    private void StopPlayers(bool pause)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); //Puede cambiar
 
+        foreach (GameObject player in players)
+        {
+            if (player.GetComponent<CustomInputManager>() != null)
+            {
+                player.GetComponent<CustomInputManager>().enabled = !pause;
+            }
+        }
+    }
+    private void PreGameFunctionality()
+    {
+        Time.timeScale = 1.0f;
+
+        start_canvas.SetActive(true);
+        TextMeshProUGUI start_text = start_canvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        start_text.text = "READY";
+        start_text.alpha = 1.0f;
+        AudioManager.PlaySpeech("VO_Ready");
+        start_text.DOFade(0.0f, 1.0f).OnComplete(() => {
+            start_text.text = "SET";
+            start_text.alpha = 1.0f;
+            AudioManager.PlaySpeech("VO_Set");
+            start_text.DOFade(0.0f, 1.0f).OnComplete(() => {
+                start_text.text = "GO!";
+                start_text.alpha = 1.0f;
+                AudioManager.PlaySpeech("VO_Go");
+                start_text.gameObject.transform.DOScale(new Vector3(1.3f, 1.3f, 1.0f), 0.5f).OnComplete(() => {
+                    start_text.alpha = 0.0f;
+                    start_canvas.SetActive(false);
+                    PauseFunctionality(false, PauseMode.mid_game);
+                });
+            });
+        });
+    }
+    private void MidGameFunctionality(bool pause)
+    {
+        Time.timeScale = pause ? 0.0f : 1.0f;
+        pause_canvas.SetActive(pause);
+        is_paused = pause;
+    }
+    private void PostGameFunctionality()
+    {
+        // Ñapa de la las gordas
+        if(!NetworkManager)
+            BotManager.Instance.StopBots();
+        Time.timeScale = 0.0f;
+        winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
+        Animator anim = winner_portrait.GetComponent<Animator>();
+        anim.runtimeAnimatorController = character_data.portraitAnimator;
+        anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+        winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
+        winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
+
+        finish_canvas.SetActive(true);
+    }
+    [Rpc(SendTo.Everyone)]
+    private void StopPlayersClientRpc(bool pause)
+    {
+        StopPlayers(pause);
+    }
+    [Rpc(SendTo.Everyone)]
+    private void ResumePlayersClientRpc()
+    {
+        Resume();
+    }
+    [Rpc(SendTo.Everyone)]
+    private void PreGameClientRpc()
+    {
+        PreGameFunctionality();
+    }
+    [Rpc(SendTo.Everyone)]
+    private void MidGameClientRpc(bool pause)
+    {
+        MidGameFunctionality(pause);
+    }
+    [Rpc(SendTo.Everyone)]
+    private void PostGameClientRpc()
+    {
+        PostGameFunctionality();
+    }
     public void EndGame(CharacterData winnerData)
     {
         character_data = winnerData;
@@ -151,7 +222,7 @@ public class PauseManager : MonoBehaviour
 
     public void PauseOfflineGame()
     {
-        
+
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); //Puede cambiar
 
         foreach (GameObject player in players)
@@ -168,20 +239,31 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeOfflineGame()
     {
-        
+        if (NetworkManager)
+        {
+            ResumePlayersClientRpc();
+        }
+        else
+        {
+            Resume();   
+        }
+           
+    }
+    private void Resume()
+    {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (GameObject player in players)
         {
-            if (player.GetComponent<CustomInputManager>() != null) {
+            if (player.GetComponent<CustomInputManager>() != null)
+            {
                 player.GetComponent<CustomInputManager>().enabled = true;
             }
         }
-    
+
         pause_canvas.SetActive(false);
         Time.timeScale = 1.0f;
     }
-
     //TODO! - Put this function in a better place
     public void ErasePlayers()
     {
