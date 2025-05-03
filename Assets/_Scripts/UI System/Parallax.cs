@@ -16,18 +16,19 @@ public class Parallax : MonoBehaviour
 
     void Start()
     {
-        _initalY = transform.position.y;
+        _initalY = transform.localPosition.y;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        bool reset = _speed > 0 ? transform.position.x > _limitX : transform.position.x <= _limitX;
+        bool reset = _speed > 0 ? transform.localPosition.x > _limitX : transform.localPosition.x <= _limitX;
 
         if (reset)
         {
+            Debug.Log("Resetting localPosition");
             float yOffset = _useYOffset ? Random.value * _resetYOffset : 0;
-            transform.position = new Vector3(_resetX, _initalY + yOffset, transform.position.z);
+            transform.localPosition = new Vector3(_resetX, _initalY + yOffset, transform.localPosition.z);
         } else
         {
             transform.Translate(Vector3.right * _speed * Time.fixedDeltaTime);

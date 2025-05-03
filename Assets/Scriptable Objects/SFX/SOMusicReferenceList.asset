@@ -15,5 +15,11 @@ MonoBehaviour:
   audio_references:
   - id: MX_MainMenu
     clip: {fileID: 8300000, guid: 329a67900d593914c8df9fb7f74a06c2, type: 3}
+  - id: MX_Dungeon
+    clip: {fileID: 8300000, guid: ccec3602e74720343829372f3d09de29, type: 3}
+  - id: MX_Ruins
+    clip: {fileID: 8300000, guid: 0cbcd1f99271ff2429e81daae012943e, type: 3}
+  - id: MX_Mountains
+    clip: {fileID: 8300000, guid: 675892c43cf1b144c808d18c2df29c41, type: 3}
   - id: MX_Tutorial
     clip: {fileID: 8300000, guid: 9c82dc932fdd43944ae4e0c54653c22c, type: 3}
