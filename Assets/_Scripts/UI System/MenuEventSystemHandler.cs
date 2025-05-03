@@ -8,6 +8,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using TMPro;
 using System.Threading.Tasks;
+using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 //TODO - Add support for controller vibration
 //TODO - Add cancel functionality to go back to previous menu
@@ -175,6 +177,16 @@ public class MenuEventSystemHandler : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        SceneLoader.Instance.ChangeScene(sceneName);
+        
+        // �apa apocaliptica
+        if((sceneName == "05_Character_Select" && NetworkManager.Singleton) || (sceneName == "01_Start_Menu" && NetworkManager.Singleton))
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene("02_Multiplayer_Menu", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneLoader.Instance.ChangeScene(sceneName);
+        }
+        
     }
 }
