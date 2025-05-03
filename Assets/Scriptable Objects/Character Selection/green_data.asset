@@ -18,3 +18,8 @@ MonoBehaviour:
   text: {fileID: 21300000, guid: 6e906673d5f70ed4b8e2525f4d5286ff, type: 3}
   textOutlineColor: {r: 0.12156863, g: 0.47058824, b: 0.18431373, a: 1}
   mat: {fileID: 2100000, guid: f13257c76408d4e4888074e329bdaf41, type: 2}
+  victoryPhrases:
+  - Even the oldest blade cuts deep.
+  - "Experience doesn\u2019t rust."
+  - "Youthlings\u2026 You still have so much to learn."
+  - Even my shadow is deadlier than you.

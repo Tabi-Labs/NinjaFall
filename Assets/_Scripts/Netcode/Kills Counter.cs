@@ -8,142 +8,309 @@ using System.Linq;
 public class KillsCounter : NetworkBehaviour
 {
     public static KillsCounter Instance;
+    private const int MAX_LIVES = 5;
 
-    // Arreglo para las vidas de cada jugador, se inicializan en 5
-    public NetworkVariable<int>[] playerLives = new NetworkVariable<int>[4];
+    // Arreglo para almacenar las vidas de los jugadores (modo en red)
+    private int[] playerLives;
 
-    // Referencias a los TextMeshProUGUI ya existentes en la escena
+    // Referencias a los TextMeshProUGUI en la escena
     [SerializeField] private TextMeshProUGUI P1TextMesh;
     [SerializeField] private TextMeshProUGUI P2TextMesh;
     [SerializeField] private TextMeshProUGUI P3TextMesh;
     [SerializeField] private TextMeshProUGUI P4TextMesh;
 
     private TextMeshProUGUI[] playerTextMeshes;
-    private int[] localLives = new int[4] { 3, 3, 3, 3 };
+    private int[] localLives = new int[4] { MAX_LIVES, MAX_LIVES, MAX_LIVES, MAX_LIVES };
     public bool[] alivePlayers;
 
-    // Variable para el modo local, la cantidad de jugadores locales (por ejemplo, 1, 2, 3 o 4) tama�o del array de players
+    // Cantidad de jugadores locales
     private int localPlayerCount;
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        
-        // Inicializamos las NetworkVariables para las vidas de cada jugador
-        for (int i = 0; i < NetworkManager.ConnectedClients.Count; i++)
-        {
-            playerLives[i] = new NetworkVariable<int>(5);
-        }
-        Initialize();
-    }
+
+    // Bandera para saber si el juego ha terminado
+    private bool gameEnded = false;
+
     private void Awake()
     {
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        // Inicialización para modo local
         if (!NetworkManager)
         {
             localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
-            Initialize();
+
+            if (localPlayerCount == 0 && PlayerConfigurationManager.Instance != null)
+            {
+                localPlayerCount = PlayerConfigurationManager.Instance.readyCount;
+            }
+
+            if (localPlayerCount == 0)
+            {
+                localPlayerCount = 1;
+            }
+
+            InitializeLocalMode();
+            GeneratePlayerTextMeshes();
+            UpdateUI();
         }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        int playerCount = NetworkManager.ConnectedClientsIds.Count;
+        playerLives = new int[playerCount];
+
+        for (int i = 0; i < playerCount; i++)
+        {
+            playerLives[i] = MAX_LIVES;
+        }
+
+        alivePlayers = new bool[playerCount];
+        for (int i = 0; i < alivePlayers.Length; i++)
+        {
+            alivePlayers[i] = true;
+        }
+
+        GeneratePlayerTextMeshes();
+
+        if (IsServer)
+        {
+            SyncLivesToClientRpc(playerLives);
+        }
+
+        UpdateUI();
+    }
+
+    private void InitializeLocalMode()
+    {
+        localLives = new int[localPlayerCount];
+        for (int i = 0; i < localPlayerCount; i++)
+        {
+            localLives[i] = MAX_LIVES;
+        }
+
         alivePlayers = new bool[localPlayerCount];
         for (int i = 0; i < alivePlayers.Length; i++)
         {
             alivePlayers[i] = true;
         }
     }
-    private void Initialize()
-    {
-        Instance = this;
-        GeneratePlayerTextMeshes();  // Generamos los TextMeshPro en la UI
-        UpdateUI();  // Actualizamos la UI seg�n las vidas iniciales de los jugadores
-    }
 
-    // M�todo para ser llamado cuando un jugador mata a otro
+    // Método llamado cuando un jugador mata a otro
     public void PlayerKilled(int playerID)
     {
-            if(NetworkManager)
-                SubmitKillServerRpc(playerID);
-            else
+        if (NetworkManager && NetworkManager.IsListening)
+        {
+            if (IsServer)
+            {
                 DecreaseLives(playerID);
-
+            }
+            else
+            {
+                SubmitKillServerRpc(playerID);
+            }
+        }
+        else
+        {
+            if (playerID >= 0 && playerID < localLives.Length)
+            {
+                DecreaseLives(playerID);
+            }
+        }
     }
 
-    // Restamos una vida al jugador que muri�
+    // Resta una vida al jugador especificado
     private void DecreaseLives(int playerID)
     {
-        Debug.Log($"Jugador {playerID + 1} ha sido eliminado. Vidas restantes: {GetLives(playerID) - 1}");
-        // Decrementamos las vidas del jugador
-        if (NetworkManager)
-            playerLives[playerID].Value--;
-        else
-            localLives[playerID]--;
-
-
-        // Comprobamos si el jugador se qued� sin vidas
-        if (GetLives(playerID) <= 0)
+        if (playerID < 0 || (NetworkManager && playerID >= playerLives.Length) || (!NetworkManager && playerID >= localLives.Length))
         {
-            alivePlayers[playerID] = false;
+            return;
+        }
 
-            int aliveCount = 0;
-            for(int i = 0; i < alivePlayers.Length; i++)
+        if (NetworkManager && NetworkManager.IsListening)
+        {
+            if (IsServer)
             {
-                if (alivePlayers[i] == true) aliveCount++;
+                playerLives[playerID]--;
+                SyncLivesToClientRpc(playerLives);
             }
-            if(aliveCount == 1)
+        }
+        else
+        {
+            if (playerID < localLives.Length)
             {
-                int winnerID = alivePlayers.ToList().IndexOf(true);
-                GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(x => x.GetComponent<Player>()).ToArray();
-                PauseManager.instance.EndGame(players[winnerID].GetComponent<Player>().CharacterData);
+                localLives[playerID]--;
+                UpdateUI();
             }
         }
 
-        // Actualizamos la UI
-        UpdateUI();
+        if (GetLives(playerID) <= 0)
+        {
+            if (playerID < alivePlayers.Length)
+            {
+                alivePlayers[playerID] = false;
+
+                int aliveCount = 0;
+                for (int i = 0; i < alivePlayers.Length; i++)
+                {
+                    if (alivePlayers[i]) aliveCount++;
+                }
+
+                if (aliveCount == 1 && !gameEnded)
+                {
+                    gameEnded = true;
+                    int winnerID = -1;
+                    for (int i = 0; i < alivePlayers.Length; i++)
+                    {
+                        if (alivePlayers[i])
+                        {
+                            winnerID = i;
+                            break;
+                        }
+                    }
+
+                    if (winnerID >= 0)
+                    {
+                        if (NetworkManager && NetworkManager.IsListening && IsServer)
+                        {
+                            AnnounceWinnerClientRpc(winnerID);
+                        }
+                        else
+                        {
+                            DetermineWinner(winnerID);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    // M�todo para obtener las vidas de un jugador (basado en su ID)
+    // Devuelve las vidas actuales de un jugador
     private int GetLives(int playerID)
     {
-        return (NetworkManager) ? playerLives[playerID].Value : localLives[playerID];
+        if (NetworkManager && NetworkManager.IsListening)
+        {
+            return (playerID >= 0 && playerID < playerLives.Length) ? playerLives[playerID] : 0;
+        }
+        else
+        {
+            return (playerID >= 0 && playerID < localLives.Length) ? localLives[playerID] : 0;
+        }
     }
 
-    // Asocia los TextMeshPro existentes y activa/desactiva seg�n los jugadores activos
+    // Asocia los TextMeshPro existentes y los activa según los jugadores
     private void GeneratePlayerTextMeshes()
     {
         playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
-        // Si estamos en modo multijugador, usamos el n�mero de clientes conectados
-        int numberOfPlayers = (IsServer || IsHost) ?
-            NetworkManager.Singleton.ConnectedClients.Count : localPlayerCount;
+        int numberOfPlayers = 0;
 
-        // Aqu� activamos/desactivamos los TextMeshPro seg�n el n�mero de jugadores
+        if (NetworkManager && NetworkManager.IsListening)
+        {
+            numberOfPlayers = NetworkManager.ConnectedClientsIds.Count;
+        }
+        else
+        {
+            numberOfPlayers = PlayerConfigurationManager.Instance.readyCount;
+
+            if (numberOfPlayers == 0 && PlayerConfigurationManager.Instance != null)
+            {
+                numberOfPlayers = PlayerConfigurationManager.Instance.readyCount;
+            }
+
+            if (numberOfPlayers == 0)
+            {
+                numberOfPlayers = 1;
+            }
+
+            localPlayerCount = numberOfPlayers;
+        }
+
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (i < numberOfPlayers)
+            if (playerTextMeshes[i] != null)
             {
-                playerTextMeshes[i].gameObject.SetActive(true);  // Activamos los TextMeshPro de jugadores activos
-            }
-            else
-            {
-                playerTextMeshes[i].gameObject.SetActive(false); // Desactivamos los TextMeshPro de jugadores inactivos
+                bool shouldBeActive = i < numberOfPlayers;
+                playerTextMeshes[i].gameObject.SetActive(shouldBeActive);
             }
         }
     }
 
-    // Actualizamos la UI en todos los clientes
+    // Actualiza la UI con las vidas de cada jugador
     private void UpdateUI()
     {
+        int playerCount = NetworkManager && NetworkManager.IsListening ?
+            NetworkManager.ConnectedClientsIds.Count : localPlayerCount;
+
         for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            if (playerTextMeshes[i] != null && playerTextMeshes[i].gameObject.activeSelf)
+            if (playerTextMeshes[i] != null)
             {
-                int lives = GetLives(i);
-                playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
+                if (i < playerCount)
+                {
+                    int lives = GetLives(i);
+                    playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
+                    playerTextMeshes[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    playerTextMeshes[i].gameObject.SetActive(false);
+                }
             }
         }
     }
 
-    // RPC para que el servidor actualice el contador de muertes y vidas
-    [Rpc(SendTo.Everyone)]
+    // Determina al ganador en modo local
+    private void DetermineWinner(int winnerID)
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player").Where(x => x.GetComponent<Player>()).ToArray();
+
+        if (winnerID < players.Length && players[winnerID] != null)
+        {
+            if (PauseManager.instance != null)
+            {
+                PauseManager.instance.EndGame(players[winnerID].GetComponent<Player>().CharacterData);
+            }
+        }
+    }
+
+    #region RPCs
+
+    [ServerRpc(RequireOwnership = false)]
     private void SubmitKillServerRpc(int playerID)
     {
         DecreaseLives(playerID);
     }
+
+    [ClientRpc]
+    private void SyncLivesToClientRpc(int[] livesData)
+    {
+        if (!IsServer)
+        {
+            playerLives = livesData;
+
+            for (int i = 0; i < playerLives.Length; i++)
+            {
+                alivePlayers[i] = playerLives[i] > 0;
+            }
+        }
+
+        UpdateUI();
+    }
+
+    [ClientRpc]
+    private void AnnounceWinnerClientRpc(int winnerID)
+    {
+        if (!gameEnded)
+        {
+            gameEnded = true;
+            DetermineWinner(winnerID);
+        }
+    }
+
+    #endregion
 }

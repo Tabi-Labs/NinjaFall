@@ -50,7 +50,7 @@ public class StatusEffectManager : MonoBehaviour
     private IEnumerator RemoveEffectAfterDuration(StatusEffect effect, GameObject player)
     {
         yield return new WaitForSeconds(effect.Duration);
-        Debug.Log("Clase Effect Manager eliminando efecto");
+        // Debug.Log("Clase Effect Manager eliminando efecto");
         RemoveEffect(effect, player);
     }
 

@@ -16,10 +16,16 @@ public enum PauseMode
 
 public class PauseManager : MonoBehaviour
 {
+    [Header("Pause Settings")]
+    [SerializeField] PauseMode _initialPauseMode = PauseMode.pre_game;
+    [SerializeField] bool _startPaused = true;
+    [Header("UI Elements")]
     [SerializeField] GameObject start_canvas;
     [SerializeField] GameObject pause_canvas;
     [SerializeField] GameObject finish_canvas;
     [SerializeField] GameObject winner_portrait;
+    [SerializeField] TextMeshProUGUI winner_text;
+    
     private CharacterData character_data;
 
     private bool is_paused = false;
@@ -91,12 +97,14 @@ public class PauseManager : MonoBehaviour
                 is_paused = pause;
                 break;
             case PauseMode.post_game:
+                BotManager.Instance.StopBots();
                 Time.timeScale = 0.0f;
                 winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
                 Animator anim = winner_portrait.GetComponent<Animator>();
                 anim.runtimeAnimatorController = character_data.portraitAnimator;
                 anim.updateMode = AnimatorUpdateMode.UnscaledTime;
                 winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
+                winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
 
                 finish_canvas.SetActive(true);
                 break;
@@ -105,7 +113,7 @@ public class PauseManager : MonoBehaviour
 
     public void StartGame()
     {
-        PauseFunctionality(true, PauseMode.pre_game);
+        PauseFunctionality(_startPaused, _initialPauseMode);
     }
 
     public void PauseGame()
@@ -131,6 +139,9 @@ public class PauseManager : MonoBehaviour
     public void ClearPlayers()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (BotManager.Instance != null && BotManager.Instance.bots != null) {
+            BotManager.Instance.CleanupBots();
+        }
 
         foreach (GameObject player in players)
         {
@@ -170,4 +181,16 @@ public class PauseManager : MonoBehaviour
         pause_canvas.SetActive(false);
         Time.timeScale = 1.0f;
     }
+
+    //TODO! - Put this function in a better place
+    public void ErasePlayers()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject player in players)
+        {
+            Destroy(player);
+        }
+    }
+
 }

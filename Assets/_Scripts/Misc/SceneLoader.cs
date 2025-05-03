@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using Unity.Netcode;
 
 public class SceneLoader : MonoBehaviour
 {
@@ -30,19 +31,25 @@ public class SceneLoader : MonoBehaviour
 
     // Method to change scene by name
     // --------------------------------------------------------------------------------
-    public void ChangeScene(string sceneName)
+    public void ChangeScene(string sceneName, NetworkManager networkManager = null)
     {
-        StartCoroutine(LoadSceneWithTransition(sceneName));
+        StartCoroutine(LoadSceneWithTransition(sceneName, networkManager));
     }
 
-    private IEnumerator LoadSceneWithTransition(string sceneName)
+    private IEnumerator LoadSceneWithTransition(string sceneName, NetworkManager networkManager = null)
     {
         if (transitionCourtain != null)
         {
             yield return transitionCourtain.DOFade(1, transitionDuration).WaitForCompletion();
         }
 
-        SceneManager.LoadScene(sceneName);
+        DOTween.KillAll();
+        if (networkManager != null)
+        {
+            NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        } else {
+            SceneManager.LoadScene(sceneName);
+        }
 
         if (transitionCourtain != null)
         {

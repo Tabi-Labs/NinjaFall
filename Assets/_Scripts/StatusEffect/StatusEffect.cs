@@ -26,7 +26,7 @@ public abstract class StatusEffect : MonoBehaviour
 
     private void Awake()
     {
-        // Obtén las referencias a los componentes
+        // Obtï¿½n las referencias a los componentes
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider = GetComponent<BoxCollider2D>();
     }
@@ -64,7 +64,6 @@ public abstract class StatusEffect : MonoBehaviour
             
             float x = Mathf.Cos(angle) * orbitRadius;
             float z = Mathf.Sin(angle) * orbitRadius;
-
 
             activeOrb.transform.localPosition = new Vector3(x * 2.0f, 0f, z * 2.0f);
 

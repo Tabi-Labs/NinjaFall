@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
+using System;
 using DG.Tweening;
 using Unity.Netcode;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
-
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
+using Random = UnityEngine.Random;
 
 public class Damageable : NetworkBehaviour, IDamageable
 {   
@@ -17,7 +15,7 @@ public class Damageable : NetworkBehaviour, IDamageable
     private float _lerpAmount;
     private int _hitEffectAmount = Shader.PropertyToID("_HitEffectAmount");
     private bool inmune = false;
-
+    public bool IsEnabled = true;
     private List<Transform> spawnPoints = new List<Transform>();
 
     private SpriteRenderer _spriteRenderer;
@@ -29,6 +27,8 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     
 
+    public event Action OnDamageTakenEvent;
+    public event Action OnParryEvent; // Event to notify when parry is triggered
     protected void Awake() 
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -63,6 +63,15 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
+        if(!IsEnabled) return; 
+        
+        if(_isParrying)
+        {
+            OnParryEvent?.Invoke();
+            AudioManager.PlaySound("FX_SwordClash");
+            VFXManager.PlayVFX("VFX_Impact",VFXType.Animation, transform.position, Quaternion.identity);
+            return;
+        }
 
         if (!inmune)
         {
@@ -88,6 +97,7 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     protected virtual void OnDamageTaken()
     {
+        OnDamageTakenEvent?.Invoke();
         //override this function to add more functionality
     }
 
@@ -155,6 +165,9 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     public virtual bool IsParrying()
     {
+         if(_isParrying)
+            OnParryEvent?.Invoke();
+        
         return _isParrying;
     }
 }

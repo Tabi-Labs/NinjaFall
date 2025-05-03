@@ -96,7 +96,7 @@ public class LobbyManager : NetworkBehaviour
     {
         if (IsServer)
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+            NetworkManager.Singleton.SceneManager.LoadScene("03_Main_Game", LoadSceneMode.Single);
         }
     }
     public override void OnNetworkDespawn()
@@ -112,6 +112,6 @@ public class LobbyManager : NetworkBehaviour
     {
         NetworkManager.Singleton.Shutdown();
         Destroy(NetworkManager.Singleton.gameObject);
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("01_Start_Menu");
     }
 }
