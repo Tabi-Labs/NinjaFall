@@ -51,17 +51,17 @@ public class PauseManager : MonoBehaviour
     public void PauseFunctionality(bool pause, PauseMode mode)
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); //Puede cambiar
-
-        foreach (GameObject player in players)
-        {
-            if (player.GetComponent<CustomInputManager>() != null)
-            {
-                player.GetComponent<CustomInputManager>().enabled = !pause;
-            }
-        }
-
         switch (mode) {
             case PauseMode.pre_game:
+
+                foreach (GameObject player in players)
+                {
+                    if (player.GetComponent<CustomInputManager>() != null)
+                    {
+                        player.GetComponent<CustomInputManager>().enabled = !pause;
+                    }
+                }
+
                 Time.timeScale = 1.0f;
 
                 start_canvas.SetActive(true);
@@ -87,23 +87,61 @@ public class PauseManager : MonoBehaviour
 
                 break;
             case PauseMode.mid_game:
+                foreach (GameObject player in players)
+                {
+                    if (player.GetComponent<CustomInputManager>() != null)
+                    {
+                        player.GetComponent<CustomInputManager>().enabled = !pause;
+                    }
+                }
                 Time.timeScale = pause ? 0.0f : 1.0f;
                 pause_canvas.SetActive(pause);
                 is_paused = pause;
                 break;
             case PauseMode.post_game:
                 BotManager.Instance.StopBots();
-                Time.timeScale = 0.0f;
-                winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
-                Animator anim = winner_portrait.GetComponent<Animator>();
-                anim.runtimeAnimatorController = character_data.portraitAnimator;
-                anim.updateMode = AnimatorUpdateMode.UnscaledTime;
-                winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
-                winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
-
-                finish_canvas.SetActive(true);
+                StartCoroutine(EndGameAnimation());
                 break;
         }
+    }
+
+    private IEnumerator EndGameAnimation()
+    {
+        winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
+        Animator anim = winner_portrait.GetComponent<Animator>();
+        anim.runtimeAnimatorController = character_data.portraitAnimator;
+        anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+        winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
+        winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
+
+        finish_canvas.SetActive(true);
+        Image background = finish_canvas.transform.GetChild(0).GetComponent<Image>();
+        Image overlay = finish_canvas.transform.GetChild(1).GetComponent<Image>();
+
+        background.gameObject.SetActive(false);
+
+        overlay.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        yield return overlay.DOFade(0.0f, 0.2f)
+                    .SetLoops(3, LoopType.Yoyo)
+                    .SetEase(Ease.OutSine)
+                    .WaitForCompletion();
+
+        AudioManager.PlayMusic("MX_Win");
+        yield return new WaitForSeconds(0.5f);
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player"); //Puede cambiar
+        foreach (GameObject player in players)
+        {
+            if (player.GetComponent<CustomInputManager>() != null)
+            {
+                player.GetComponent<CustomInputManager>().enabled = false;
+            }
+        }
+
+        background.gameObject.SetActive(true);
+        overlay.color = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+        overlay.DOFade(0.0f, 2.0f).SetEase(Ease.OutSine)
+            .OnComplete(()=>overlay.gameObject.SetActive(false));
     }
 
     public void StartGame()
