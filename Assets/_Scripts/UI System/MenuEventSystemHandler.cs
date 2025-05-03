@@ -179,7 +179,7 @@ public class MenuEventSystemHandler : MonoBehaviour
     {
         
         // Ñapa apocaliptica
-        if(sceneName == "05_Character_Select" && NetworkManager.Singleton.IsListening || sceneName == "01_Start_Menu" && NetworkManager.Singleton.IsListening)
+        if(sceneName == "05_Character_Select" && NetworkManager.Singleton || sceneName == "01_Start_Menu" && NetworkManager.Singleton)
         {
             NetworkManager.Singleton.SceneManager.LoadScene("02_Multiplayer_Menu", LoadSceneMode.Single);
         }
