@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class ExitDoor : MonoBehaviour
 {
-
+    [SerializeField] string sceneToLoad = "01_Start_Menu";
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player")) 
@@ -18,6 +18,7 @@ public class ExitDoor : MonoBehaviour
     }
     private void ExitToMainMenu()
     {
-        if(SceneLoader.Instance) SceneLoader.Instance.ChangeScene("01_Start_Menu");
+        if(SceneLoader.Instance) SceneLoader.Instance.ChangeScene(sceneToLoad);
+        else SceneManager.LoadScene(sceneToLoad);
     }
 }
