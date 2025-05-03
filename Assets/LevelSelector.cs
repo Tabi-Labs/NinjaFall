@@ -11,13 +11,13 @@ public class LevelSelector : MonoBehaviour
         // Choose a random level prefab from the list
         int randomIndex = Random.Range(0, levelPrefabs.Length);
 
-        // Activate the chosen level prefab and deactivate the others
+        // Insantiate the chosen level prefab
         for (int i = 0; i < levelPrefabs.Length; i++)
         {
             if (i == randomIndex)
-                levelPrefabs[i].SetActive(true);
-            else
-                levelPrefabs[i].SetActive(false);
+            {
+                Instantiate(levelPrefabs[i], Vector3.zero, Quaternion.identity);
+            }                
         }
     }
 }
