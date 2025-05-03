@@ -160,6 +160,14 @@ public class Player : NetworkBehaviour
 
     public CharacterData CharacterData { get; set; }
 
+    public float stuckThreshold = 0.05f;
+    public float stuckTime = 0.1f;
+    public float unstuckPush = 0.075f;
+    public float raycastDistance = 0.7f;
+
+    private Vector3 lastPosition;
+    private float stuckTimer = 0f;
+
     #endregion
 
     #region ---- INITIALIZERS ----
@@ -222,6 +230,8 @@ public class Player : NetworkBehaviour
         InitRigidbody();
         InitPlayerInput();
 
+        lastPosition = transform.position;
+
         StateMachine.InitializeDefaultState(IdleState);
         WallSlideParticles.gameObject.SetActive(false);
         if(DontDestroyOnLoadFlag) DontDestroyOnLoad(transform.root);
@@ -231,12 +241,14 @@ public class Player : NetworkBehaviour
     {
         if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateUpdate();
+        //ControlStuck();
     }
 
     private void FixedUpdate()
     {
         if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateFixedUpdate();
+        ControlStuck();
     }
 
     public void ApplyEffect(StatusEffect effect)
@@ -293,6 +305,52 @@ public class Player : NetworkBehaviour
         }
 
         return movement;
+    }
+
+    public void ControlStuck()
+    {
+        Vector2 input = GetMovement();
+        Vector3 direction = new Vector3(input.x, 0f, input.y).normalized;
+        float moveSpeed = MoveStats.MoveThreshold;
+
+        if (direction.magnitude > 0.1f)
+        {
+
+            float movedDistance = Vector3.Distance(transform.position, lastPosition);
+
+            if (movedDistance < stuckThreshold)
+            {
+                stuckTimer += Time.deltaTime;
+
+                if (stuckTimer >= stuckTime)
+                {
+                    int layer = LayerMask.NameToLayer("Obstacles");
+                    // Verifica si hay un obstáculo al frente
+                    if (!Physics.Raycast(transform.position, direction, raycastDistance, layer))
+                    {
+                        transform.position += direction * unstuckPush;
+                        Debug.Log("Jugador atascado, empujando.");
+                    }
+                    else
+                    {
+                        Debug.Log("Jugador atascado, pero hay un obstáculo. No se empuja.");
+                    }
+
+                    stuckTimer = 0f;
+                }
+            }
+            else
+            {
+                stuckTimer = 0f;
+            }
+
+            lastPosition = transform.position;
+        }
+        else
+        {
+            stuckTimer = 0f;
+            lastPosition = transform.position;
+        }
     }
 
 
