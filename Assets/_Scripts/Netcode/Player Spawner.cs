@@ -36,16 +36,11 @@ public class PlayerSpawner : NetworkBehaviour
             spawnPoints.Add(child);
         }
 
-        // Suscribirse al evento de carga de escenas
+        // Verificar si la escena ya estÃ¡ cargada
         if (!NetworkManager)
         {
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            SpawnPlayers();
         }
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        SpawnPlayers();
     }
 
     public void SpawnPlayers()
@@ -120,7 +115,7 @@ public class PlayerSpawner : NetworkBehaviour
         enablePlayerFields(player);
         player.GetComponent<Player>().IsDead = false;
 
-        // Sincronizar posición y habilitación de campos con clientes (Net)
+        // Sincronizar posiciï¿½n y habilitaciï¿½n de campos con clientes (Net)
         if (NetworkManager)
         {
             if (player.TryGetComponent<NetworkObject>(out var netObj))
@@ -166,12 +161,6 @@ public class PlayerSpawner : NetworkBehaviour
     {
         UpdatePlayerPositionClientRpc(playerRef, position, rotation);
         EnablePlayerFieldsClientRpc(playerRef);
-    }
-
-    private void OnDisable()
-    {
-        if (!NetworkManager)
-            SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public override void OnNetworkSpawn()
