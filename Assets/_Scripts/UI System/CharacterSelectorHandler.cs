@@ -8,11 +8,11 @@ using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 using Unity.VisualScripting;
 
-public class CharacterSelectorHandler : MonoBehaviour
+public class CharacterSelectorHandler : NetworkBehaviour
 {
-
     [Header("Visual Settings")]
     [SerializeField] private float shakeAngle = 3.0f;
     [SerializeField] private float shakeDuration = 0.3f;
@@ -26,7 +26,7 @@ public class CharacterSelectorHandler : MonoBehaviour
     [SerializeField] private string cancelSoundID = "FX_FreeCharacter";
     [SerializeField] private string denySoundID = "FX_Deny";
 
-    // References
+    // Referencias
     private RectTransform portraitPanel;
     private RectTransform emptyPanel;
     private Selectable nameButton;
@@ -40,22 +40,29 @@ public class CharacterSelectorHandler : MonoBehaviour
     private TextMeshProUGUI topText;
     private PlayerConfigurationManager pcm;
 
+    // Propiedades
+    public bool isAvailable { get; set; } = true;
+    public bool isSelected { get; set; } = false;
+    public int playerIndex { get; set; } = -1;
+    public PlayerInput pi { get; set; } = null;
+    public int CurrentCharacterIndex => currCharacterIdx;
     // Properties
-    public bool isAvailable {get; private set;} = true;
-    public bool isSelected {get; private set;} = false;
-    public int playerIndex {get; private set;} = -1;
-    public PlayerInput pi {get; private set;} = null;
     public bool isBot { get; private set; }
 
-    // Private Variables
+    // Variables privadas
     private int currCharacterIdx = 0;
     private CharacterData currCharacterData;
+    private bool canControl = false; // Solo se puede controlar si pertenece al jugador local
 
-    // Initialization and Setup
+    // Propiedad auxiliar para verificar si estamos en modo red
+    private bool IsNetworked => NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening;
+
+    // Inicializaci�n y configuraci�n
     // --------------------------------------------------------------------------------
 
     void Start()
     {
+        // Inicializaci�n de referencias a componentes
         portraitPanel = transform.Find("PortraitPanel").GetComponent<RectTransform>();
         emptyPanel = transform.Find("EmptyPanel").GetComponent<RectTransform>();
         leftArrow = transform.Find("PortraitPanel/LeftArrow").GetComponent<Selectable>();
@@ -75,33 +82,282 @@ public class CharacterSelectorHandler : MonoBehaviour
 
         topText.text = defaultTopText;
 
+        // Agregar listeners para eventos de UI
         AddSelectionListeners(leftArrow);
         AddSelectionListeners(rightArrow);
         AddSubmitListeners(nameButton);
         AddCancelListeners(nameButton);
         UpdateCharacterData(currCharacterIdx, 0);
 
+        // Iniciar en estado desactivado
         Deactivate();
+
+        // Suscribirse al evento de conexi�n de clientes si estamos en modo red
+        if (IsNetworked)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Desuscribirse del evento al destruir el objeto
+        if (NetworkManager.Singleton != null)
+        {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+
+        // Si somos el servidor, anunciamos informaci�n actualizada a todos
+        if (IsServer && !isAvailable)
+        {
+            BroadcastPanelInfoToAllClientRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx, isSelected);
+        }
+
+        // Si somos un cliente (incluyendo host), solicitar informaci�n de todos los paneles al servidor
+        if (IsClient)
+        {
+            StartCoroutine(RequestPanelInfoWithDelay());
+        }
+    }
+
+    private IEnumerator RequestPanelInfoWithDelay()
+    {
+        // Esperamos un breve momento para asegurarnos de que todo est� listo
+        yield return new WaitForSeconds(0.5f);
+
+        // Solicitar informaci�n de paneles al servidor
+        RequestPanelInfoServerRpc(NetworkManager.Singleton.LocalClientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestPanelInfoServerRpc(ulong clientId)
+    {
+        // Encontrar todos los paneles no disponibles
+        CharacterSelectorHandler[] allHandlers = FindObjectsOfType<CharacterSelectorHandler>();
+        foreach (var handler in allHandlers)
+        {
+            if (!handler.isAvailable)
+            {
+                // Enviar informaci�n al cliente sobre este panel ocupado
+                BroadcastPanelInfoRpc(clientId, handler.transform.GetSiblingIndex(), handler.playerIndex, handler.CurrentCharacterIndex, handler.isSelected);
+            }
+        }
+    }
+
+    // Se llama cuando un cliente se conecta al juego
+    private void OnClientConnected(ulong clientId)
+    {
+        // Si somos el servidor y este panel ya est� asignado, informar al cliente
+        if (IsServer && !isAvailable)
+        {
+            // Notificar al nuevo cliente sobre el estado actual del panel
+            BroadcastPanelInfoRpc(clientId, transform.GetSiblingIndex(), playerIndex, currCharacterIdx, isSelected);
+        }
+    }
+
+    [ClientRpc]
+    private void BroadcastPanelInfoToAllClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx, bool selected)
+    {
+        // No procesar si este es nuestro panel controlado localmente
+        if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
+            return;
+
+        // Buscar el panel correspondiente al �ndice en la jerarqu�a
+        CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
+        CharacterSelectorHandler targetPanel = null;
+
+        foreach (var panel in allPanels)
+        {
+            if (panel.transform.GetSiblingIndex() == panelSiblingIndex)
+            {
+                targetPanel = panel;
+                break;
+            }
+        }
+
+        if (targetPanel == null)
+            return;
+
+        // Si el panel pertenece a un jugador local, no modificarlo
+        if (targetPanel.canControl)
+            return;
+
+        // Configurar el panel como ocupado
+        targetPanel.isAvailable = false;
+        targetPanel.playerIndex = playerIdx;
+        targetPanel.currCharacterIdx = characterIdx;
+        targetPanel.isSelected = selected;
+
+        // Activar paneles visuales
+        targetPanel.portraitPanel.gameObject.SetActive(true);
+        targetPanel.emptyPanel.gameObject.SetActive(false);
+
+        // Actualizar visualmente
+        targetPanel.UpdateCharacterData(0, characterIdx);
+
+        // Actualizar flechas seg�n estado de selecci�n
+        if (selected)
+        {
+            targetPanel.leftArrow.gameObject.SetActive(false);
+            targetPanel.rightArrow.gameObject.SetActive(false);
+            targetPanel.portraitOutline.enabled = true;
+        }
+        else
+        {
+            targetPanel.leftArrow.gameObject.SetActive(true);
+            targetPanel.rightArrow.gameObject.SetActive(true);
+            targetPanel.portraitOutline.enabled = false;
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void BroadcastPanelInfoRpc(ulong targetClientId, int panelSiblingIndex, int playerIdx, int characterIdx, bool selected)
+    {
+        // Solo el cliente objetivo debe procesar esta notificaci�n
+        if (NetworkManager.Singleton.LocalClientId != targetClientId)
+            return;
+
+        // Buscar el panel correspondiente al �ndice en la jerarqu�a
+        CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
+        CharacterSelectorHandler targetPanel = null;
+
+        foreach (var panel in allPanels)
+        {
+            if (panel.transform.GetSiblingIndex() == panelSiblingIndex)
+            {
+                targetPanel = panel;
+                break;
+            }
+        }
+
+        if (targetPanel == null)
+            return;
+
+        // Si el panel pertenece a un jugador local, no modificarlo
+        if (targetPanel.pi != null && targetPanel.pi.GetComponent<Player>().IsLocalPlayer)
+            return;
+
+        // Configurar el panel como ocupado
+        targetPanel.isAvailable = false;
+        targetPanel.playerIndex = playerIdx;
+        targetPanel.currCharacterIdx = characterIdx;
+        targetPanel.isSelected = selected;
+
+        // Activar paneles visuales
+        targetPanel.portraitPanel.gameObject.SetActive(true);
+        targetPanel.emptyPanel.gameObject.SetActive(false);
+
+        // Actualizar visualmente
+        targetPanel.UpdateCharacterData(0, characterIdx);
+
+        // Actualizar flechas seg�n estado de selecci�n
+        if (selected)
+        {
+            targetPanel.leftArrow.gameObject.SetActive(false);
+            targetPanel.rightArrow.gameObject.SetActive(false);
+            targetPanel.portraitOutline.enabled = true;
+        }
+        else
+        {
+            targetPanel.leftArrow.gameObject.SetActive(true);
+            targetPanel.rightArrow.gameObject.SetActive(true);
+            targetPanel.portraitOutline.enabled = false;
+        }
     }
 
     public void Activate(PlayerInput pi, bool isBot = false, string playerName = null)
     {
-        if(playerName != null){
-            topText.text = playerName;
+        if (IsNetworked)
+        {
+            var netObj = pi.GetComponent<Player>().GetNetworkObject();
+            if (netObj != null && netObj.IsSpawned)
+            {
+                // Determinar si este panel pertenece al jugador local
+                canControl = pi.GetComponent<Player>().IsLocalPlayer;
+                this.pi = pi;
+                this.playerIndex = pi.playerIndex;
+                this.isAvailable = false;
+
+                // Activar visualmente el panel
+                portraitPanel.gameObject.SetActive(true);
+                emptyPanel.gameObject.SetActive(false);
+
+                // Enviar RPC para activar el panel en todos los clientes
+                ActivateRpc(transform.GetSiblingIndex(), pi.playerIndex, 0);
+            }
+            else
+            {
+                Debug.LogWarning("Intentando activar un panel con un NetworkObject no spawneado.");
+            }
         }
-        StartCoroutine(SetAvailabilityNextFrame(false));
-        portraitPanel.gameObject.SetActive(true);
-        emptyPanel.gameObject.SetActive(false);
-        this.playerIndex = pi.playerIndex;
-        this.pi = pi;
-        this.isBot = isBot;
+        else
+        {     
+            if(playerName != null){
+            topText.text = playerName;
+    }
+            isAvailable = false;
+            portraitPanel.gameObject.SetActive(true);
+            emptyPanel.gameObject.SetActive(false);
+            this.playerIndex = pi.playerIndex;
+            this.pi = pi;
+            canControl = true; // En modo local, siempre podemos controlar
+            this.isBot = isBot;
+        }
     }
 
-    private IEnumerator SetAvailabilityNextFrame(bool available)
+    [Rpc(SendTo.ClientsAndHost)]
+    void ActivateRpc(int panelSiblingIndex, int playerIndex, int initialCharacterIdx)
     {
-        yield return null;
-        isAvailable = available;
+        // No procesar si este es nuestro panel o si ya estamos controlando este panel localmente
+        if (canControl)
+            return;
+
+        // Buscar el panel correspondiente
+        CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
+        CharacterSelectorHandler targetPanel = null;
+
+        foreach (var panel in allPanels)
+        {
+            if (panel.transform.GetSiblingIndex() == panelSiblingIndex)
+            {
+                targetPanel = panel;
+                break;
+            }
+        }
+
+        if (targetPanel == null)
+            return;
+
+        // Si el panel ya est� controlado por este cliente, no hacer nada
+        if (targetPanel.canControl)
+            return;
+
+        // Verificar si este panel est� reservado para otro jugador
+        if (!targetPanel.isAvailable && targetPanel.playerIndex != playerIndex)
+        {
+            // Este panel ya est� reservado para otro jugador
+            Debug.LogWarning($"El panel {panelSiblingIndex} ya est� reservado para el jugador {targetPanel.playerIndex}, no se puede activar para el jugador {playerIndex}");
+            return;
+        }
+
+        // Configurar el panel para un jugador remoto
+        targetPanel.isAvailable = false;
+        targetPanel.playerIndex = playerIndex;
+        targetPanel.canControl = false; // Es un panel remoto para este cliente
+
+        // Activar visualmente el panel
+        targetPanel.portraitPanel.gameObject.SetActive(true);
+        targetPanel.emptyPanel.gameObject.SetActive(false);
+
+        // Actualizar visualizaci�n
+        targetPanel.UpdateCharacterData(0, initialCharacterIdx);
     }
+
 
     public void Deactivate()
     {
@@ -109,12 +365,13 @@ public class CharacterSelectorHandler : MonoBehaviour
         portraitPanel.gameObject.SetActive(false);
         emptyPanel.gameObject.SetActive(true);
         playerIndex = -1;
+        canControl = false;
+        pi = null;
     }
-
 
     void Update()
     {
-        if(!isSelected && pcm.lockedCharacterData[currCharacterIdx])
+        if (!isSelected && pcm.lockedCharacterData[currCharacterIdx])
         {
             overlay.gameObject.SetActive(true);
         }
@@ -124,31 +381,35 @@ public class CharacterSelectorHandler : MonoBehaviour
         }
     }
 
-    /// Add Event Trigger Listeners
-    /// --------------------------------------------------------------------------------
+    // Agregar listeners para eventos
+    // --------------------------------------------------------------------------------
 
-    protected virtual void AddSubmitListeners(Selectable selectable){
+    protected virtual void AddSubmitListeners(Selectable selectable)
+    {
         EventTrigger trigger = selectable.gameObject.GetComponent<EventTrigger>();
         if (trigger == null)
         {
             trigger = selectable.gameObject.AddComponent<EventTrigger>();
         }
 
-        EventTrigger.Entry SubmitEntry = new EventTrigger.Entry{
+        EventTrigger.Entry SubmitEntry = new EventTrigger.Entry
+        {
             eventID = EventTriggerType.Submit
         };
         SubmitEntry.callback.AddListener(OnSubmit);
         trigger.triggers.Add(SubmitEntry);
     }
 
-    protected virtual void AddCancelListeners(Selectable selectable){
+    protected virtual void AddCancelListeners(Selectable selectable)
+    {
         EventTrigger trigger = selectable.gameObject.GetComponent<EventTrigger>();
         if (trigger == null)
         {
             trigger = selectable.gameObject.AddComponent<EventTrigger>();
         }
 
-        EventTrigger.Entry CancelEntry = new EventTrigger.Entry{
+        EventTrigger.Entry CancelEntry = new EventTrigger.Entry
+        {
             eventID = EventTriggerType.Cancel
         };
         CancelEntry.callback.AddListener(OnCancel);
@@ -163,43 +424,101 @@ public class CharacterSelectorHandler : MonoBehaviour
             trigger = selectable.gameObject.AddComponent<EventTrigger>();
         }
 
-        EventTrigger.Entry SelectEntry = new EventTrigger.Entry{
+        EventTrigger.Entry SelectEntry = new EventTrigger.Entry
+        {
             eventID = EventTriggerType.Select
         };
         SelectEntry.callback.AddListener(OnSelect);
         trigger.triggers.Add(SelectEntry);
     }
 
-    /// Event Trigger Callbacks
-    /// --------------------------------------------------------------------------------
+    // Callbacks para eventos de UI
+    // --------------------------------------------------------------------------------
 
     public void OnSelect(BaseEventData eventData)
     {
+        // Solo permitir control si este panel pertenece al jugador local
+        if (!canControl || isAvailable || isSelected)
+            return;
+
         if (eventSystem.currentSelectedGameObject == leftArrow.gameObject)
         {
             HandleArrow(-1);
+
+            // En modo red, notificar cambio de selecci�n
+            if (IsNetworked)
+            {
+                NotifyCharacterSelectionChangedServerRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx);
+            }
         }
         else if (eventSystem.currentSelectedGameObject == rightArrow.gameObject)
         {
             HandleArrow(1);
+
+            // En modo red, notificar cambio de selecci�n
+            if (IsNetworked)
+            {
+                NotifyCharacterSelectionChangedServerRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx);
+            }
         }
 
         Invoke(nameof(ResetSelection), 0.1f);
     }
 
-    public void OnCancel(BaseEventData eventData){
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyCharacterSelectionChangedServerRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
+    {
+        // El servidor recibe la notificaci�n y la reenv�a a todos los clientes
+        NotifyCharacterSelectionChangedClientRpc(panelSiblingIndex, playerIdx, characterIdx);
+    }
+
+    [ClientRpc]
+    private void NotifyCharacterSelectionChangedClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
+    {
+        // No modificar si este es nuestro panel controlado localmente
+        if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
+            return;
+
+        // Buscar el panel en la jerarqu�a
+        CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
+        CharacterSelectorHandler targetPanel = null;
+
+        foreach (var panel in allPanels)
+        {
+            if (panel.transform.GetSiblingIndex() == panelSiblingIndex)
+            {
+                targetPanel = panel;
+                break;
+            }
+        }
+
+        if (targetPanel == null || targetPanel.canControl)
+            return;
+
+        // Actualizar la visualizaci�n del personaje para paneles remotos
+        targetPanel.UpdateCharacterData(0, characterIdx);
+    }
+
+    public void OnCancel(BaseEventData eventData)
+    {
+        // Solo permitir control si este panel pertenece al jugador local
+        if (!canControl || isAvailable)
+            return;
         if  (isBot) {
             pcm.RestoreHostInput();
             Destroy(pi.gameObject);
             pcm.DecreaseBotCount();
             Deactivate();
         }
-        if (!isSelected){
-            if(playerIndex == 0){
+        if (!isSelected)
+        {
+            if (playerIndex == 0)
+            {
                 pcm.BackToMainMenu();
             }
+            return;
         }
-        if (isAvailable) return;
+
         portraitPanel.DOKill(true);
         pcm.UnlockCharacter(currCharacterIdx, pi);
         isSelected = false;
@@ -208,24 +527,76 @@ public class CharacterSelectorHandler : MonoBehaviour
         AudioManager.PlaySound(cancelSoundID);
         leftArrow.gameObject.SetActive(true);
         rightArrow.gameObject.SetActive(true);
+
+        // En modo red, notificar sobre el desbloqueo
+        if (IsNetworked)
+        {
+            NotifyCharacterUnlockedServerRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx);
+        }
     }
 
-    public void OnSubmit(BaseEventData eventData){
-        if (isAvailable) return;
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyCharacterUnlockedServerRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
+    {
+        // El servidor recibe la notificaci�n y la reenv�a a todos los clientes
+        NotifyCharacterUnlockedClientRpc(panelSiblingIndex, playerIdx, characterIdx);
+    }
+
+    [ClientRpc]
+    private void NotifyCharacterUnlockedClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
+    {
+        // No modificar si este es nuestro panel controlado localmente
+        if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
+            return;
+
+        // Buscar el panel en la jerarqu�a
+        CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
+        CharacterSelectorHandler targetPanel = null;
+
+        foreach (var panel in allPanels)
+        {
+            if (panel.transform.GetSiblingIndex() == panelSiblingIndex)
+            {
+                targetPanel = panel;
+                break;
+            }
+        }
+
+        if (targetPanel == null || targetPanel.canControl)
+            return;
+
+        // Actualizar la visualizaci�n del personaje para paneles remotos
+        targetPanel.isSelected = false;
+        targetPanel.leftArrow.gameObject.SetActive(true);
+        targetPanel.rightArrow.gameObject.SetActive(true);
+        targetPanel.portraitOutline.enabled = false;
+    }
+
+    public void OnSubmit(BaseEventData eventData)
+    {
+        // Solo permitir control si este panel pertenece al jugador local
+        if (!canControl || isAvailable)
+            return;
         if(isBot) {
             pcm.RestoreHostInput();
         }
-        if (isSelected) {
-            if (playerIndex == 0){
+        if (isSelected)
+        {
+            if (playerIndex == 0)
+            {
                 pcm.StartGame();
             }
             return;
-        };
+        }
+
         portraitPanel.DOKill(true);
-        if (pcm.lockedCharacterData[currCharacterIdx]){
+        if (pcm.lockedCharacterData[currCharacterIdx])
+        {
             portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.2f, 5, 1);
             AudioManager.PlaySound(denySoundID);
-        } else {
+        }
+        else
+        {
             bool selectionOk = pcm.LockCharacter(currCharacterIdx, pi);
             isSelected = selectionOk;
             AudioManager.PlaySound(selectionSoundID);
@@ -233,10 +604,54 @@ public class CharacterSelectorHandler : MonoBehaviour
             leftArrow.gameObject.SetActive(false);
             rightArrow.gameObject.SetActive(false);
             portraitOutline.enabled = true;
+
+            // En modo red, notificar sobre el bloqueo
+            if (IsNetworked)
+            {
+                NotifyCharacterLockedServerRpc(transform.GetSiblingIndex(), playerIndex, currCharacterIdx);
+            }
         }
     }
 
-    // Auxiliary Methods
+    [ServerRpc(RequireOwnership = false)]
+    private void NotifyCharacterLockedServerRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
+    {
+        // El servidor recibe la notificaci�n y la reenv�a a todos los clientes
+        NotifyCharacterLockedClientRpc(panelSiblingIndex, playerIdx, characterIdx);
+    }
+
+    [ClientRpc]
+    private void NotifyCharacterLockedClientRpc(int panelSiblingIndex, int playerIdx, int characterIdx)
+    {
+        // No modificar si este es nuestro panel controlado localmente
+        if (transform.GetSiblingIndex() == panelSiblingIndex && canControl)
+            return;
+
+        // Buscar el panel en la jerarqu�a
+        CharacterSelectorHandler[] allPanels = FindObjectsOfType<CharacterSelectorHandler>();
+        CharacterSelectorHandler targetPanel = null;
+
+        foreach (var panel in allPanels)
+        {
+            if (panel.transform.GetSiblingIndex() == panelSiblingIndex)
+            {
+                targetPanel = panel;
+                break;
+            }
+        }
+
+        if (targetPanel == null || targetPanel.canControl)
+            return;
+
+        // Actualizar la visualizaci�n del personaje para paneles remotos
+        targetPanel.UpdateCharacterData(0, characterIdx);
+        targetPanel.isSelected = true;
+        targetPanel.leftArrow.gameObject.SetActive(false);
+        targetPanel.rightArrow.gameObject.SetActive(false);
+        targetPanel.portraitOutline.enabled = true;
+    }
+
+    // M�todos auxiliares
     // --------------------------------------------------------------------------------
 
     private void HandleArrow(int direction)
@@ -248,15 +663,15 @@ public class CharacterSelectorHandler : MonoBehaviour
             portraitPanel.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
-        // Determine the shake angle based on direction
+        // Determinar el �ngulo de sacudida seg�n la direcci�n
         float angle = direction > 0 ? -shakeAngle : shakeAngle;
         portraitPanel.DOPunchRotation(new Vector3(0, 0, angle), shakeDuration, 5, 1);
         portraitPanel.DOPunchScale(new Vector3(scaleFactor, scaleFactor, scaleFactor), 0.5f, 10, 1);
 
-        // Update the current index based on direction
+        // Actualizar el �ndice actual seg�n la direcci�n
         UpdateCharacterData(currCharacterIdx, direction);
 
-        // Play sound effect
+        // Reproducir efecto de sonido
         AudioManager.PlaySound("FX_ChangeCharacter");
     }
 
@@ -269,11 +684,11 @@ public class CharacterSelectorHandler : MonoBehaviour
             Debug.LogError("Failed to fetch character data.");
             return;
         }
-        
+
         currCharacterIdx = newIndex;
         currCharacterData = data;
 
-        if(isLocked) overlay.gameObject.SetActive(true);
+        if (isLocked) overlay.gameObject.SetActive(true);
         else overlay.gameObject.SetActive(false);
 
         portraitImage.color = new Color(data.portraitLuminosity, data.portraitLuminosity, data.portraitLuminosity, 1.0f);
@@ -286,5 +701,24 @@ public class CharacterSelectorHandler : MonoBehaviour
     public void ResetSelection()
     {
         eventSystem.SetSelectedGameObject(nameButton.gameObject);
+    }
+
+    // M�todo p�blico para otras clases
+    public void UpdateVisualState(bool locked)
+    {
+        if (locked)
+        {
+            isSelected = true;
+            leftArrow.gameObject.SetActive(false);
+            rightArrow.gameObject.SetActive(false);
+            portraitOutline.enabled = true;
+        }
+        else
+        {
+            isSelected = false;
+            leftArrow.gameObject.SetActive(true);
+            rightArrow.gameObject.SetActive(true);
+            portraitOutline.enabled = false;
+        }
     }
 }

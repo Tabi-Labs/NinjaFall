@@ -1,13 +1,18 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.Users;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+#if UNITY_EDITOR
 [InitializeOnLoad]
+#endif
 public class BotManager : MonoBehaviour
 {
     public static BotManager Instance { get; private set; }
@@ -87,7 +92,9 @@ public class BotManager : MonoBehaviour
     {
         foreach (BotController bot in bots.Values)
         {
-            InputSystem.RemoveDevice(bot.virtualGamepad);
+            Gamepad currentGamepad = bot.virtualGamepad;
+            Destroy(bot.playerInput.gameObject);
+            InputSystem.RemoveDevice(currentGamepad);
         }
         bots.Clear();
     }

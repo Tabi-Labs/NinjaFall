@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ExitDoor : MonoBehaviour
 {
-    [SerializeField] private SceneAsset _sceneToLoad;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -20,8 +18,6 @@ public class ExitDoor : MonoBehaviour
     }
     private void ExitToMainMenu()
     {
-        if(SceneLoader.Instance) SceneLoader.Instance.ChangeScene(_sceneToLoad.name);
-        else SceneManager.LoadScene(_sceneToLoad.name);
-        
+        if(SceneLoader.Instance) SceneLoader.Instance.ChangeScene("01_Start_Menu");
     }
 }

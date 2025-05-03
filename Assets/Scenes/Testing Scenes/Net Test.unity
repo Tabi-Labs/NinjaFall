@@ -11602,7 +11602,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &731971133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11742,7 +11742,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 781302911}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 621567455fd1c4ceb811cc8a00b6a1a5, type: 3}
   m_Name: 
@@ -14120,6 +14120,7 @@ MonoBehaviour:
   BodyColl: {fileID: 0}
   JumpParticles: {fileID: 0}
   SecondJumpParticles: {fileID: 0}
+  ToxicParticles: {fileID: 0}
   LandParticles: {fileID: 0}
   ParticleSpawnTransform: {fileID: 0}
   TrailRenderer: {fileID: 0}
@@ -14127,8 +14128,11 @@ MonoBehaviour:
   DashParticles: {fileID: 0}
   WallSlideParticles: {fileID: 0}
   HeightTracker: {fileID: 0}
+  DontDestroyOnLoadFlag: 1
   OnPlayerDeath: {fileID: 0}
   ShowEnteredStateDebugLog: 0
+  isReady: 0
+  isFacingRight: 1
 --- !u!1 &1148567374
 GameObject:
   m_ObjectHideFlags: 0
@@ -15241,14 +15245,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerInput: {fileID: 0}
-  JumpWasPressed: 0
-  JumpIsHeld: 0
-  JumpWasReleased: 0
-  RunIsHeld: 0
-  DashWasPressed: 0
-  TestWasPressed: 0
-  MeleeAttackWasPressed: 0
-  RangeAttackWasPressed: 0
 --- !u!114 &1712285363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17243,6 +17239,7 @@ MonoBehaviour:
   P2TextMesh: {fileID: 673088383}
   P3TextMesh: {fileID: 985620531}
   P4TextMesh: {fileID: 1307012957}
+  alivePlayers: 
 --- !u!1 &71383274891555235
 GameObject:
   m_ObjectHideFlags: 0

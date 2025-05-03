@@ -26,11 +26,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Testing Scenes/Attacks Testing.unity
     guid: 33d2a4f9a3e165b45b558bd5d4d9676c
-  - enabled: 0
-    path: Assets/Scenes/02_Multiplayer_Menu.unity
-    guid: b30ab0157b42b654ea368a0218a92a17
   - enabled: 1
     path: Assets/Scenes/Testing Scenes/Net Test.unity
     guid: c33b748605849be458a81f500a9a44cd
+  - enabled: 1
+    path: Assets/Scenes/06_Multiplayer_Character_Select.unity
+    guid: 44a64cd7100b6fb4fbd2ceee7b043d89
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 869c03e99751ae845a95226fff3e8022, type: 2}

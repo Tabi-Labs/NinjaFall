@@ -54,6 +54,7 @@ public class PlayerDamageable : Damageable
 
     private void Parry()
     {
+        if (!IsOwner) return;
         _isParrying = true;
         _parryTimer = _stats.ParryTime;
     }
