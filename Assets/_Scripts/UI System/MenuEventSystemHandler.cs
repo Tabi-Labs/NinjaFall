@@ -195,4 +195,9 @@ public class MenuEventSystemHandler : MonoBehaviour
         }
         
     }
+
+    #region ----- MAIN MENU FUNCTIONS ------
+    public void ExitGame() => Application.Quit();
+    
+    #endregion
 }
