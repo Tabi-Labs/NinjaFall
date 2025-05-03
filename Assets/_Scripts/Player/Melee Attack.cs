@@ -70,7 +70,7 @@ public class MeleeAttack : MonoBehaviour
         Debug.DrawLine(transform.position, hitPoint, Color.blue, 1f);
         DrawDebugBox(hitPoint, boxSize, angle, Color.magenta, 1f);
 
-        if(colliders.Length == 0) 
+        if(colliders.Length == 0 || _player.CheckIsDead()) 
         {
             _debugColor = Color.red;
             return;
