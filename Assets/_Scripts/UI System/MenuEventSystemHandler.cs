@@ -155,8 +155,14 @@ public class MenuEventSystemHandler : MonoBehaviour
 
         // Blink Behavior
         if(_buttonSubmitBehavior.HasFlag(buttonSubmitBehavior.Blink)){
-            TextMeshProUGUI text = button.GetComponentInChildren<TextMeshProUGUI>();
-            Tween tween = text?.DOFade(0, 0.1f).SetLoops(6, LoopType.Yoyo).SetEase(Ease.InOutFlash);
+            CanvasGroup canvasGroup = button.GetComponentInChildren<CanvasGroup>();
+            TextMeshProUGUI graphic = canvasGroup == null ? button.GetComponentInChildren<TextMeshProUGUI>() : null; // 
+        
+
+            Tween tween = canvasGroup != null 
+            ? canvasGroup.DOFade(0, 0.1f).SetLoops(6, LoopType.Yoyo).SetEase(Ease.InOutFlash) 
+            : graphic?.DOFade(0, 0.1f).SetLoops(6, LoopType.Yoyo).SetEase(Ease.InOutFlash);
+            
             await tween.AsyncWaitForCompletion(); // Espera a que acabe el tween
         }
 
@@ -189,4 +195,9 @@ public class MenuEventSystemHandler : MonoBehaviour
         }
         
     }
+
+    #region ----- MAIN MENU FUNCTIONS ------
+    public void ExitGame() => Application.Quit();
+    
+    #endregion
 }

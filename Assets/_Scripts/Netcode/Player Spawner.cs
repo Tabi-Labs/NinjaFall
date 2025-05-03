@@ -19,16 +19,10 @@ public class PlayerSpawner : NetworkBehaviour
     // Singleton Pattern
     public static PlayerSpawner Instance { get; private set; }
 
+    #region ----- UNITY CALLBACKS -----
     private void Awake()
     {
-        if (Instance != null)
-        {
-            Debug.Log("[Singleton] Trying to instantiate a second instance of a singleton class.");
-        }
-        else
-        {
-            Instance = this;
-        }
+        Instance = this;
 
         // Inicializar puntos de spawn
         spawnPoints = new List<Transform>();
@@ -42,6 +36,25 @@ public class PlayerSpawner : NetworkBehaviour
         {
             SpawnPlayers();
         }
+    }
+
+    void OnEnable()
+    {
+        Instance = this;
+    }
+
+    private void OnDisable()
+    {
+        if (!NetworkManager)
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    #endregion
+
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SpawnPlayers();
     }
 
     public void SpawnPlayers()
