@@ -162,7 +162,7 @@ public class Player : NetworkBehaviour
 
     public float stuckThreshold = 0.05f;
     public float stuckTime = 0.1f;
-    public float unstuckPush = 0.075f;
+    public float unstuckPush = 1.0f;
     public float raycastDistance = 0.7f;
 
     private Vector3 lastPosition;
