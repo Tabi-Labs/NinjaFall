@@ -10,7 +10,6 @@ public class CharacterData : ScriptableObject
     public RuntimeAnimatorController portraitAnimator;  // Animator del portrait
     public Sprite text;                          // Imagen del texto
     public Color textOutlineColor;               // Color del borde del texto
-    public Color heartColor;                     // Color del corazón en el HUD
     public Material mat;                         // Material personalizado
     public string[] victoryPhrases;              // Frases cuando el peronaje sale ganador
 }

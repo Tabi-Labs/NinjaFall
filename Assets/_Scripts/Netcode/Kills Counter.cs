@@ -4,8 +4,6 @@ using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 using System.Linq;
-using UnityEngine.InputSystem;
-using Unity.VisualScripting;
 
 public class KillsCounter : NetworkBehaviour
 {
@@ -22,10 +20,8 @@ public class KillsCounter : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI P4TextMesh;
 
     private TextMeshProUGUI[] playerTextMeshes;
-    private int[] localLives;
+    private int[] localLives = new int[4] { MAX_LIVES, MAX_LIVES, MAX_LIVES, MAX_LIVES };
     public bool[] alivePlayers;
-
-    private Player[] allPlayers;
 
     // Cantidad de jugadores locales
     private int localPlayerCount;
@@ -36,7 +32,6 @@ public class KillsCounter : NetworkBehaviour
     private void Awake()
     {
         Instance = this;
-        localLives = new int[4] {MAX_LIVES, MAX_LIVES, MAX_LIVES, MAX_LIVES};
     }
 
     private void Start()
@@ -56,16 +51,8 @@ public class KillsCounter : NetworkBehaviour
                 localPlayerCount = 1;
             }
 
-            // Get all players in the scene
-            allPlayers = GameObject.FindGameObjectsWithTag("Player")
-                .Where(x => x.GetComponent<Player>() != null)
-                .Select(x => x.GetComponent<Player>())
-                .ToArray();
-
-            allPlayers = allPlayers.OrderBy(x => x.GetComponent<PlayerInput>().playerIndex).ToArray();
-
             InitializeLocalMode();
-            InitializeCounters();
+            GeneratePlayerTextMeshes();
             UpdateUI();
         }
     }
@@ -88,15 +75,7 @@ public class KillsCounter : NetworkBehaviour
             alivePlayers[i] = true;
         }
 
-        // Get all players in the scene
-        allPlayers = GameObject.FindGameObjectsWithTag("Player")
-            .Where(x => x.GetComponent<Player>() != null)
-            .Select(x => x.GetComponent<Player>())
-            .ToArray();
-
-        allPlayers = allPlayers.OrderBy(x => x.GetComponent<NetworkObject>().NetworkObjectId).ToArray();
-
-        InitializeCounters();
+        GeneratePlayerTextMeshes();
 
         if (IsServer)
         {
@@ -224,7 +203,7 @@ public class KillsCounter : NetworkBehaviour
     }
 
     // Asocia los TextMeshPro existentes y los activa según los jugadores
-    private void InitializeCounters()
+    private void GeneratePlayerTextMeshes()
     {
         playerTextMeshes = new TextMeshProUGUI[] { P1TextMesh, P2TextMesh, P3TextMesh, P4TextMesh };
 
@@ -251,9 +230,13 @@ public class KillsCounter : NetworkBehaviour
             localPlayerCount = numberOfPlayers;
         }
 
-        for (int i = 0; i < numberOfPlayers; i++)
+        for (int i = 0; i < playerTextMeshes.Length; i++)
         {
-            LivesCanvasHandler.Instance.InitializePanel(i, allPlayers[i].CharacterData, GetLives(i));
+            if (playerTextMeshes[i] != null)
+            {
+                bool shouldBeActive = i < numberOfPlayers;
+                playerTextMeshes[i].gameObject.SetActive(shouldBeActive);
+            }
         }
     }
 
@@ -263,10 +246,22 @@ public class KillsCounter : NetworkBehaviour
         int playerCount = NetworkManager && NetworkManager.IsListening ?
             NetworkManager.ConnectedClientsIds.Count : localPlayerCount;
 
-        for (int i = 0; i < playerCount; i++){
-            LivesCanvasHandler.Instance.UpdatePanels(i, GetLives(i));
+        for (int i = 0; i < playerTextMeshes.Length; i++)
+        {
+            if (playerTextMeshes[i] != null)
+            {
+                if (i < playerCount)
+                {
+                    int lives = GetLives(i);
+                    playerTextMeshes[i].text = "P" + (i + 1) + ": " + lives + " Vidas";
+                    playerTextMeshes[i].gameObject.SetActive(true);
+                }
+                else
+                {
+                    playerTextMeshes[i].gameObject.SetActive(false);
+                }
+            }
         }
-
     }
 
     // Determina al ganador en modo local
@@ -278,11 +273,9 @@ public class KillsCounter : NetworkBehaviour
         {
             if (PauseManager.instance != null)
             {
-                UpdateUI();
                 PauseManager.instance.EndGame(players[winnerID].GetComponent<Player>().CharacterData);
             }
         }
-
     }
 
     #region RPCs

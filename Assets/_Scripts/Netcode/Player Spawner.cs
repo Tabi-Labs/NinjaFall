@@ -31,10 +31,10 @@ public class PlayerSpawner : NetworkBehaviour
             spawnPoints.Add(child);
         }
 
-        // Verificar si la escena ya está cargada
+        // Suscribirse al evento de carga de escenas
         if (!NetworkManager)
         {
-            SpawnPlayers();
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
     }
 
@@ -176,6 +176,8 @@ public class PlayerSpawner : NetworkBehaviour
         UpdatePlayerPositionClientRpc(playerRef, position, rotation);
         EnablePlayerFieldsClientRpc(playerRef);
     }
+
+    
 
     public override void OnNetworkSpawn()
     {
