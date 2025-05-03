@@ -201,7 +201,7 @@ public class PlayerSpawner : NetworkBehaviour
         {
             if (id != OwnerClientId)
             {
-                NetworkObject playerNetworkObject = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.transform.GetChild(0).GetComponent<NetworkObject>();
+                NetworkObject playerNetworkObject = NetworkManager.Singleton.ConnectedClients[id].PlayerObject.GetComponent<NetworkObject>();
                 playerNetworkObject.Despawn(true);
             }
         }

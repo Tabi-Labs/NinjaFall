@@ -379,11 +379,14 @@ public class PlayerConfigurationManager : NetworkBehaviour
 
     public void HandlePlayerJoin(PlayerInput pi)
     {
-        if (NetworkManager) return;
+        if (NetworkManager)
+        {
+            return;
+        }
+   
         int i;
         CharacterSelectorHandler csh = null;
         string playerName;
-
         // Get free CharacterSelectorHandler
         for (i = 0; i < characterSelectorHandlers.Length; i++)
         {

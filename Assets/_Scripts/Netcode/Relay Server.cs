@@ -24,6 +24,10 @@ public class RelayServer : MonoBehaviour
     //Funci�n as�ncrona
     private async void Start()
     {
+        if(NetworkManager.Singleton.IsListening)
+        {
+            NetworkManager.Singleton.Shutdown();
+        }
         //Inicializar los servicios de Unity
         //Es un a funci�n as�ncrona por lo tanto el m�todo tiene que ser asinc
         //Evita que se congele para los dem�s usuarios
