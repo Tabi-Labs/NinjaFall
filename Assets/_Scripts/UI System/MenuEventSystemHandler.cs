@@ -178,8 +178,8 @@ public class MenuEventSystemHandler : MonoBehaviour
     public void LoadScene(string sceneName)
     {
         
-        // Ñapa apocaliptica
-        if(sceneName == "05_Character_Select" && NetworkManager.Singleton || sceneName == "01_Start_Menu" && NetworkManager.Singleton)
+        // ï¿½apa apocaliptica
+        if((sceneName == "05_Character_Select" && NetworkManager.Singleton) || (sceneName == "01_Start_Menu" && NetworkManager.Singleton))
         {
             NetworkManager.Singleton.SceneManager.LoadScene("02_Multiplayer_Menu", LoadSceneMode.Single);
         }
