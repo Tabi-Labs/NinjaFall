@@ -17,6 +17,7 @@ MonoBehaviour:
   portraitAnimator: {fileID: 9100000, guid: 6b0c1e0facd99324098b170194bd4e3b, type: 2}
   text: {fileID: 21300000, guid: 9bb5f2cad0d1fa141b7a12445623855c, type: 3}
   textOutlineColor: {r: 0.5764706, g: 0.16470589, b: 0.18431373, a: 1}
+  heartColor: {r: 1, g: 0, b: 0.047058824, a: 0}
   mat: {fileID: 2100000, guid: 4f5f83647cb126e4d8ff55202b69be4f, type: 2}
   victoryPhrases:
   - Your end was quick. Consider it mercy.
