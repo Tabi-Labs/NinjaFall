@@ -61,6 +61,8 @@ public class Damageable : NetworkBehaviour, IDamageable
         if(_isParrying)
         {
             OnParryEvent?.Invoke();
+            AudioManager.PlaySound("FX_SwordClash");
+            VFXManager.PlayVFX("VFX_Impact",VFXType.Animation, transform.position, Quaternion.identity);
             return;
         }
 
@@ -130,6 +132,9 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     public virtual bool IsParrying()
     {
+         if(_isParrying)
+            OnParryEvent?.Invoke();
+        
         return _isParrying;
     }
 }
