@@ -26,12 +26,10 @@ public class ProjectileBehaviour : NetworkBehaviour
     private bool _isAffectedByGravity = false;
     private bool _canDamage = true;
     private Vector3 _hitSurfaceNormal;
-    private Collider2D currentObstacle;
     private bool isFollowingEdge = false;
     private Transform[] pathPoints;
 
-    private Vector2 tangentDirection;
-    private float timerFollowingEdge = 5.0f;
+
     private bool _collided = false;
     public bool IsMoving => _isMoving;
 
@@ -272,11 +270,16 @@ public class ProjectileBehaviour : NetworkBehaviour
             if(_canDamage && !_collided)
             {
                 damageableComponent.TakeDamage(_stats.Damage);
-                DisableDamage();
-                _collided = true;
-                _isAffectedByGravity = true;
-                _movement.StopX();  
-                return true;
+
+                if (!isFollowingEdge)
+                {
+                    DisableDamage();
+                    _collided = true;
+                    _isAffectedByGravity = true;
+                    _movement.StopX();
+                    return true;
+                }
+                
             }
         }
         return false;
