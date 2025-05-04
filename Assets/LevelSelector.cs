@@ -22,6 +22,10 @@ public class LevelSelector : NetworkBehaviour
         if (IsServer)
         {
             int randomIndex = Random.Range(0, levelPrefabs.Length);
+            while(randomIndex == 2)
+            {
+                randomIndex = Random.Range(0, levelPrefabs.Length);
+            }
             idScene.Value = randomIndex;
         }
     }
