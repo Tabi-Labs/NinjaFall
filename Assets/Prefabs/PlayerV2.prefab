@@ -5546,7 +5546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 337236508
+  GlobalObjectIdHash: 607330330
   InScenePlacedSourceGlobalObjectIdHash: 607330330
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -5645,10 +5645,10 @@ MonoBehaviour:
   _isParrying: 0
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
+  IsEnabled: 1
   blinkDuration: 2
   blinkInterval: 0.2
   transparentAlpha: 0.8
-  IsEnabled: 1
   _stats: {fileID: 11400000, guid: ef699b8c91aa5f644838494bbac45e35, type: 2}
 --- !u!212 &7882907021759217884
 SpriteRenderer:

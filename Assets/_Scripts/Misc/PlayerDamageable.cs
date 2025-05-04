@@ -11,7 +11,7 @@ public class PlayerDamageable : Damageable
 
     #region ----- MONOBEHAVIOUR CALLBACKS -----
 
-    protected void Awake()
+    protected override void Awake()
     {
         base.Awake();
         _player = GetComponent<Player>();      
@@ -54,7 +54,7 @@ public class PlayerDamageable : Damageable
 
     private void Parry()
     {
-        if (!IsOwner) return;
+        if (NetworkManager && !IsOwner) return;
         _isParrying = true;
         _parryTimer = _stats.ParryTime;
     }
