@@ -13,6 +13,9 @@ public class BotBrain : MonoBehaviour
     public float wallCheckInterval       = 0.25f;  // Intervalo para tomar decisiones
     public float obstacleCheckDistance   = 1.50f;  // Distancia para revisar obstaculos
     public float targetDistanceThreshold = 1.00f;  // Distancia para perseguir al jugador
+    [Header("Shuriken Deflect Time")]
+    public float topShurikenInterval = 0.25f;
+    public float bottomShurikenInterval = 0.05f;
 
     public int inputFrameDelay = 5;  // Intervalo para aplicar inputs
 
@@ -39,6 +42,7 @@ public class BotBrain : MonoBehaviour
         StartCoroutine(MakeDecisions());
         StartCoroutine(CheckWallsAndJump());
         StartCoroutine(SendInputs());
+        StartCoroutine(CheckForShuriken());
     }
 
     // Decision Making
@@ -69,7 +73,6 @@ public class BotBrain : MonoBehaviour
                     }
                 }
             }
-
             yield return new WaitForSeconds(decisionInterval);
         }
     }
@@ -95,6 +98,16 @@ public class BotBrain : MonoBehaviour
             {
                 yield return null;
             }
+        }
+    }
+
+    private IEnumerator CheckForShuriken()
+    {
+        while (true)
+        {
+            DeflectShuriken();
+            var shurikenInterval = Random.Range(bottomShurikenInterval, topShurikenInterval);
+            yield return new WaitForSeconds(shurikenInterval);
         }
     }
 
@@ -125,6 +138,21 @@ public class BotBrain : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    private void DeflectShuriken()
+    {
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, new Vector2(3f,1.5f), 0f,transform.right, 0f, LayerMask.GetMask("Shuriken"));
+        if (hit.collider)
+        {
+            Debug.Log("Obstacle detected: " + hit.collider.gameObject.name);
+            if (hit.collider.CompareTag("Shuriken"))
+            {
+                Debug.Log("Shuriken Detected: " + hit.collider.gameObject.name);
+                Attack();
+            }
+        }
+        
     }
 
     // Actions
