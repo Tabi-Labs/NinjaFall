@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: Attack Stats
   m_EditorClassIdentifier: 
   AttackDamage: 10
-  MeleeAttackRange: 0.77
+  MeleeAttackRange: 0.4
   MaxShurikens: 3
   RangedAttackRange: 0
-  AttackHeight: 0.54
+  AttackHeight: 0.28
   AttackRate: 0
-  KnockbackForce: 20
-  KnockbackTime: 0.15
+  KnockbackForce: 10
+  KnockbackTime: 0.07
   AttackCooldown: 0
-  ParryTime: 0.246
-  ParryWindow: 0.142
+  ParryTime: 0.304
+  ParryWindow: 0.134
   DebugAttackArea: 1

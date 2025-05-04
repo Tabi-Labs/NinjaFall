@@ -5136,6 +5136,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7804810165732104520, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7804810165732104520, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+      propertyPath: m_NeverAutoSwitchControlSchemes
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7804810165732104520, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+      propertyPath: m_ActionEvents.Array.data[19].m_ActionId
+      value: 24ec678d-04eb-414c-95e0-84b55bb2b194
+      objectReference: {fileID: 0}
+    - target: {fileID: 7804810165732104520, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
+      propertyPath: m_ActionEvents.Array.data[19].m_ActionName
+      value: UI/AddBot[/Keyboard/y,/Gamepad/buttonNorth,/Gamepad1/buttonNorth,/Gamepad2/buttonNorth,/Gamepad3/buttonNorth,/Gamepad4/buttonNorth,/Gamepad5/buttonNorth,/Gamepad6/buttonNorth,/Gamepad7/buttonNorth,/Gamepad8/buttonNorth,/Gamepad9/buttonNorth,/Gamepad10/buttonNorth,/Gamepad11/buttonNorth,/Gamepad12/buttonNorth,/Gamepad13/buttonNorth,/Gamepad14/buttonNorth,/Gamepad15/buttonNorth,/Gamepad16/buttonNorth,/Gamepad17/buttonNorth,/Gamepad18/buttonNorth,/Gamepad19/buttonNorth,/Gamepad20/buttonNorth,/Gamepad21/buttonNorth]
+      objectReference: {fileID: 0}
     - target: {fileID: 7953847261677649804, guid: 1e9eb1353fa9e8c4a803a26e9dd67b33, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5448,7 +5464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &781302912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43961,7 +43977,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 4.4}
-  m_SizeDelta: {x: 257.69, y: 1}
+  m_SizeDelta: {x: 320.76, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2005660633
 MonoBehaviour:
@@ -45495,6 +45511,9 @@ MonoBehaviour:
   _hitEffectMaterial: {fileID: 2100000, guid: aca5ea0e3b496164caba43a3835e7fff, type: 2}
   _hitEffectDuration: 0.1
   IsEnabled: 1
+  blinkDuration: 3
+  blinkInterval: 0.5
+  transparentAlpha: 0.8
 --- !u!1 &1237756119248641153
 GameObject:
   m_ObjectHideFlags: 0
