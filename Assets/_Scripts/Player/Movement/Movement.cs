@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -76,9 +77,10 @@ public class Movement : MonoBehaviour
         VerticalVelocity = changeAmount;
     }
 
-    public void IncrementVerticalVelocity(float incrementAmount)
+    public void IncrementVerticalVelocity(float incrementAmount, float maxFallSpeed = Mathf.NegativeInfinity)
     {
         VerticalVelocity += incrementAmount;
+        VerticalVelocity = Mathf.Clamp(VerticalVelocity, maxFallSpeed, Mathf.Infinity);
     }
     /// <summary>
     /// Swiftly decelerates the Horizontal velocity to zero movement.

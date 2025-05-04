@@ -160,10 +160,11 @@ public class Player : NetworkBehaviour
 
     public CharacterData CharacterData { get; set; }
 
-    public float stuckThreshold = 0.05f;
+    // Ruben's variables for stuck player
+   /*  public float stuckThreshold = 0.05f;
     public float stuckTime = 0.1f;
     public float unstuckPush = 1.0f;
-    public float raycastDistance = 0.7f;
+    public float raycastDistance = 0.7f; */
 
     private Vector3 lastPosition;
     private float stuckTimer = 0f;
@@ -241,14 +242,14 @@ public class Player : NetworkBehaviour
     {
         if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateUpdate();
-        //ControlStuck();
+        
     }
 
     private void FixedUpdate()
     {
         if(NetworkManager && !IsOwner) return;
         StateMachine.CurrentState.StateFixedUpdate();
-        ControlStuck();
+        //ControlStuck();
     }
 
     public void ApplyEffect(StatusEffect effect)
@@ -307,7 +308,7 @@ public class Player : NetworkBehaviour
         return movement;
     }
 
-    public void ControlStuck()
+    /* public void ControlStuck()
     {
         Vector2 input = GetMovement();
         Vector3 direction = new Vector3(input.x, 0f, input.y).normalized;
@@ -325,7 +326,7 @@ public class Player : NetworkBehaviour
                 if (stuckTimer >= stuckTime)
                 {
                     int layer = LayerMask.NameToLayer("Obstacles");
-                    // Verifica si hay un obstáculo al frente
+                    // Verifica si hay un obstï¿½culo al frente
                     if (!Physics.Raycast(transform.position, direction, raycastDistance, layer))
                     {
                         transform.position += direction * unstuckPush;
@@ -333,7 +334,7 @@ public class Player : NetworkBehaviour
                     }
                     else
                     {
-                        Debug.Log("Jugador atascado, pero hay un obstáculo. No se empuja.");
+                        Debug.Log("Jugador atascado, pero hay un obstï¿½culo. No se empuja.");
                     }
 
                     stuckTimer = 0f;
@@ -351,7 +352,7 @@ public class Player : NetworkBehaviour
             stuckTimer = 0f;
             lastPosition = transform.position;
         }
-    }
+    } */
 
 
     #endregion
@@ -701,7 +702,7 @@ public class Player : NetworkBehaviour
 
                 else if (!IsFastFalling)
                 {
-                    Movement.IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime);
+                    Movement.IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
 
                     if (IsPastApexThreshold)
                     {
@@ -713,7 +714,7 @@ public class Player : NetworkBehaviour
 
             else if (!IsFastFalling)
             {
-                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
             }
 
             else if (Movement.VerticalVelocity < 0f)
@@ -726,7 +727,7 @@ public class Player : NetworkBehaviour
         //NORMAL FALLING (Without Jumping)
         if (IsFalling && !IsJumping && !IsGrounded)
         {
-            Movement.IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime);
+            Movement.IncrementVerticalVelocity(MoveStats.Gravity * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
         }
 
         //HANDLE RELEASED JUMP DECELERATION
@@ -734,7 +735,7 @@ public class Player : NetworkBehaviour
         {
             if (FastFallTime >= MoveStats.TimeForUpwardsCancel)
             {
-                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.GravityOnReleaseMultiplier * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
             }
             else if (FastFallTime < MoveStats.TimeForUpwardsCancel)
             {
@@ -928,7 +929,7 @@ public class Player : NetworkBehaviour
                 //GRAVITY IN ASCENDING BUT NOT PAST APEX THRESHOLD
                 else if (!IsWallJumpFastFalling)
                 {
-                    Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime);
+                    Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
 
                     if (IsPastWallJumpApexThreshold)
                     {
@@ -941,7 +942,7 @@ public class Player : NetworkBehaviour
             //GRAVITY ON DESCENDING
             else if (!IsWallJumpFastFalling)
             {
-                Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
             }
 
             else if (Movement.VerticalVelocity < 0f)
@@ -957,7 +958,7 @@ public class Player : NetworkBehaviour
         {
             if (WallJumpFastFallTime >= MoveStats.TimeForUpwardsCancel)
             {
-                Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * MoveStats.WallJumpGravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.WallJumpGravity * MoveStats.WallJumpGravityOnReleaseMultiplier * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
             }
             else if (WallJumpFastFallTime < MoveStats.TimeForUpwardsCancel)
             {
@@ -1181,14 +1182,14 @@ public class Player : NetworkBehaviour
                 }
                 else if (DashFastFallTime >= MoveStats.DashTimeForUpwardsCancel)
                 {
-                    Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                    Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
                 }
 
                 DashFastFallTime += Time.fixedDeltaTime;
             }
             else
             {
-                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime);
+                Movement.IncrementVerticalVelocity(MoveStats.Gravity * MoveStats.DashGravityOnReleaseMultiplier * Time.fixedDeltaTime, MoveStats.MaxFallSpeed);
             }
         }
     }
