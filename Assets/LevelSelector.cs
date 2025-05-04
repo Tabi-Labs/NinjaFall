@@ -6,7 +6,7 @@ using UnityEngine;
 public class LevelSelector : NetworkBehaviour
 {
     public GameObject[] levelPrefabs;
-    private NetworkVariable<int> idScene = new NetworkVariable<int>(0,
+    private NetworkVariable<int> idScene = new NetworkVariable<int>(-1,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
 
@@ -23,7 +23,6 @@ public class LevelSelector : NetworkBehaviour
         {
             int randomIndex = Random.Range(0, levelPrefabs.Length);
             idScene.Value = randomIndex;
-            RandomLevelSelectorClientRpc();
         }
     }
 
@@ -49,6 +48,17 @@ public class LevelSelector : NetworkBehaviour
     }
     private void ApplyLevelSelection(int index)
     {
-        Instantiate(levelPrefabs[index], Vector3.zero, Quaternion.identity);               
+        if(NetworkManager)
+        {
+            Debug.Log("ID: " + index);
+            GameObject levelInstance = Instantiate(levelPrefabs[index], Vector3.zero, Quaternion.identity);
+            NetworkObject networkObject = levelInstance.GetComponent<NetworkObject>();
+            networkObject.Spawn();
+        }
+        else
+        {
+            Instantiate(levelPrefabs[index], Vector3.zero, Quaternion.identity);
+        }
+                         
     }
 }

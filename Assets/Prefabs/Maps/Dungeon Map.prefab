@@ -7086,7 +7086,7 @@ MonoBehaviour:
   - {x: 12, y: 6, z: 0}
   m_ShapePathHash: -1642728171
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56434
+  m_InstanceId: 60538
   m_LocalBounds:
     m_Center: {x: 10, y: 0.5, z: 0}
     m_Extent: {x: 2, y: 5.5, z: 0}
@@ -8355,7 +8355,7 @@ MonoBehaviour:
   - {x: 2, y: 0, z: 0}
   m_ShapePathHash: 462812437
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56340
+  m_InstanceId: 60376
   m_LocalBounds:
     m_Center: {x: 0, y: 0.5, z: 0}
     m_Extent: {x: 2, y: 0.5, z: 0}
@@ -14881,6 +14881,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5109658965371042252}
   - component: {fileID: 6169277584136110425}
+  - component: {fileID: 9069295137570210628}
   m_Layer: 0
   m_Name: Dungeon Map
   m_TagString: Untagged
@@ -14921,6 +14922,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   songId: MX_Dungeon
+--- !u!114 &9069295137570210628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5344774665154573314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2572447648
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5466686181494901685
 GameObject:
   m_ObjectHideFlags: 0
@@ -19771,7 +19793,7 @@ MonoBehaviour:
   - {x: 9, y: -7, z: 0}
   m_ShapePathHash: 1907750165
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56462
+  m_InstanceId: 60588
   m_LocalBounds:
     m_Center: {x: 0, y: -5.5, z: 0}
     m_Extent: {x: 9, y: 1.5, z: 0}
@@ -19957,7 +19979,7 @@ MonoBehaviour:
   - {x: 0.9686837, y: -5.0078344, z: 0}
   m_ShapePathHash: -1218245115
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56328
+  m_InstanceId: 60354
   m_LocalBounds:
     m_Center: {x: 0, y: -3.5039172, z: 0}
     m_Extent: {x: 1, y: 1.5039172, z: 0}
@@ -20050,7 +20072,7 @@ MonoBehaviour:
   - {x: -8, y: 6, z: 0}
   m_ShapePathHash: 1989539093
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56420
+  m_InstanceId: 60518
   m_LocalBounds:
     m_Center: {x: -10, y: 0.5, z: 0}
     m_Extent: {x: 2, y: 5.5, z: 0}
@@ -20112,7 +20134,7 @@ MonoBehaviour:
   - {x: 9, y: 9, z: 0}
   m_ShapePathHash: 171308309
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56368
+  m_InstanceId: 60418
   m_LocalBounds:
     m_Center: {x: 0, y: 7, z: 0}
     m_Extent: {x: 9, y: 2, z: 0}
@@ -20477,7 +20499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7482631888714811731, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 2742814351
+      value: 2085330144
       objectReference: {fileID: 0}
     - target: {fileID: 7482631888714811731, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: SpawnWithObservers
@@ -20491,7 +20513,12 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 3020195797
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8857102799958630129, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2572447648
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8857102799958630129, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

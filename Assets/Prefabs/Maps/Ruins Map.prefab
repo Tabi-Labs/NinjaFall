@@ -294,6 +294,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2940538812561037994}
   - component: {fileID: 570307252112747441}
+  - component: {fileID: -7440005154471491693}
   m_Layer: 0
   m_Name: Ruins Map
   m_TagString: Untagged
@@ -334,6 +335,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   songId: MX_Ruins
+--- !u!114 &-7440005154471491693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048587624988517213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 2872936132
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &1062129726345342618
 GameObject:
   m_ObjectHideFlags: 0
@@ -16273,7 +16295,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7482631888714811731, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 1880338723
+      value: 2997420647
       objectReference: {fileID: 0}
     - target: {fileID: 7482631888714811731, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: SpawnWithObservers
@@ -16287,7 +16309,12 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 3020195797
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8857102799958630129, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2872936132
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8857102799958630129, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

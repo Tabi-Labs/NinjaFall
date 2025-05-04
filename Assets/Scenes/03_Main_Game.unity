@@ -831,6 +831,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 947124824}
+  - component: {fileID: 947124826}
   - component: {fileID: 947124825}
   m_Layer: 0
   m_Name: '@ Level Selector'
@@ -870,6 +871,27 @@ MonoBehaviour:
   - {fileID: 5344774665154573314, guid: 8cf73ace65593ce4baeb09aa31440676, type: 3}
   - {fileID: 1048587624988517213, guid: b048be4f4268e4946a75def9987e3971, type: 3}
   - {fileID: 5346421081756369886, guid: 6e81a3558fff616449297ecd51c08b7a, type: 3}
+--- !u!114 &947124826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947124823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 280752180
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1001 &956019946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1093,6 +1115,14 @@ PrefabInstance:
     - target: {fileID: 4518031040725828591, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5626906255149033550, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 1215569247
+      objectReference: {fileID: 0}
+    - target: {fileID: 5626906255149033550, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 935366275
       objectReference: {fileID: 0}
     - target: {fileID: 6592358662250537484, guid: e72ad2de1381af54fbd636b2a00f2203, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
