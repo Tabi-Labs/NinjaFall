@@ -57,15 +57,18 @@ public class StatusEffectManager : MonoBehaviour
 
     private void RemoveEffect(StatusEffect effect, GameObject player)
     {
-        effect.StopVisualEffect();
         effectCoroutines.Remove(effect.EffectName);
         activeEffects.Remove(effect.EffectName);
         effect.RemoveEffect(player);
+        effect.StopVisualEffect();
 
         if (!effect.IsDestroyed())
         {
+            
             Destroy(effect);
         }
         
+
+
     }
 }

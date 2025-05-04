@@ -119,9 +119,11 @@ public class Damageable : NetworkBehaviour, IDamageable
         transform.position = newPosition;
 
         Blink();
+
+        StopVisualEffectInmune();
     }
 
-    public void Blink()
+    private void Blink()
     {
         Debug.Log("Parpadeo");
 
@@ -142,6 +144,23 @@ public class Damageable : NetworkBehaviour, IDamageable
             _spriteRenderer.color = originalColor;
             Debug.Log("Parpadeo completado");
         });
+    }
+
+    private void StopVisualEffectInmune()
+    {
+        Transform orbContainer = transform.Find("Orb Container Inmune buff");
+        if (orbContainer != null)
+        {
+            Transform orbInmune = orbContainer.Find("OrbInmune(Clone)");
+            if (orbInmune != null)
+            {
+                SpriteRenderer sr = orbInmune.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.enabled = false; // Oculta el sprite sin destruir el objeto
+                }
+            }
+        }
     }
 
 

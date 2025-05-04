@@ -66,7 +66,7 @@ public class RangedAttack : NetworkBehaviour
     void OnRangedAttack()
     {
         // Validaci�n com�n para todos los modos
-        if (_player.IsWallSliding && _player.IsWallSlideFalling) return;
+        if (_player.IsWallSliding || _player.IsWallSlideFalling || _player.CheckIsDead()) return;
         if (ShurikensThrown >= _attackStats.MaxShurikens) 
         {
             NoAmmoFX();
