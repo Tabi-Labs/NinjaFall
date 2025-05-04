@@ -55,16 +55,7 @@ public class PauseManager : NetworkBehaviour
     }
 
     public void PauseFunctionality(bool pause, PauseMode mode)
-    {
-        if(NetworkManager && IsServer)
-        {
-            StopPlayersClientRpc(pause);
-        }
-        else
-        {
-            StopPlayers(pause);
-        }
-            
+    {       
         switch (mode) {
             case PauseMode.pre_game:
                 if (NetworkManager && IsServer)
@@ -169,8 +160,17 @@ public class PauseManager : NetworkBehaviour
             }
         }
     }
-    private void PreGameFunctionality()
+    private void PreGameFunctionality(bool pause)
     {
+        if(NetworkManager && IsServer)
+        {
+            StopPlayersClientRpc(pause);
+        }
+        else
+        {
+            StopPlayers(pause);
+        }
+
         Time.timeScale = 1.0f;
 
         start_canvas.SetActive(true);
@@ -196,6 +196,16 @@ public class PauseManager : NetworkBehaviour
     }
     private void MidGameFunctionality(bool pause)
     {
+
+        if(NetworkManager && IsServer)
+        {
+            StopPlayersClientRpc(pause);
+        }
+        else
+        {
+            StopPlayers(pause);
+        }
+
         Time.timeScale = pause ? 0.0f : 1.0f;
         pause_canvas.SetActive(pause);
         is_paused = pause;
@@ -205,15 +215,7 @@ public class PauseManager : NetworkBehaviour
         // �apa de la las gordas
         if(!NetworkManager)
             BotManager.Instance.StopBots();
-        Time.timeScale = 0.0f;
-        winner_portrait.GetComponent<Image>().sprite = character_data.portrait;
-        Animator anim = winner_portrait.GetComponent<Animator>();
-        anim.runtimeAnimatorController = character_data.portraitAnimator;
-        anim.updateMode = AnimatorUpdateMode.UnscaledTime;
-        winner_portrait.transform.GetChild(0).GetComponent<Image>().sprite = character_data.text;
-        winner_text.text = character_data.victoryPhrases[Random.Range(0, character_data.victoryPhrases.Length)];
-
-        finish_canvas.SetActive(true);
+        StartCoroutine(EndGameAnimation());
     }
     [Rpc(SendTo.Everyone)]
     private void StopPlayersClientRpc(bool pause)
@@ -226,9 +228,9 @@ public class PauseManager : NetworkBehaviour
         Resume();
     }
     [Rpc(SendTo.Everyone)]
-    private void PreGameClientRpc()
+    private void PreGameClientRpc(bool pause)
     {
-        PreGameFunctionality();
+        PreGameFunctionality(pause);
     }
     [Rpc(SendTo.Everyone)]
     private void MidGameClientRpc(bool pause)
