@@ -29,7 +29,7 @@ public class Damageable : NetworkBehaviour, IDamageable
 
     public event Action OnDamageTakenEvent;
     public event Action OnParryEvent; // Event to notify when parry is triggered
-    protected void Awake() 
+    protected virtual void Awake() 
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
