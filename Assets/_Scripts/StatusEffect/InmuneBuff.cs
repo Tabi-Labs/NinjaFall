@@ -4,27 +4,11 @@ using UnityEngine;
 
 public class InmuneBuff : StatusEffect
 {
-    private GameObject playerInstance;
 
-    private void Update()
-    {
-
-        if (playerInstance != null)
-        {
-            IDamageable damageable = playerInstance.GetComponent<IDamageable>();
-            if (damageable != null && !damageable.IsInmune())
-            {
-                StopVisualEffect();
-                SetActive(false);
-            }
-
-        }
-    }
 
     public override void ApplyEffect(GameObject player)
     {
         IDamageable damageable = player.GetComponent<IDamageable>();
-        playerInstance = player;
 
         if (damageable != null)
         {
