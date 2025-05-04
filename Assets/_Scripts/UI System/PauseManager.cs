@@ -60,11 +60,11 @@ public class PauseManager : NetworkBehaviour
             case PauseMode.pre_game:
                 if (NetworkManager && IsServer)
                 {
-                    PreGameClientRpc();
+                    PreGameClientRpc(pause);
                 }
                 else
                 {
-                    PreGameFunctionality();
+                    PreGameFunctionality(pause);
                 }
 
                 break;
