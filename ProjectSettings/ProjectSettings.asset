@@ -14,7 +14,7 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: Tabi Games
   productName: Super Ninja Deathmatch
-  defaultCursor: {fileID: 2800000, guid: d4e7951e7d5298045aacdb0d8fc1971c, type: 3}
+  defaultCursor: {fileID: 2800000, guid: 2ec6d5b91421afe4698e828b0db65873, type: 3}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
   m_ShowUnitySplashScreen: 0
@@ -288,7 +288,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: dd197d65568886e418c5ce4bc38cb063, type: 3}
+      m_Icon: {fileID: 2800000, guid: 8f013318c7d3a6a41a95e967e8bc6f69, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0
