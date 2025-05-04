@@ -76,7 +76,8 @@ public class ProjectileBehaviour : NetworkBehaviour
         {
             if( collision.CompareTag("Shuriken"))
             {
-                if(_isMoving)
+                var incomingShuriken = collision.GetComponent<ProjectileBehaviour>();
+                if(_isMoving && incomingShuriken.IsMoving)
                 {
                     RaycastHit2D hit = Physics2D.Raycast(transform.position, _direction, _stats.MoveSpeed);
                     if(hit)

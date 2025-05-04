@@ -49,13 +49,6 @@ public class LevelSelector : NetworkBehaviour
     }
     private void ApplyLevelSelection(int index)
     {
-
-        for (int i = 0; i < levelPrefabs.Length; i++)
-        {
-            if (i == index)
-                levelPrefabs[i].SetActive(true);
-            else
-                levelPrefabs[i].SetActive(false);
-        }
+        Instantiate(levelPrefabs[index], Vector3.zero, Quaternion.identity);               
     }
 }
