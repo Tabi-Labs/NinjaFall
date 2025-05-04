@@ -14404,6 +14404,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2317621422131505659}
     m_Modifications:
+    - target: {fileID: 687753683114593518, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 687753683114593518, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.43
+      objectReference: {fileID: 0}
     - target: {fileID: 699203598563399664, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: m_Name
       value: '@ Player Spawner'
@@ -14447,6 +14455,30 @@ PrefabInstance:
     - target: {fileID: 966460549498219928, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4822341017085113685, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 4822341017085113685, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.66
+      objectReference: {fileID: 0}
+    - target: {fileID: 5659620432334048149, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 5659620432334048149, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6830262536804209465, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 6830262536804209465, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.17
       objectReference: {fileID: 0}
     - target: {fileID: 8857102799958630129, guid: a304e4918c1e80a4ea622f05aef6e3fb, type: 3}
       propertyPath: GlobalObjectIdHash
