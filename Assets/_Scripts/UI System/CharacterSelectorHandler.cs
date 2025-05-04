@@ -298,8 +298,8 @@ public class CharacterSelectorHandler : NetworkBehaviour
         else
         {     
             if(playerName != null){
-            topText.text = playerName;
-    }
+                topText.text = playerName;
+            }
             isAvailable = false;
             portraitPanel.gameObject.SetActive(true);
             emptyPanel.gameObject.SetActive(false);
