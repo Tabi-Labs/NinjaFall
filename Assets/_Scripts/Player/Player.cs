@@ -238,6 +238,98 @@ public class Player : NetworkBehaviour
         if(DontDestroyOnLoadFlag) DontDestroyOnLoad(transform.root);
     }
 
+    private void OnEnable()
+    {
+        Initialize();   
+        ResetToInitialState();
+        _movement.Stop();
+    }
+
+    public void ResetToInitialState()
+    {
+        // Reset de variables básicas
+        IsDead = false;
+        IsDeath = false;
+        IsAttacking = false;
+        isReady = false;
+        
+        // Reset de buffs/debuffs
+        SpeedBuff = false;
+        InvertControlDebuff = false;
+        ToxicBuff = false;
+        InmuneToxic = false;
+        
+        // Reset de estados de movimiento
+        IsGrounded = false;
+        BumpedHead = false;
+        IsTouchingWall = false;
+        
+        // Reset de variables de salto
+        ResetJumpValues();
+        ReplenishJumps();
+        CoyoteTimer = 0f;
+        JumpBufferTimer = 0f;
+        JumpReleasedDuringBuffer = false;
+        
+        // Reset de wall slide/jump
+        ResetWallJumpValues();
+        IsWallSliding = false;
+        WallJumpPostBufferTimer = 0f;
+        _lastWallHit = new RaycastHit2D();
+        
+        // Reset de dash
+        ResetDashes();
+        ResetDashValues();
+        IsDashing = false;
+        IsAirDashing = false;
+        DashDirection = Vector2.zero;
+        DashDirectionMult = 1;
+        
+        // Reset de altura
+        HighestPoint = 0f;
+        HeightTrackerStartingPoint = 0f;
+        
+        // Reset de físicas
+        if (RB != null)
+        {
+            RB.velocity = Vector2.zero;
+            RB.angularVelocity = 0f;
+        }
+        
+        // Reset de animaciones
+        if (Anim != null)
+        {
+            Anim.Rebind();
+            Anim.Update(0f);
+        }
+        
+        // Reset de partículas
+        if (WallSlideParticles != null)
+        {
+            WallSlideParticles.gameObject.SetActive(false);
+        }
+        
+        if (TrailRenderer != null)
+        {
+            TrailRenderer.emitting = false;
+        }
+        
+        // Reset de state machine
+        if (StateMachine != null)
+        {
+            StateMachine.ChangeState(IdleState);
+        }
+        
+        // Reset de colliders
+        if (FeetColl != null) FeetColl.enabled = true;
+        if (HeadColl != null) HeadColl.enabled = true;
+        if (BodyColl != null) BodyColl.enabled = true;
+        
+        // Reset de stuck detection
+        lastPosition = transform.position;
+        stuckTimer = 0f;
+    }
+
     private void Update()
     {
         if(NetworkManager && !IsOwner) return;
