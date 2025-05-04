@@ -33,7 +33,7 @@ MonoBehaviour:
   JumpHeightCompensationFactor: 1.054
   TimeTillJumpApex: 0.41
   GravityOnReleaseMultiplier: 2
-  MaxFallSpeed: 26
+  MaxFallSpeed: -25
   NumberOfJumpsAllowed: 1
   ResetJumpsOnWallSlide: 1
   TimeForUpwardsCancel: 0.027
