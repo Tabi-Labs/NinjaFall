@@ -22,6 +22,9 @@ public class RomCheckController : MonoBehaviour
 
         _startButton.enabled = false;
         StartCoroutine(LerpText());
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     IEnumerator LerpText()
