@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -7206107882761383240}
   - component: {fileID: 3652186356302186141}
   - component: {fileID: 1576534737448168979}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: shuriken
   m_TagString: Shuriken
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2431041525
+  GlobalObjectIdHash: 3745138275
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
