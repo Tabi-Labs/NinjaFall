@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 public class KillsCounter : NetworkBehaviour
 {
     public static KillsCounter Instance;
-    private const int MAX_LIVES = 2;
+    private const int MAX_LIVES = 3;
 
     // Arreglo para almacenar las vidas de los jugadores (modo en red)
     private int[] playerLives;
