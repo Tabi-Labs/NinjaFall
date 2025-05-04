@@ -57,6 +57,10 @@ public class BotBrain : MonoBehaviour
                 MoveTowardsTarget(closestPlayer.transform.position);
                 if (distanceToPlayer <= targetDistanceThreshold)
                 {
+                    if(Random.Range(0f, 1f) < 0.9f)
+                    {
+                        ThrowShurikenToTarget(closestPlayer.transform.position);
+                    }
                     Attack();
                 } else {
                     if(Random.Range(0f, 1f) < 0.1f)
