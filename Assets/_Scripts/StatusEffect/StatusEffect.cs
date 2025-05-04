@@ -49,7 +49,7 @@ public abstract class StatusEffect : MonoBehaviour
 
     public virtual void StartVisualEffect(GameObject player)
     {
-        orbContainer = new GameObject("OrbContainer");
+        orbContainer = new GameObject("Orb Container " + this.EffectName);
         orbContainer.transform.SetParent(player.transform);
         orbContainer.transform.localPosition = Vector3.zero;
 
