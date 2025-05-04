@@ -440,7 +440,7 @@ public class PlayerConfigurationManager : NetworkBehaviour
         playerName = "P" + (pi.playerIndex + 1); // Mejor práctica para numeración de jugadores
     }
 
-    csh.Activate(pi, isAddingBot, playerName);
+    StartCoroutine(DelayActivate(csh, pi, isAddingBot, playerName));
     isAddingBot = false;
 }
 
@@ -624,6 +624,12 @@ public class PlayerConfigurationManager : NetworkBehaviour
         addBotAction = pi.actions.FindAction("AddBot");
         addBotAction.performed += HandleBotJoin;
         addBotAction.Enable();
+    }
+    
+    private IEnumerator DelayActivate(CharacterSelectorHandler csh, PlayerInput pi, bool isAddingBot, string playerName)
+    {
+        yield return null; // Esperar un frame
+        csh.Activate(pi, isAddingBot, playerName);
     }
 
     public void SwitchPlayerUI(PlayerInput playerInput, InputSystemUIInputModule newModule)
